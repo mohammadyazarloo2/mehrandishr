@@ -80,19 +80,7 @@ export default function Header() {
               <Link href="/" className="showbasket">
                 <SlBasket />
                 <span className="cart-quantity">0</span>
-                <div className="basketdrop">
-                  <div className="basket-items">
-                    {/* <div className="basket-item">
-                    <div className="basket-title">short</div>
-                     <div className="basket-quantity">2</div>
-                    <div className="basket-price">12000</div>
-                    <button className="basket-rmbtn">x</button>
-                  </div> */}
-                  </div>
-                  <div className="basket-all">
-                    <span>مشاهده همه</span>
-                  </div>
-                </div>
+                
               </Link>
               <Link href="/">
                 <i className="bi bi-headset red"></i>
