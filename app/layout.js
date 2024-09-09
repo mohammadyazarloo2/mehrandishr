@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import Header from "./components/Header";
 import React, { Suspense } from "react";
 import Loading from "./components/Loading";
-import ClientLayout from "./clientLayout";
+import ClientLayout from "./ClientLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
