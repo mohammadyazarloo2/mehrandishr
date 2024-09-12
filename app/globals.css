@@ -516,6 +516,7 @@ body.dark .requests-body-head h2 {
 .flex-box {
   /* width: calc((100% - 5%) / 4); */
   height: 250px;
+  width: 100%;
   background-color: transparent;
   perspective: 1000px;
 }
