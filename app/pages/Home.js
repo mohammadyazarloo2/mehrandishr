@@ -10,7 +10,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/css/effect-coverflow";
 
-import { Autoplay, EffectCoverflow } from "swiper/modules";
+import { Autoplay, EffectCoverflow, Navigation } from "swiper/modules";
 
 export default function Index() {
   const progressCircle = useRef(null);
@@ -85,7 +85,6 @@ export default function Index() {
                 spaceBetween: 50,
               },
             }}
-            
             pagination={true}
             className="mySwiper2"
           >
@@ -320,15 +319,111 @@ export default function Index() {
           </div>
           <div className="course-learning-body">
             <div className="images">
-              <Image src="/img/html-css.jpg" width={100} height={100} alt="" />
-              <Image src="/img/html-css.jpg" width={100} height={100} alt="" />
-              <Image src="/img/html-css.jpg" width={100} height={100} alt="" />
-              <Image src="/img/html-css.jpg" width={100} height={100} alt="" />
-              <Image src="/img/html-css.jpg" width={100} height={100} alt="" />
-              <Image src="/img/html-css.jpg" width={100} height={100} alt="" />
-              <div className="arrows">
-                <span> </span>
-              </div>
+              <Swiper
+                dir="rtl"
+                grabCursor={true}
+                navigation={true}
+                rewind={true}
+                slidesPerView={1}
+                breakpoints={{
+                  640: {
+                    slidesPerView: 3,
+                    spaceBetween: 20,
+                  },
+                  768: {
+                    slidesPerView: 4,
+                    spaceBetween: 40,
+                  },
+                  1024: {
+                    slidesPerView: 6,
+                    spaceBetween: 50,
+                  },
+                }}
+                modules={[Navigation]}
+                pagination={true}
+                className="courseswiper"
+              >
+                <SwiperSlide>
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                </SwiperSlide>
+              </Swiper>
             </div>
           </div>
         </div>
@@ -370,66 +465,167 @@ export default function Index() {
           </Link>
         </div>
         <div className="article-body">
-          <div className="article-item">
-            <div className="article-img">
-              <Image src="/img/1.png" alt="" width={100} height={100} />
-            </div>
-            <div className="article-content">
-              <span className="title">طراحی وبسایت</span>
-              <p>طراحی صفحات وب</p>
-            </div>
-            <div className="article-footer">
-              <span className="views">140 views</span>
-              <Link href="" className="article-more">
-                بیشتر بخوانید
-              </Link>
-            </div>
-          </div>
-          <div className="article-item">
-            <div className="article-img">
-              <Image src="/img/1.png" width={100} height={100} alt="" />
-            </div>
-            <div className="article-content">
-              <span className="title">طراحی وبسایت</span>
-              <p>طراحی صفحات وب</p>
-            </div>
-            <div className="article-footer">
-              <span className="views">140 views</span>
-              <Link href="" className="article-more">
-                بیشتر بخوانید
-              </Link>
-            </div>
-          </div>
-          <div className="article-item">
-            <div className="article-img">
-              <Image src="/img/1.png" width={100} height={100} alt="" />
-            </div>
-            <div className="article-content">
-              <span className="title">طراحی وبسایت</span>
-              <p>طراحی صفحات وب</p>
-            </div>
-            <div className="article-footer">
-              <span className="views">140 views</span>
-              <Link href="" className="article-more">
-                بیشتر بخوانید
-              </Link>
-            </div>
-          </div>
-          <div className="article-item">
-            <div className="article-img">
-              <Image src="/img/1.png" width={100} height={100} alt="" />
-            </div>
-            <div className="article-content">
-              <span className="title">طراحی وبسایت</span>
-              <p>طراحی صفحات وب</p>
-            </div>
-            <div className="article-footer">
-              <span className="views">140 views</span>
-              <Link href="" className="article-more">
-                بیشتر بخوانید
-              </Link>
-            </div>
-          </div>
+          <Swiper
+            dir="rtl"
+            grabCursor={true}
+            navigation={true}
+            rewind={true}
+            slidesPerView={1}
+            breakpoints={{
+              640: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+              },
+              768: {
+                slidesPerView: 4,
+                spaceBetween: 40,
+              },
+              1024: {
+                slidesPerView: 4,
+                spaceBetween: 50,
+              },
+            }}
+            modules={[Navigation]}
+            pagination={true}
+            className="courseblog"
+          >
+            <SwiperSlide>
+              <div className="article-item">
+                <div className="article-img">
+                  <Image src="/img/1.png" alt="" width={100} height={100} />
+                </div>
+                <div className="article-content">
+                  <span className="title">طراحی وبسایت</span>
+                  <p>طراحی صفحات وب</p>
+                </div>
+                <div className="article-footer">
+                  <span className="views">140 views</span>
+                  <Link href="" className="article-more">
+                    بیشتر بخوانید
+                  </Link>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="article-item">
+                <div className="article-img">
+                  <Image src="/img/1.png" alt="" width={100} height={100} />
+                </div>
+                <div className="article-content">
+                  <span className="title">طراحی وبسایت</span>
+                  <p>طراحی صفحات وب</p>
+                </div>
+                <div className="article-footer">
+                  <span className="views">140 views</span>
+                  <Link href="" className="article-more">
+                    بیشتر بخوانید
+                  </Link>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="article-item">
+                <div className="article-img">
+                  <Image src="/img/1.png" alt="" width={100} height={100} />
+                </div>
+                <div className="article-content">
+                  <span className="title">طراحی وبسایت</span>
+                  <p>طراحی صفحات وب</p>
+                </div>
+                <div className="article-footer">
+                  <span className="views">140 views</span>
+                  <Link href="" className="article-more">
+                    بیشتر بخوانید
+                  </Link>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="article-item">
+                <div className="article-img">
+                  <Image src="/img/1.png" alt="" width={100} height={100} />
+                </div>
+                <div className="article-content">
+                  <span className="title">طراحی وبسایت</span>
+                  <p>طراحی صفحات وب</p>
+                </div>
+                <div className="article-footer">
+                  <span className="views">140 views</span>
+                  <Link href="" className="article-more">
+                    بیشتر بخوانید
+                  </Link>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="article-item">
+                <div className="article-img">
+                  <Image src="/img/1.png" alt="" width={100} height={100} />
+                </div>
+                <div className="article-content">
+                  <span className="title">طراحی وبسایت</span>
+                  <p>طراحی صفحات وب</p>
+                </div>
+                <div className="article-footer">
+                  <span className="views">140 views</span>
+                  <Link href="" className="article-more">
+                    بیشتر بخوانید
+                  </Link>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="article-item">
+                <div className="article-img">
+                  <Image src="/img/1.png" alt="" width={100} height={100} />
+                </div>
+                <div className="article-content">
+                  <span className="title">طراحی وبسایت</span>
+                  <p>طراحی صفحات وب</p>
+                </div>
+                <div className="article-footer">
+                  <span className="views">140 views</span>
+                  <Link href="" className="article-more">
+                    بیشتر بخوانید
+                  </Link>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="article-item">
+                <div className="article-img">
+                  <Image src="/img/1.png" alt="" width={100} height={100} />
+                </div>
+                <div className="article-content">
+                  <span className="title">طراحی وبسایت</span>
+                  <p>طراحی صفحات وب</p>
+                </div>
+                <div className="article-footer">
+                  <span className="views">140 views</span>
+                  <Link href="" className="article-more">
+                    بیشتر بخوانید
+                  </Link>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="article-item">
+                <div className="article-img">
+                  <Image src="/img/1.png" alt="" width={100} height={100} />
+                </div>
+                <div className="article-content">
+                  <span className="title">طراحی وبسایت</span>
+                  <p>طراحی صفحات وب</p>
+                </div>
+                <div className="article-footer">
+                  <span className="views">140 views</span>
+                  <Link href="" className="article-more">
+                    بیشتر بخوانید
+                  </Link>
+                </div>
+              </div>
+            </SwiperSlide>
+          </Swiper>
         </div>
       </div>
     </main>

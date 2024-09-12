@@ -52,72 +52,6 @@ export default function Loading() {
               </div>
             </div>
           </div>
-
-          <div className="preload flex-box">
-            <div className="flex-box-inner">
-              <div className="flex-box-front"></div>
-              <div className="flex-box-back">
-                <div className="flex-box-back-img"></div>
-                <span className="flex-box-back-overlay"></span>
-                <div className="flex-box-back-body">
-                  <span className="preload flex-box-back-body-title">
-                  </span>
-                  <span className="preload flex-box-back-body-master">
-                  </span>
-                  <span className="preload flex-box-back-body-price">
-                  </span>
-                  <button className="preload flex-box-back-body-button">
-                  </button>
-                </div>
-                <div className="preload addbasket">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="preload flex-box">
-            <div className="flex-box-inner">
-              <div className="flex-box-front">
-              </div>
-              <div className="flex-box-back">
-                <div className="flex-box-back-img"></div>
-                <span className="flex-box-back-overlay"></span>
-                <div className="flex-box-back-body">
-                  <span className="preload flex-box-back-body-title"> </span>
-                  <span className="preload flex-box-back-body-master">
-                  </span>
-                  <span className="preload flex-box-back-body-price">
-                  </span>
-                  <button className="preload flex-box-back-body-button">
-                  </button>
-                </div>
-                <div className="preload addbasket">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="preload flex-box">
-            <div className="flex-box-inner">
-              <div className="flex-box-front">
-              </div>
-              <div className="flex-box-back">
-                <div className="flex-box-back-img"></div>
-                <span className="flex-box-back-overlay"></span>
-                <div className="flex-box-back-body">
-                  <span className="preload flex-box-back-body-title"> </span>
-                  <span className="preload flex-box-back-body-master">
-                  </span>
-                  <span className="preload flex-box-back-body-price">
-                  </span>
-                  <button className="preload flex-box-back-body-button">
-                  </button>
-                </div>
-                <div className="preload addbasket">
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -211,48 +145,6 @@ export default function Loading() {
               <span className="views"> </span>
               <Link href="" className="article-more">
                  
-              </Link>
-            </div>
-          </div>
-          <div className="article-item">
-            <div className="article-img">
-            <span></span>
-            </div>
-            <div className="article-content">
-              <span className="title"> </span>
-              <p>  </p>
-            </div>
-            <div className="article-footer">
-              <span className="views"> </span>
-              <Link href="" className="article-more">
-              </Link>
-            </div>
-          </div>
-          <div className="article-item">
-            <div className="article-img">
-            <span></span>
-            </div>
-            <div className="article-content">
-              <span className="title"> </span>
-              <p></p>
-            </div>
-            <div className="article-footer">
-              <span className="views"> </span>
-              <Link href="" className="article-more">
-              </Link>
-            </div>
-          </div>
-          <div className="article-item">
-            <div className="article-img">
-              <span></span>
-            </div>
-            <div className="article-content">
-              <span className="title"> </span>
-              <p>  </p>
-            </div>
-            <div className="article-footer">
-              <span className="views">140 views</span>
-              <Link href="" className="article-more">
               </Link>
             </div>
           </div>
