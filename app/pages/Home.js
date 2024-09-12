@@ -8,8 +8,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import "swiper/css/effect-coverflow";
 
-import { Autoplay } from "swiper/modules";
+import { Autoplay, EffectCoverflow } from "swiper/modules";
 
 export default function Index() {
   const progressCircle = useRef(null);
@@ -65,159 +66,225 @@ export default function Index() {
         </div>
 
         <div className="products">
-          <div className="flex-box">
-            <div className="flex-box-inner">
-              <div className="flex-box-front">
-                <Image
-                  src="/img/javascript.png"
-                  alt=""
-                  width={100}
-                  height={100}
-                />
-              </div>
-              <div className="flex-box-back">
-                <Image
-                  alt=""
-                  className="flex-box-back-img"
-                  src="/img/ada38506e144d7940c4a5fea1358cbfa.jpg"
-                  width={100}
-                  height={100}
-                />
-                <span className="flex-box-back-overlay"></span>
-                <div className="flex-box-back-body">
-                  <span className="flex-box-back-body-title">دوره php</span>
-                  <span className="flex-box-back-body-master">
-                    مدرس : محمد یازرلو
-                  </span>
-                  <span className="flex-box-back-body-price">
-                    30,000,000 تومان
-                  </span>
-                  <button className="flex-box-back-body-button">
-                    ادامه مطلب
-                  </button>
-                </div>
-                <div className="addbasket">
-                  <SlBasket />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-box">
-            <div className="flex-box-inner">
-              <div className="flex-box-front">
-                <Image
-                  src="/img/javascript.png"
-                  alt=""
-                  width={100}
-                  height={100}
-                />
-              </div>
-              <div className="flex-box-back">
-                <Image
-                  alt=""
-                  className="flex-box-back-img"
-                  src="/img/ada38506e144d7940c4a5fea1358cbfa.jpg"
-                  width={100}
-                  height={100}
-                />
-                <span className="flex-box-back-overlay"></span>
-                <div className="flex-box-back-body">
-                  <span className="flex-box-back-body-title">
-                    دوره html&css
-                  </span>
-                  <span className="flex-box-back-body-master">
-                    مدرس : محمد یازرلو
-                  </span>
-                  <span className="flex-box-back-body-price">
-                    10,000,000 تومان
-                  </span>
-                  <button className="flex-box-back-body-button">
-                    ادامه مطلب
-                  </button>
-                </div>
-                <div className="addbasket">
-                  <SlBasket />
+          <Swiper
+            dir="rtl"
+            grabCursor={true}
+            rewind={true}
+            slidesPerView={1}
+            breakpoints={{
+              640: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+              },
+              768: {
+                slidesPerView: 4,
+                spaceBetween: 40,
+              },
+              1024: {
+                slidesPerView: 4,
+                spaceBetween: 50,
+              },
+            }}
+            
+            pagination={true}
+            className="mySwiper2"
+          >
+            <SwiperSlide>
+              <div className="flex-box">
+                <div className="flex-box-inner">
+                  <div className="flex-box-front">
+                    <Image
+                      src="/img/javascript.png"
+                      alt=""
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                  <div className="flex-box-back">
+                    <Image
+                      alt=""
+                      className="flex-box-back-img"
+                      src="/img/ada38506e144d7940c4a5fea1358cbfa.jpg"
+                      width={100}
+                      height={100}
+                    />
+                    <span className="flex-box-back-overlay"></span>
+                    <div className="flex-box-back-body">
+                      <span className="flex-box-back-body-title">دوره php</span>
+                      <span className="flex-box-back-body-master">
+                        مدرس : محمد یازرلو
+                      </span>
+                      <span className="flex-box-back-body-price">
+                        30,000,000 تومان
+                      </span>
+                      <button className="flex-box-back-body-button">
+                        ادامه مطلب
+                      </button>
+                    </div>
+                    <div className="addbasket">
+                      <SlBasket />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div className="flex-box">
-            <div className="flex-box-inner">
-              <div className="flex-box-front">
-                <Image
-                  src="/img/javascript.png"
-                  alt=""
-                  width={100}
-                  height={100}
-                />
-              </div>
-              <div className="flex-box-back">
-                <Image
-                  alt=""
-                  className="flex-box-back-img"
-                  src="/img/ada38506e144d7940c4a5fea1358cbfa.jpg"
-                  width={100}
-                  height={100}
-                />
-                <span className="flex-box-back-overlay"></span>
-                <div className="flex-box-back-body">
-                  <span className="flex-box-back-body-title">دوره nodejs </span>
-                  <span className="flex-box-back-body-master">
-                    مدرس : محمد یازرلو
-                  </span>
-                  <span className="flex-box-back-body-price">
-                    40,000,000 تومان
-                  </span>
-                  <button className="flex-box-back-body-button">
-                    ادامه مطلب
-                  </button>
-                </div>
-                <div className="addbasket">
-                  <SlBasket />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-box">
-            <div className="flex-box-inner">
-              <div className="flex-box-front">
-                <Image
-                  src="/img/javascript.png"
-                  alt=""
-                  width={100}
-                  height={100}
-                />
-              </div>
-              <div className="flex-box-back">
-                <Image
-                  alt=""
-                  className="flex-box-back-img"
-                  src="/img/ada38506e144d7940c4a5fea1358cbfa.jpg"
-                  width={100}
-                  height={100}
-                />
-                <span className="flex-box-back-overlay"></span>
-                <div className="flex-box-back-body">
-                  <span className="flex-box-back-body-title">دوره mysql</span>
-                  <span className="flex-box-back-body-master">
-                    مدرس : محمد یازرلو
-                  </span>
-                  <span className="flex-box-back-body-price">
-                    20,000,000 تومان
-                  </span>
-                  <button className="flex-box-back-body-button">
-                    ادامه مطلب
-                  </button>
-                </div>
-                <div className="addbasket">
-                  <SlBasket />
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="flex-box">
+                <div className="flex-box-inner">
+                  <div className="flex-box-front">
+                    <Image
+                      src="/img/javascript.png"
+                      alt=""
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                  <div className="flex-box-back">
+                    <Image
+                      alt=""
+                      className="flex-box-back-img"
+                      src="/img/ada38506e144d7940c4a5fea1358cbfa.jpg"
+                      width={100}
+                      height={100}
+                    />
+                    <span className="flex-box-back-overlay"></span>
+                    <div className="flex-box-back-body">
+                      <span className="flex-box-back-body-title">دوره php</span>
+                      <span className="flex-box-back-body-master">
+                        مدرس : محمد یازرلو
+                      </span>
+                      <span className="flex-box-back-body-price">
+                        30,000,000 تومان
+                      </span>
+                      <button className="flex-box-back-body-button">
+                        ادامه مطلب
+                      </button>
+                    </div>
+                    <div className="addbasket">
+                      <SlBasket />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="flex-box">
+                <div className="flex-box-inner">
+                  <div className="flex-box-front">
+                    <Image
+                      src="/img/javascript.png"
+                      alt=""
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                  <div className="flex-box-back">
+                    <Image
+                      alt=""
+                      className="flex-box-back-img"
+                      src="/img/ada38506e144d7940c4a5fea1358cbfa.jpg"
+                      width={100}
+                      height={100}
+                    />
+                    <span className="flex-box-back-overlay"></span>
+                    <div className="flex-box-back-body">
+                      <span className="flex-box-back-body-title">دوره php</span>
+                      <span className="flex-box-back-body-master">
+                        مدرس : محمد یازرلو
+                      </span>
+                      <span className="flex-box-back-body-price">
+                        30,000,000 تومان
+                      </span>
+                      <button className="flex-box-back-body-button">
+                        ادامه مطلب
+                      </button>
+                    </div>
+                    <div className="addbasket">
+                      <SlBasket />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="flex-box">
+                <div className="flex-box-inner">
+                  <div className="flex-box-front">
+                    <Image
+                      src="/img/javascript.png"
+                      alt=""
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                  <div className="flex-box-back">
+                    <Image
+                      alt=""
+                      className="flex-box-back-img"
+                      src="/img/ada38506e144d7940c4a5fea1358cbfa.jpg"
+                      width={100}
+                      height={100}
+                    />
+                    <span className="flex-box-back-overlay"></span>
+                    <div className="flex-box-back-body">
+                      <span className="flex-box-back-body-title">دوره php</span>
+                      <span className="flex-box-back-body-master">
+                        مدرس : محمد یازرلو
+                      </span>
+                      <span className="flex-box-back-body-price">
+                        30,000,000 تومان
+                      </span>
+                      <button className="flex-box-back-body-button">
+                        ادامه مطلب
+                      </button>
+                    </div>
+                    <div className="addbasket">
+                      <SlBasket />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="flex-box">
+                <div className="flex-box-inner">
+                  <div className="flex-box-front">
+                    <Image
+                      src="/img/javascript.png"
+                      alt=""
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                  <div className="flex-box-back">
+                    <Image
+                      alt=""
+                      className="flex-box-back-img"
+                      src="/img/ada38506e144d7940c4a5fea1358cbfa.jpg"
+                      width={100}
+                      height={100}
+                    />
+                    <span className="flex-box-back-overlay"></span>
+                    <div className="flex-box-back-body">
+                      <span className="flex-box-back-body-title">دوره php</span>
+                      <span className="flex-box-back-body-master">
+                        مدرس : محمد یازرلو
+                      </span>
+                      <span className="flex-box-back-body-price">
+                        30,000,000 تومان
+                      </span>
+                      <button className="flex-box-back-body-button">
+                        ادامه مطلب
+                      </button>
+                    </div>
+                    <div className="addbasket">
+                      <SlBasket />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+          </Swiper>
         </div>
       </div>
 

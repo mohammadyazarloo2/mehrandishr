@@ -1,6 +1,7 @@
 import { SlBasket } from "react-icons/sl";
 import Link from "next/link";
 import Image from "next/image";
+import { BsSearch } from "react-icons/bs";
 
 
 export default function Header() {
@@ -131,7 +132,7 @@ export default function Header() {
                 type="search"
                 placeholder="جستجو ..."
               />
-              <i className="bi bi-search"></i>
+              <BsSearch />
             </div>
           </div>
           <button className="btn btn-green nav2-amir" type="button">
