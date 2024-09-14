@@ -338,6 +338,10 @@ body.dark .requests-body-head h2 {
   padding-right: 10px;
   margin-top: 20px;
 }
+.menu-body ul li{
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 .menu-body ul li i {
   padding-left: 10px;
 }
@@ -373,7 +377,7 @@ body.dark .requests-body-head h2 {
   justify-content: center;
   border-top: 1px solid #ffb200;
 }
-.menu-footer-icons i {
+.menu-footer-icons svg {
   padding: 10px;
   background-color: #eeedeb;
   border-radius: 50%;
@@ -1303,6 +1307,9 @@ body.dark .article-item {
   .preload.flex-box{
     width: 100% !important;
   }
+  .requests-body{
+    width: auto;
+  }
 }
 
 /* tablet screen */
@@ -1319,6 +1326,9 @@ body.dark .article-item {
   }
   .bottom {
     padding: 20px;
+  }
+  .requests-body{
+    width: 50%;
   }
 }
 

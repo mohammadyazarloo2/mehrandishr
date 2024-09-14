@@ -1,10 +1,49 @@
+'use client'
 import { SlBasket } from "react-icons/sl";
 import Link from "next/link";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
-
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { useState } from "react";
+import { RiCloseLargeFill } from "react-icons/ri";
+import { FaInstagram } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import { FaLinkedin } from "react-icons/fa6";
+import { SiTelegram } from "react-icons/si";
 
 export default function Header() {
+  const [show,setShow]=useState(false)
+
+  const [close,setClose]=useState(false)
+  const [openp,setOpenP]=useState(false)
+
+  function openProject(){
+    if(openp === true){
+      setOpenP(false)
+    }else{
+      setOpenP(true)
+    }
+  }
+
+
+  function openMenu(){
+    console.log(show)
+    console.log(close)
+    if(show === true){
+      setShow(false)
+    }else{
+      setShow(true)
+    }
+  }
+
+  function closeMenu(){
+    if(close === true){
+      setClose(false)
+    }else{
+      setClose(true)
+    }
+  }
+
   return (
     <>
       <header>
@@ -12,7 +51,12 @@ export default function Header() {
           <div className="nav-menu">
             <div className="nav-items flex">
               <div className="nav-logo">
-                <Image width={100} height={100} alt={'logo'} src="/img/icon/logo.png" />
+                <Image
+                  width={100}
+                  height={100}
+                  alt={"logo"}
+                  src="/img/icon/logo.png"
+                />
               </div>
               <ul>
                 <li className="nav-item">
@@ -63,8 +107,8 @@ export default function Header() {
             </div>
           </div>
           <div className="nav-icon">
-            <Link href="#" className="dots">
-              <i className="bi bi-three-dots-vertical"></i>
+            <Link href="#" onClick={openMenu} className="dots">
+              <BsThreeDotsVertical />
             </Link>
 
             <div className="icons-mob-left">
@@ -74,14 +118,13 @@ export default function Header() {
                 </Link>
                 <div className="profile-show">
                   <Link href="/profile">ویرایش مشخصات</Link>
-                  <Link href={''}>خروج</Link>
+                  <Link href={""}>خروج</Link>
                 </div>
               </div>
 
               <Link href="/" className="showbasket">
                 <SlBasket />
                 <span className="cart-quantity">0</span>
-                
               </Link>
               <Link href="/">
                 <i className="bi bi-headset red"></i>
@@ -89,14 +132,20 @@ export default function Header() {
             </div>
           </div>
 
-          <div className="menu-mobile">
-            <i className="bi bi-x close-menu"></i>
+          <div className={show===true ? 'open menu-mobile' : 'menu-mobile'}>
+            <RiCloseLargeFill onClick={openMenu} />
             <div className="menu-head">
               <div className="menu-head-img">
-                <Image alt="logo" width={100} height={100} src="/img/favicon.png" className="img-fluid" />
+                <Image
+                  alt="logo"
+                  width={100}
+                  height={100}
+                  src="/img/favicon.png"
+                  className="img-fluid"
+                />
               </div>
               <div className="menu-head-user">
-                <h4>علی اسفندیاری</h4>
+                <h4>کاربر </h4>
               </div>
               <div className="menu-head-dropdown">
                 <i className="bi bi-chevron-down"></i>
@@ -107,15 +156,26 @@ export default function Header() {
                 <li>
                   <i className="bi bi-house"></i>صفحه اصلی
                 </li>
-                <li>عضویت</li>
+                <li>
+                  <i className="bi bi-house"></i>عضویت
+                </li>
+                <li>
+                  <i className="bi bi-house"></i> ورود
+                </li>
+                <li>
+                  <i className="bi bi-house"></i>تماس با ما
+                </li>
+                <li>
+                  <i className="bi bi-house"></i> درباره ما
+                </li>
               </ul>
             </div>
             <div className="menu-footer">
               <div className="menu-footer-icons">
-                <i className="bi bi-twitter"></i>
-                <i className="bi bi-instagram"></i>
-                <i className="bi bi-linkedin"></i>
-                <i className="bi bi-telegram"></i>
+                <FaXTwitter />
+                <FaInstagram />
+                <FaLinkedin />
+                <SiTelegram />
               </div>
             </div>
           </div>
@@ -135,15 +195,15 @@ export default function Header() {
               <BsSearch />
             </div>
           </div>
-          <button className="btn btn-green nav2-amir" type="button">
+          <button className="btn btn-green nav2-amir" onClick={openProject} type="button">
             درخواست پروژه
           </button>
-          <div className="requests">
+          <div className={openp === true ? "open requests" : "requests"}>
             <div className="overlay"></div>
             <div className="requests-body">
               <div className="requests-body-head">
                 <h2>درخواست پروژه</h2>
-                <i className="bi bi-x close-request"></i>
+                <RiCloseLargeFill onClick={openProject} />
               </div>
               <form className="requests-body-form">
                 <div className="input-group">
