@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { SlBasket } from "react-icons/sl";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,35 +12,34 @@ import { FaLinkedin } from "react-icons/fa6";
 import { SiTelegram } from "react-icons/si";
 
 export default function Header() {
-  const [show,setShow]=useState(false)
+  const [show, setShow] = useState(false);
 
-  const [close,setClose]=useState(false)
-  const [openp,setOpenP]=useState(false)
+  const [close, setClose] = useState(false);
+  const [openp, setOpenP] = useState(false);
 
-  function openProject(){
-    if(openp === true){
-      setOpenP(false)
-    }else{
-      setOpenP(true)
+  function openProject() {
+    if (openp === true) {
+      setOpenP(false);
+    } else {
+      setOpenP(true);
     }
   }
 
-
-  function openMenu(){
-    console.log(show)
-    console.log(close)
-    if(show === true){
-      setShow(false)
-    }else{
-      setShow(true)
+  function openMenu() {
+    console.log(show);
+    console.log(close);
+    if (show === true) {
+      setShow(false);
+    } else {
+      setShow(true);
     }
   }
 
-  function closeMenu(){
-    if(close === true){
-      setClose(false)
-    }else{
-      setClose(true)
+  function closeMenu() {
+    if (close === true) {
+      setClose(false);
+    } else {
+      setClose(true);
     }
   }
 
@@ -132,7 +131,7 @@ export default function Header() {
             </div>
           </div>
 
-          <div className={show===true ? 'open menu-mobile' : 'menu-mobile'}>
+          <div className={show === true ? "open menu-mobile" : "menu-mobile"}>
             <RiCloseLargeFill onClick={openMenu} />
             <div className="menu-head">
               <div className="menu-head-img">
@@ -154,10 +153,14 @@ export default function Header() {
             <div className="menu-body">
               <ul>
                 <li>
-                  <i className="bi bi-house"></i>صفحه اصلی
+                  <Link href={"/"}>
+                    <i className="bi bi-house"></i>صفحه اصلی
+                  </Link>
                 </li>
                 <li>
-                  <i className="bi bi-house"></i>عضویت
+                  <Link href={"/pages/Signup"}>
+                    <i className="bi bi-house"></i>عضویت
+                  </Link>
                 </li>
                 <li>
                   <i className="bi bi-house"></i> ورود
@@ -195,7 +198,11 @@ export default function Header() {
               <BsSearch />
             </div>
           </div>
-          <button className="btn btn-green nav2-amir" onClick={openProject} type="button">
+          <button
+            className="btn btn-green nav2-amir"
+            onClick={openProject}
+            type="button"
+          >
             درخواست پروژه
           </button>
           <div className={openp === true ? "open requests" : "requests"}>
