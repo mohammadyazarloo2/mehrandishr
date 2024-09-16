@@ -4,7 +4,7 @@ export default function Signin() {
       <div class="login-section-main">
         <div class="login-section-1">
           <div class="img-profile-comapny">
-            <img src="/img/favicon.png" />
+            <Image width={100} height={100} src="/img/favicon.png" alt="logo" />
           </div>
           <div class="name-comapny">
             <span>آموزشگاه مهراندیش</span>
