@@ -61,7 +61,7 @@ export default function Index() {
         <div className="bottom-head">
           <span className="bottom-head-title">جدیدترین ها</span>
           <div className="bottom-head-more">
-            <Link href="/products">بیشتر</Link>
+            <Link href="/pages/Products">بیشتر</Link>
           </div>
         </div>
 

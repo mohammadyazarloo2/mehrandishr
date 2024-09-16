@@ -10,6 +10,7 @@ import { FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaLinkedin } from "react-icons/fa6";
 import { SiTelegram } from "react-icons/si";
+import { GrProjects } from "react-icons/gr";
 
 export default function Header() {
   const [show, setShow] = useState(false);
@@ -83,7 +84,7 @@ export default function Header() {
                   </ul>
                 </li>
                 <li className="nav-item">
-                  <Link href="" className="nav-link">
+                  <Link href="/pages/Signin" className="nav-link">
                     صفحه ورود
                   </Link>
                 </li>
@@ -163,7 +164,9 @@ export default function Header() {
                   </Link>
                 </li>
                 <li>
-                  <i className="bi bi-house"></i> ورود
+                  <Link href={"/pages/Signin"}>
+                    <i className="bi bi-house"></i> ورود
+                  </Link>
                 </li>
                 <li>
                   <i className="bi bi-house"></i>تماس با ما
@@ -203,7 +206,11 @@ export default function Header() {
             onClick={openProject}
             type="button"
           >
-            درخواست پروژه
+            <div className="nav-amit-content">
+              درخواست پروژه
+              <GrProjects />
+            </div>
+            <span className="nav2-amir-overlay"></span>
           </button>
           <div className={openp === true ? "open requests" : "requests"}>
             <div className="overlay"></div>
