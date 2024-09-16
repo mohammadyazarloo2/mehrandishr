@@ -319,111 +319,128 @@ export default function Index() {
           </div>
           <div className="course-learning-body">
             <div className="images">
-              <Swiper
-                dir="rtl"
-                grabCursor={true}
-                navigation={true}
-                rewind={true}
-                slidesPerView={1}
-                breakpoints={{
-                  640: {
-                    slidesPerView: 3,
-                    spaceBetween: 20,
-                  },
-                  768: {
-                    slidesPerView: 4,
-                    spaceBetween: 40,
-                  },
-                  1024: {
-                    slidesPerView: 6,
-                    spaceBetween: 50,
-                  },
-                }}
-                modules={[Navigation]}
-                pagination={true}
-                className="courseswiper"
-              >
-                <SwiperSlide>
                   <Image
                     src="/img/html-css.jpg"
                     width={100}
                     height={100}
                     alt=""
                   />
-                </SwiperSlide>
-                <SwiperSlide>
                   <Image
                     src="/img/html-css.jpg"
                     width={100}
                     height={100}
                     alt=""
                   />
-                </SwiperSlide>
-                <SwiperSlide>
                   <Image
                     src="/img/html-css.jpg"
                     width={100}
                     height={100}
                     alt=""
                   />
-                </SwiperSlide>
-                <SwiperSlide>
                   <Image
                     src="/img/html-css.jpg"
                     width={100}
                     height={100}
                     alt=""
                   />
-                </SwiperSlide>
-                <SwiperSlide>
                   <Image
                     src="/img/html-css.jpg"
                     width={100}
                     height={100}
                     alt=""
                   />
-                </SwiperSlide>
-                <SwiperSlide>
                   <Image
                     src="/img/html-css.jpg"
                     width={100}
                     height={100}
                     alt=""
                   />
-                </SwiperSlide>
-                <SwiperSlide>
                   <Image
                     src="/img/html-css.jpg"
                     width={100}
                     height={100}
                     alt=""
                   />
-                </SwiperSlide>
-                <SwiperSlide>
                   <Image
                     src="/img/html-css.jpg"
                     width={100}
                     height={100}
                     alt=""
                   />
-                </SwiperSlide>
-                <SwiperSlide>
                   <Image
                     src="/img/html-css.jpg"
                     width={100}
                     height={100}
                     alt=""
                   />
-                </SwiperSlide>
-                <SwiperSlide>
                   <Image
                     src="/img/html-css.jpg"
                     width={100}
                     height={100}
                     alt=""
                   />
-                </SwiperSlide>
-              </Swiper>
+            </div>
+            <div className="images">
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
+                  <Image
+                    src="/img/html-css.jpg"
+                    width={100}
+                    height={100}
+                    alt=""
+                  />
             </div>
           </div>
         </div>
