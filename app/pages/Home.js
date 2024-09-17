@@ -12,6 +12,78 @@ import "swiper/css/effect-coverflow";
 
 import { Autoplay, EffectCoverflow, Navigation } from "swiper/modules";
 
+const courses = [
+  {
+    id: 1,
+    logo: "/img/lan/ICDL.png",
+  },
+  {
+    id: 2,
+    logo: "/img/lan/html.png",
+  },
+  {
+    id: 3,
+    logo: "/img/lan/css.png",
+  },
+  {
+    id: 4,
+    logo: "/img/lan/bootstrap.png",
+  },
+  {
+    id: 5,
+    logo: "/img/lan/tailwind.webp",
+  },
+  {
+    id: 6,
+    logo: "/img/lan/javascript.webp",
+  },
+  {
+    id: 7,
+    logo: "/img/lan/nodejs.png",
+  },
+  {
+    id: 8,
+    logo: "/img/lan/mongodb.png",
+  },
+  {
+    id: 9,
+    logo: "/img/lan/reactjs.png",
+  },
+  {
+    id: 10,
+    logo: "/img/lan/nextjs.png",
+  },
+  {
+    id: 11,
+    logo: "/img/lan/mysql.webp",
+  },
+  {
+    id: 12,
+    logo: "/img/lan/php.png",
+  },
+  {
+    id: 13,
+    logo: "/img/lan/adobeillustrator.jfif",
+  },
+  {
+    id: 14,
+    logo: "/img/lan/aftereffect.jfif",
+  },
+
+  {
+    id: 15,
+    logo: "/img/lan/premier.jfif",
+  },
+  {
+    id: 16,
+    logo: "/img/lan/photoshop.jfif",
+  },
+  {
+    id: 17,
+    logo: "/img/lan/figma.jfif",
+  },
+];
+
 export default function Index() {
   const progressCircle = useRef(null);
   const progressContent = useRef(null);
@@ -319,128 +391,30 @@ export default function Index() {
           </div>
           <div className="course-learning-body">
             <div className="images">
+              {courses.map((item,index) => {
+                return (
                   <Image
-                    src="/img/html-css.jpg"
+                  key={index}
+                    src={item.logo}
                     width={100}
                     height={100}
                     alt=""
                   />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
+                );
+              })}
             </div>
             <div className="images">
+              {courses.map((item,index) => {
+                return (
                   <Image
-                    src="/img/html-css.jpg"
+                  key={index}
+                    src={item.logo}
                     width={100}
                     height={100}
                     alt=""
                   />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                  <Image
-                    src="/img/html-css.jpg"
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
+                );
+              })}
             </div>
           </div>
         </div>

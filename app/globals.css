@@ -219,6 +219,7 @@ header {
   padding: 15px;
   position: relative;
   transition: all 1s linear;
+  cursor: pointer;
 }
 .nav2-amir svg{
   padding-right: 5px;
@@ -320,6 +321,9 @@ body.dark .requests-body-head h2 {
   display: flex;
   align-content: center;
   justify-content: space-between;
+}
+.requests-body-head svg{
+  cursor: pointer;
 }
 .close-request {
   padding: 10px;
@@ -1072,7 +1076,7 @@ body.dark .about-me-content p {
 
 .course-learning-body .images {
   display: inline-block;
-  animation: 5s slide linear infinite;
+  animation: 10s slide linear infinite;
 }
 .course-learning-body:hover .images{
   animation-play-state: paused;
@@ -1920,4 +1924,20 @@ body.dark .article-item {
 .remmberme:checked{
   accent-color: #FFDB00;
   color: #fff;
+}
+
+
+
+
+
+.products-container{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.products-info{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
 }

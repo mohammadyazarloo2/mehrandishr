@@ -5,7 +5,7 @@ import { FaChevronLeft } from "react-icons/fa";
 const data = [
   {
     id: 1,
-    title: "دوره html & css",
+    title: "دوره html and css",
     description: "آموزش در دو دوره مقدماتی و پیشرفته",
     price: 6300000,
     img: "/img/lan/html.png",
@@ -205,9 +205,8 @@ export default function Products() {
                         </div>
                         <div class="p-item-basket">
                           <Link
-                            href={`/pages/products/details/${item.title.replace(
-                              /\s+/g,
-                              "-"
+                            href={`/pages/Products/details/${encodeURIComponent(
+                              item.title.replace(/\s+/g, "-")
                             )}`}
                           >
                             خرید
