@@ -6,9 +6,11 @@ import { FaUserEdit } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa";
 import { redirect, useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { MdOutlineEmail } from "react-icons/md";
 
 export default function Signup() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [name, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
@@ -21,20 +23,46 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!name || !email || !password) {
+      setError("All fields necessary");
+      return;
+    }
     try {
-      const res = await signIn("credentials", {
-        username,
-        password,
-        redirect: false,
+      const resUserExists = await fetch("/api/userExists", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
       });
-      if (res.error) {
-        setError("invalid credentials");
+
+      const { user } = await resUserExists.json();
+
+      if (user) {
+        setError("user already exists");
         return;
       }
-      router.replace("dashboard");
+
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
+      if (res.ok) {
+        const form = e.target;
+        form.reset();
+        router.push("/");
+      } else {
+        console.log("user failed");
+      }
     } catch (error) {
-      setError("Invalid credentials");
-      console.log(error);
+      console.log("error during registration", error);
     }
   };
 
@@ -84,6 +112,23 @@ export default function Signup() {
                     onChange={(e) => setUsername(e.target.value)}
                   />
                   <FaRegUser />
+                </div>
+                <div class="username-alert"></div>
+              </div>
+
+              <div class="input-group-addon">
+                <label for="email">پست الکترونیک</label>
+
+                <div class="username-addon">
+                  <input
+                    type="text"
+                    id="email"
+                    required
+                    class="email"
+                    placeholder="پست الکترونیک"
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <MdOutlineEmail />
                 </div>
                 <div class="username-alert"></div>
               </div>

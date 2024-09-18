@@ -11,12 +11,16 @@ import { FaXTwitter } from "react-icons/fa6";
 import { FaLinkedin } from "react-icons/fa6";
 import { SiTelegram } from "react-icons/si";
 import { GrProjects } from "react-icons/gr";
+import { useSession, signOut } from "next-auth/react";
+import { FaSignOutAlt } from "react-icons/fa";
 
 export default function Header() {
   const [show, setShow] = useState(false);
 
   const [close, setClose] = useState(false);
   const [openp, setOpenP] = useState(false);
+
+  const { data: session, status } = useSession();
 
   function openProject() {
     if (openp === true) {
@@ -83,16 +87,26 @@ export default function Header() {
                     </li>
                   </ul>
                 </li>
-                <li className="nav-item">
-                  <Link href="/pages/Signin" className="nav-link">
-                    صفحه ورود
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link href="/pages/Signup" className="nav-link">
-                    صفحه عضویت
-                  </Link>
-                </li>
+                {status === "authenticated" ? (
+                  <li className="nav-item">
+                    <Link href="/pages/profile" className="nav-link">
+                      پروفایل
+                    </Link>
+                  </li>
+                ) : (
+                  <>
+                    <li className="nav-item">
+                      <Link href="/pages/Signin" className="nav-link">
+                        صفحه ورود
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link href="/pages/Signup" className="nav-link">
+                        صفحه عضویت
+                      </Link>
+                    </li>
+                  </>
+                )}
                 <li className="nav-item">
                   <Link href="" className="nav-link">
                     تماس با ما{" "}
@@ -113,9 +127,12 @@ export default function Header() {
 
             <div className="icons-mob-left">
               <div className="profile">
-                <Link className="mega-pro" href="/">
-                  <i className="bi bi-person-circle"></i>
-                </Link>
+                {status === "authenticated" && (
+                  <div className="mega-pro" onClick={() => signOut()}>
+                    <FaSignOutAlt />
+                    {session.user.name}
+                  </div>
+                )}
                 <div className="profile-show">
                   <Link href="/profile">ویرایش مشخصات</Link>
                   <Link href={""}>خروج</Link>
@@ -144,9 +161,15 @@ export default function Header() {
                   className="img-fluid"
                 />
               </div>
-              <div className="menu-head-user">
-                <h4>کاربر </h4>
-              </div>
+              {status === "authenticated" ? (
+                <div className="menu-head-user">
+                  <h4> {session.user.name} </h4>
+                </div>
+              ) : (
+                <div className="menu-head-user">
+                  <h4>کاربر </h4>
+                </div>
+              )}
               <div className="menu-head-dropdown">
                 <i className="bi bi-chevron-down"></i>
               </div>
@@ -158,21 +181,36 @@ export default function Header() {
                     <i className="bi bi-house"></i>صفحه اصلی
                   </Link>
                 </li>
-                <li>
-                  <Link href={"/pages/Signup"}>
-                    <i className="bi bi-house"></i>عضویت
-                  </Link>
-                </li>
-                <li>
-                  <Link href={"/pages/Signin"}>
-                    <i className="bi bi-house"></i> ورود
-                  </Link>
-                </li>
+                {status === "authenticated" ? (
+                  <li>
+                    <Link href="/pages/profile">
+                      <i className="bi bi-house"></i>پروفایل
+                    </Link>
+                  </li>
+                ) : (
+                  <>
+                    <li>
+                      <Link href="/pages/Signin">
+                        <i className="bi bi-house"></i>ورود
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/pages/Signup">
+                        <i className="bi bi-house"></i>عضویت
+                      </Link>
+                    </li>
+                  </>
+                )}
                 <li>
                   <i className="bi bi-house"></i>تماس با ما
                 </li>
                 <li>
                   <i className="bi bi-house"></i> درباره ما
+                </li>
+                <li>
+                  <Link href="/pages/Signup" onClick={() => signOut()}>
+                    <i className="bi bi-house"></i>خروج
+                  </Link>
                 </li>
               </ul>
             </div>

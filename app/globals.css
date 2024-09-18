@@ -176,11 +176,14 @@ header {
 .profile {
   position: relative;
   height: 100%;
+  display: block;
 }
-.profile a {
+.profile .mega-pro {
   height: 100%;
   display: flex;
   align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 .profile-show {
   display: none;
@@ -1395,6 +1398,10 @@ body.dark .article-item {
   }
   .nav2-amir{
     padding: 5px;
+  }
+  .products-container{
+    flex-direction: column;
+    padding: 20px;
   }
 }
 

@@ -1,6 +1,42 @@
+"use client";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { redirect, useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { FaRegUser } from "react-icons/fa";
 
 export default function Signin() {
+  const [name, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const { push } = useRouter();
+
+  const { data: session, status } = useSession();
+  if (status === "authenticated") {
+    return push("/");
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await signIn("credentials", {
+        name,
+        password,
+        redirect: false,
+      });
+      if (res.error) {
+        setError("invalid credentials");
+        return;
+      }
+      router.replace("dashboard");
+    } catch (error) {
+      setError("Invalid credentials");
+      console.log(error);
+    }
+  };
+
   return (
     <div class="login-section">
       <div class="login-section-main">
@@ -27,7 +63,7 @@ export default function Signin() {
           </div>
         </div>
         <div class="login-section-2">
-          <form method="post" class="form-login">
+          <form onSubmit={handleSubmit} method="post" class="form-login">
             <div class="input-group-addon">
               <label for="username">نام کاربری</label>
 
@@ -38,8 +74,9 @@ export default function Signin() {
                   required
                   class="username"
                   placeholder="نام کاربری"
+                  onChange={(e) => setUsername(e.target.value)}
                 />
-                <i class="bi bi-person-fill"></i>
+                <FaRegUser />
               </div>
               <div class="username-alert"></div>
             </div>
@@ -51,6 +88,7 @@ export default function Signin() {
                 id="password"
                 class="password"
                 placeholder="کلمه عبور"
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div class="remember">
