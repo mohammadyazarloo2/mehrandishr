@@ -339,7 +339,7 @@ body.dark .requests-body-head h2 {
   position: fixed;
   top: 0;
   width: 0;
-  height: 100vh;
+  height: 100dvh;
   background-color: whitesmoke;
   z-index: 22;
   opacity: 0;
@@ -348,13 +348,25 @@ body.dark .requests-body-head h2 {
   overflow: hidden;
 }
 .menu-mobile.open {
-  width: 350px;
+  width: 300px;
   opacity: 1;
   pointer-events: auto;
   font-size: 15px;
   padding: 10px;
   display: flex;
   flex-direction: column;
+}
+.menu-mobile.open .clossidemob{
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: whitesmoke;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  position: absolute;
+  left: 15px;
+  cursor: pointer;
 }
 
 .menu-head {
@@ -1318,6 +1330,30 @@ body.dark .article-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.dots{
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dots svg{
+  color: #181C14;
+}
+.menu-body ul li a{
+  color: #181C14;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+.menu-body ul li a svg{
+  position: relative;
+  padding-left: 10px;
+}
+.menu-head-user{
+  display: flex;
+  justify-content: space-between;
+  flex: 10;
 }
 
 /* mobile mode  */

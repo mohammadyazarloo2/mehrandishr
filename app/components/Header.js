@@ -13,6 +13,12 @@ import { SiTelegram } from "react-icons/si";
 import { GrProjects } from "react-icons/gr";
 import { useSession, signOut } from "next-auth/react";
 import { FaSignOutAlt } from "react-icons/fa";
+import { FaHouseLaptop } from "react-icons/fa6";
+import { ImProfile } from "react-icons/im";
+import { MdContactPhone } from "react-icons/md";
+import { SiGnuprivacyguard } from "react-icons/si";
+import { PiSignIn } from "react-icons/pi";
+import { FcAbout } from "react-icons/fc";
 
 export default function Header() {
   const [show, setShow] = useState(false);
@@ -150,7 +156,9 @@ export default function Header() {
           </div>
 
           <div className={show === true ? "open menu-mobile" : "menu-mobile"}>
-            <RiCloseLargeFill onClick={openMenu} />
+            <div className="clossidemob">
+              <RiCloseLargeFill onClick={openMenu} />
+            </div>
             <div className="menu-head">
               <div className="menu-head-img">
                 <Image
@@ -164,6 +172,11 @@ export default function Header() {
               {status === "authenticated" ? (
                 <div className="menu-head-user">
                   <h4> {session.user.name} </h4>
+                  {status === "authenticated" && (
+                    <div className="mega-pro" onClick={() => signOut()}>
+                      <FaSignOutAlt />
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="menu-head-user">
@@ -178,40 +191,52 @@ export default function Header() {
               <ul>
                 <li>
                   <Link href={"/"}>
-                    <i className="bi bi-house"></i>صفحه اصلی
+                    <FaHouseLaptop />
+                    صفحه اصلی
                   </Link>
                 </li>
                 {status === "authenticated" ? (
                   <li>
                     <Link href="/pages/profile">
-                      <i className="bi bi-house"></i>پروفایل
+                      <ImProfile />
+                      پروفایل
                     </Link>
                   </li>
                 ) : (
                   <>
                     <li>
                       <Link href="/pages/Signin">
-                        <i className="bi bi-house"></i>ورود
+                        <PiSignIn />
+                        ورود
                       </Link>
                     </li>
                     <li>
                       <Link href="/pages/Signup">
-                        <i className="bi bi-house"></i>عضویت
+                        <SiGnuprivacyguard />
+                        عضویت
                       </Link>
                     </li>
                   </>
                 )}
                 <li>
-                  <i className="bi bi-house"></i>تماس با ما
-                </li>
-                <li>
-                  <i className="bi bi-house"></i> درباره ما
-                </li>
-                <li>
-                  <Link href="/pages/Signup" onClick={() => signOut()}>
-                    <i className="bi bi-house"></i>خروج
+                  <Link href="/">
+                    <MdContactPhone />
+                    تماس با ما
                   </Link>
                 </li>
+                <li>
+                  <Link href="/">
+                    <FcAbout />
+                    درباره ما
+                  </Link>
+                </li>
+                {status === "authenticated" && (
+                  <li>
+                    <Link href="/pages/Signup" onClick={() => signOut()}>
+                      <i className="bi bi-house"></i>خروج
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
             <div className="menu-footer">
