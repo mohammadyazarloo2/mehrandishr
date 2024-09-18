@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FaChevronLeft } from "react-icons/fa";
 import Head from "next/head";
+import Image from "next/image";
 
 const data = [
   {
@@ -152,7 +153,7 @@ export default function Page({ params }) {
       </div>
       <div className="products-container">
         <div className="products-img">
-          <img src="/img/2.png" alt="" />
+          <Image src="/img/2.png" alt="" width={100} height={100} />
         </div>
         <div className="products-info">
           <div className="products-info-title">

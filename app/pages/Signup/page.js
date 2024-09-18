@@ -19,12 +19,6 @@ export default function Signup() {
     return push("/");
   }
 
-  useEffect(() => {
-    if (status === "authenticated") {
-      push("/");
-    }
-  });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
