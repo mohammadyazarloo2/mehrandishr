@@ -306,6 +306,7 @@ header {
   z-index: 22;
   transform: translateX(-50%);
   transition: all 0.5s ease-in-out;
+  border-radius: 6px;
 }
 body.dark .requests-body {
   background-color: #2f3645;

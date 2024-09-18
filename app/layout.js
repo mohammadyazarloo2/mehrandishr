@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import React, { Suspense } from "react";
 import Loading from "./components/Loading";
 import ClientLayout from "./ClientLayout";
+import { AuthProvider } from "./Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,12 +25,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Header />
-        <ClientLayout>
-          <Suspense fallback={<Loading />}>
-            <DelayedSupense ms={2000}>{children}</DelayedSupense>
-          </Suspense>
-        </ClientLayout>
+        <AuthProvider>
+          <Header />
+          <ClientLayout>
+            <Suspense fallback={<Loading />}>
+              <DelayedSupense ms={2000}>{children}</DelayedSupense>
+            </Suspense>
+          </ClientLayout>
+        </AuthProvider>
       </body>
     </html>
   );
