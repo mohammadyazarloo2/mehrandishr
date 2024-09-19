@@ -73,9 +73,9 @@ export default function Loading() {
           </div>
           <div className="about-me-images">
             <div className="preload images">
-              <Image src="" width={100} height={100} alt="" />
-              <Image src="" width={100} height={100} alt="" />
-              <Image src="" width={100} height={100} alt="" />
+              <Image src="/" width={100} height={100} alt="" />
+              <Image src="/" width={100} height={100} alt="" />
+              <Image src="/" width={100} height={100} alt="" />
             </div>
           </div>
         </div>

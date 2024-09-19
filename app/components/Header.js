@@ -19,12 +19,15 @@ import { MdContactPhone } from "react-icons/md";
 import { SiGnuprivacyguard } from "react-icons/si";
 import { PiSignIn } from "react-icons/pi";
 import { FcAbout } from "react-icons/fc";
+import { FaUserGraduate } from "react-icons/fa6";
+import { FaUserEdit } from "react-icons/fa";
 
 export default function Header() {
   const [show, setShow] = useState(false);
 
   const [close, setClose] = useState(false);
   const [openp, setOpenP] = useState(false);
+  const [proMenu, setProMenu] = useState(false);
 
   const { data: session, status } = useSession();
 
@@ -51,6 +54,14 @@ export default function Header() {
       setClose(false);
     } else {
       setClose(true);
+    }
+  }
+
+  function openProMenu() {
+    if (proMenu === true) {
+      setProMenu(false);
+    } else {
+      setProMenu(true);
     }
   }
 
@@ -132,23 +143,36 @@ export default function Header() {
             </Link>
 
             <div className="icons-mob-left">
-              <div className="profile">
-                {status === "authenticated" && (
-                  <div className="mega-pro" onClick={() => signOut()}>
-                    <FaSignOutAlt />
-                    {session.user.name}
-                  </div>
-                )}
-                <div className="profile-show">
-                  <Link href="/profile">ویرایش مشخصات</Link>
-                  <Link href={""}>خروج</Link>
-                </div>
-              </div>
-
               <Link href="/" className="showbasket">
                 <SlBasket />
                 <span className="cart-quantity">0</span>
               </Link>
+
+              <div className="profile">
+                {status === "authenticated" && (
+                  <div className="mega-pro" onClick={() => openProMenu()}>
+                    <FaUserGraduate />
+                    <span>{session.user.name}</span>
+                  </div>
+                )}
+                <div
+                  className={
+                    proMenu === true ? "profile-show open" : "profile-show"
+                  }
+                >
+                  <Link href="/pages/profile">
+                    <FaUserEdit />
+                    <span>ویرایش مشخصات</span>
+                  </Link>
+                  {status === "authenticated" && (
+                    <Link href={""} onClick={() => signOut()}>
+                      <FaSignOutAlt />
+                      <span>خروج</span>
+                    </Link>
+                  )}
+                </div>
+              </div>
+
               <Link href="/">
                 <i className="bi bi-headset red"></i>
               </Link>
