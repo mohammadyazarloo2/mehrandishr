@@ -21,6 +21,9 @@ import { PiSignIn } from "react-icons/pi";
 import { FcAbout } from "react-icons/fc";
 import { FaUserGraduate } from "react-icons/fa6";
 import { FaUserEdit } from "react-icons/fa";
+import { SiAmazongames } from "react-icons/si";
+import SnakeGrid from "./SnakeGrid";
+import { IoClose } from "react-icons/io5";
 
 export default function Header() {
   const [show, setShow] = useState(false);
@@ -28,6 +31,7 @@ export default function Header() {
   const [close, setClose] = useState(false);
   const [openp, setOpenP] = useState(false);
   const [proMenu, setProMenu] = useState(false);
+  const [openGame, setOpenGame] = useState(false);
 
   const { data: session, status } = useSession();
 
@@ -62,6 +66,14 @@ export default function Header() {
       setProMenu(false);
     } else {
       setProMenu(true);
+    }
+  }
+
+  function openGames() {
+    if (openGame === true) {
+      setOpenGame(false);
+    } else {
+      setOpenGame(true);
     }
   }
 
@@ -147,6 +159,19 @@ export default function Header() {
                 <SlBasket />
                 <span className="cart-quantity">0</span>
               </Link>
+
+              <div className={openGame === true ? 'gamenetover show' : 'gamenetover'}>
+                <div className="gamenet">
+                  <div className="game-close" onClick={()=>openGames()}>
+                    <IoClose />
+                    </div>
+                    {openGame === true ? <SnakeGrid openGame={openGame} onClose={()=>openGames()} /> : ''}
+                </div>
+              </div>
+
+              <div className="games">
+                <SiAmazongames onClick={()=>openGames()} />
+              </div>
 
               <div className="profile">
                 {status === "authenticated" && (
