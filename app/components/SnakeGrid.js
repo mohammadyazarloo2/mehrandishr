@@ -104,15 +104,15 @@ export default function SnakeGrid({ children,onClose },props) {
       <p>
         {" "}
         {level === 1
-          ? "press the displayed letter:"
-          : "type the displayed word"}{" "}
+          ? "حرف نمایش داده شده را وارد نمایید:"
+          : "کلمه نمایش داده شده را وارد نمایید:"}{" "}
       </p>
       <div className="letter-display">{currentWord}</div>
       <p>ورودی شما:{userInput}</p>
       <div className="game-play">
         <p className="score-display">امتیاز : {score}</p>
         <p className="mistake-display">اشتباه : {mistakes}</p>
-        {level > 1 && <p>level : {level}</p>}
+        {level > 1 && <p>مرحله : {level}</p>}
       </div>
     </div>
   );

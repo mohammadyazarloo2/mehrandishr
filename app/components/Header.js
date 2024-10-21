@@ -24,6 +24,7 @@ import { FaUserEdit } from "react-icons/fa";
 import { SiAmazongames } from "react-icons/si";
 import SnakeGrid from "./SnakeGrid";
 import { IoClose } from "react-icons/io5";
+import ProjectRequest from "./ProjectRequest";
 
 export default function Header() {
   const [show, setShow] = useState(false);
@@ -325,32 +326,7 @@ export default function Header() {
             <span className="nav2-amir-overlay"></span>
           </button>
           <div className={openp === true ? "open requests" : "requests"}>
-            <div className="overlay"></div>
-            <div className="requests-body">
-              <div className="requests-body-head">
-                <h2>درخواست پروژه</h2>
-                <RiCloseLargeFill onClick={openProject} />
-              </div>
-              <form className="requests-body-form">
-                <div className="input-group">
-                  <label>نام کاربری</label>
-                  <input type="text" className="username" id="username" />
-                </div>
-                <div className="input-group">
-                  <label>پست الکترونیک</label>
-                  <input type="text" className="username" id="username" />
-                </div>
-                <div className="input-group">
-                  <label>شماره تماس</label>
-                  <input type="text" className="username" id="username" />
-                </div>
-                <div className="input-group">
-                  <label>پیام یا تقاضا</label>
-                  <textarea name="" rows="10" cols="8" id=""></textarea>
-                </div>
-                <button className="request-btn">ثبت درخواست</button>
-              </form>
-            </div>
+            <ProjectRequest onClose={() => openProject()} />
           </div>
         </div>
       </header>
