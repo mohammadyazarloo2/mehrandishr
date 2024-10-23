@@ -8,9 +8,7 @@ import wordSounds from "../data/games/sounds";
 import { Howl } from "howler";
 import { TbArrowBackUp } from "react-icons/tb";
 
-
-
-export default function SnakeGrid({ children,onClose,back },props) {
+export default function SnakeGrid({ children, onClose, back }, props) {
   const [currentWord, setCurrentWord] = useState("");
   // const [currentLetter, setCurrentLetter] = useState("");
   const [userInput, setUserInput] = useState("");
@@ -30,10 +28,10 @@ export default function SnakeGrid({ children,onClose,back },props) {
     const handleKeyDown = (e) => {
       const pressedKey = e.key.toLowerCase();
       // setUserInput(pressedKey);
-      if(e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
-      playSounds(pressedKey)
+      playSounds(pressedKey);
       if (level === 1) {
         handleLetterInput(pressedKey);
       } else {
@@ -46,18 +44,23 @@ export default function SnakeGrid({ children,onClose,back },props) {
     };
   }, [currentWord, userInput, level, score, mistakes]);
 
-  const playSounds=(key)=>{
-    if(sounds[key]){
-      const sound=new Howl({
-        src:[sounds[key]]
-      })
-      sound.play()
+  const playSounds = (key) => {
+    if (sounds[key]) {
+      const sound = new Howl({
+        src: [sounds[key]],
+      });
+      sound.play();
     }
-  }
+  };
 
   const handleLetterInput = (pressedKey) => {
     setUserInput(pressedKey);
-    if (pressedKey === currentWord) {
+
+    if (
+      currentWord.length < 2
+        ? pressedKey === currentWord
+        : pressedKey === currentWord.name
+    ) {
       setScore(score + 1);
       if (score + 1 >= 10 && mistakes === 0) {
         setLevel(2);
@@ -73,9 +76,17 @@ export default function SnakeGrid({ children,onClose,back },props) {
   const handleWordInput = (pressedKey) => {
     const updateUserInput = userInput + pressedKey;
 
-    if (currentWord.startsWith(updateUserInput)) {
+    if (
+      currentWord.length < 2
+        ? currentWord.startsWith(updateUserInput)
+        : currentWord.name.startsWith(updateUserInput)
+    ) {
       setUserInput(updateUserInput);
-      if (updateUserInput === currentWord) {
+      if (
+        currentWord.length < 2
+          ? updateUserInput === currentWord
+          : updateUserInput === currentWord.name
+      ) {
         setScore(score + 1);
         generateRandomWord();
         setUserInput("");
@@ -101,21 +112,42 @@ export default function SnakeGrid({ children,onClose,back },props) {
 
   return (
     <div className="keyboard-game">
-      <div className="backgame" onClick={()=>back()}><TbArrowBackUp /></div>
-      <h1>بازی کیبور</h1> 
+      <div className="backgame" onClick={() => back()}>
+        <TbArrowBackUp />
+      </div>
+      <h1>بازی کیبور</h1>
       <p>
-        {" "}
         {level === 1
           ? "حرف نمایش داده شده را وارد نمایید:"
           : "کلمه نمایش داده شده را وارد نمایید:"}{" "}
       </p>
-      <div className="letter-display">{currentWord}</div>
-      <p>ورودی شما:{userInput}</p>
-      <div className="game-play">
-        <p className="score-display">امتیاز : {score}</p>
-        <p className="mistake-display">اشتباه : {mistakes}</p>
-        {level > 1 && <p>مرحله : {level}</p>}
-      </div>
+      {currentWord.length < 2 ? (
+        <>
+          <div className="letter-display">{currentWord}</div>
+          <p>ورودی شما:{userInput}</p>
+          <div className="game-play">
+            <p className="score-display">امتیاز : {score}</p>
+            <p className="mistake-display">اشتباه : {mistakes}</p>
+            {level > 1 && <p>مرحله : {level}</p>}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="word-show">
+            <div className="word-display">{currentWord.name}</div>
+            <div className="word-details">
+              <img src={currentWord.img} alt="word-image" />
+              <span> {currentWord.translate} </span>
+            </div>
+          </div>
+          <p className="type-show">ورودی شما:{userInput}</p>
+          <div className="game-play">
+            <p className="score-display">امتیاز : {score}</p>
+            <p className="mistake-display">اشتباه : {mistakes}</p>
+            {level > 1 && <p>مرحله : {level}</p>}
+          </div>
+        </>
+      )}
     </div>
   );
 }

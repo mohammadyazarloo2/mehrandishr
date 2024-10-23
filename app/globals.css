@@ -2152,7 +2152,7 @@ body.dark .article-item {
 }
 .backgame{
   position: absolute;
-  top: 20px;
+  top: 40px;
   left: 10px;
   padding: 10px;
 }
@@ -2186,8 +2186,32 @@ body.dark .article-item {
   font-size: 2em;
   color: red;
 }
-
-
+.board-cell{
+  border: 1px solid #ccc;
+}
+.word-show{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 2em;
+  color: #61dafb;
+  background: #20232a;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+.type-show{
+  margin-top: 10px;
+}
+.word-details{
+  width: 300px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.word-details img{
+  width: 50%;
+}
 
 
 
