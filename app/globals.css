@@ -323,14 +323,14 @@ header {
   width: 50%;
   height: auto;
   padding: 15px;
-  background-color: whitesmoke;
+  background-color: #f4ce14;
   z-index: 22;
   transform: translateX(-50%);
   transition: all 0.5s ease-in-out;
-  border-radius: 6px;
+  border-radius: 10px;
 }
 body.dark .requests-body {
-  background-color: #2f3645;
+  background-color: #fff;
 }
 body.dark .requests-body-head h2 {
   color: #fff;
@@ -346,6 +346,9 @@ body.dark .requests-body-head h2 {
 }
 .requests-body-head svg{
   cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  background-color: #fff078;
 }
 .close-request {
   padding: 10px;
@@ -461,6 +464,7 @@ body.dark .requests-body-head h2 {
   width: 100%;
   padding-top: 5px;
   padding-bottom: 5px;
+  color: #F5F5F5;
 }
 .requests-body-form .input-group input {
   height: 30px;
@@ -478,10 +482,11 @@ body.dark .requests-body-head h2 {
 }
 .requests-body-form .request-btn {
   margin-top: 10px;
-  padding: 10px;
+  padding: 15px;
   background-color: #f4ce14;
   border-radius: 5px;
   color: #fff;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
 .bottom {
@@ -1201,6 +1206,9 @@ body.dark .about-me-content p {
   background: green;
   border-radius: 5px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .icons-mob-left a {
@@ -2107,4 +2115,83 @@ body.dark .article-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+
+
+
+
+
+
+
+/* 404 page */
+.notfound{
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+.notfound svg{
+  max-width: 600px;
+  width: 100%;
+  height: 100%;
+}
+#sec1-four2 path,#sec2-four2 path,#sec3-four2 path,#sec4-four2 rect{
+  fill: url('#MyGradient4');
+}
+#sec1-four1 path,#sec2-four1 path,#sec3-four1 path,#sec4-four1 rect{
+  fill: url('#MyGradient4');
+}
+#circle rect{
+  fill: url('#MyGradient4');
+}
+#lamp circle{
+  
+  animation: lamp 2s linear infinite;
+}
+@keyframes lamp {
+  from{
+    fill: #ccc;
+  }to{
+    fill: #f4ce14;
+  }
+}
+
+#paint0_linear_0_1,#paint1_linear_0_1{
+  animation: light  2s linear infinite;
+}
+@keyframes light {
+  from{
+    opacity: 0;
+  }to{
+    opacity: 1;
+  }
+}
+#human{
+  
+  animation: human 6s linear infinite alternate;
+}
+@keyframes human {
+  from{
+    transform: translateX(0);
+  }to{
+    stroke: #021526;
+    transform: translateX(80px);
+  }
+}
+#camera{
+  animation: moveCamera 2s linear infinite alternate;
+  transform-origin: right;
+}
+@keyframes moveCamera {
+  from{
+    transform: translateY(0);
+  }to{
+    
+    transform: translateY(10px);
+  }
 }
