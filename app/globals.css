@@ -2061,13 +2061,14 @@ body.dark .article-item {
 .game-close{
   position: absolute;
   left: 10px;
-  top: 10px;
+  top: 5px;
   padding: 10px;
   background-color: crimson;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 224444;
 }
 .game-close svg{
   color: #d4c142;
@@ -2082,7 +2083,40 @@ body.dark .article-item {
 
 /* game secion */
 /* basic letter game */
+.gamenet-items{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+.gamenet-items > div{
+  width: calc(100%/4);
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  transition: all .4s linear;
+  gap: 10px;
+}
+.gamenet-items > div svg{
+  font-size: 40px;
+  font-weight: bold;
+  color: #021526;
+  transition: all .4s linear;
+}
+.gamenet-items > div:hover svg,.gamenet-items > div:hover span{
+  color: #f5f7f8;
+}
+.gamenet-items > div:hover{
+  background-color: #f4ce14;
+  cursor: pointer;
+}
+
 .keyboard-game{
+  position:relative;
   color: #61dafb;
   background: #20232a;
   padding: 20px;
@@ -2116,8 +2150,42 @@ body.dark .article-item {
   align-items: center;
   justify-content: space-between;
 }
+.backgame{
+  position: absolute;
+  top: 20px;
+  left: 10px;
+  padding: 10px;
+}
 
 
+
+/* snake game */
+.game-board{
+  display: grid;
+  grid-template-rows: repeat(20,1fr);
+  width: 600px;
+  height: 400px;
+  margin:50px auto;
+  border: 1px solid #ccc;
+}
+.board-row{
+  display: grid;
+  grid-template-columns: repeat(10,1fr);
+}
+.snake{
+  background-color: green;
+}
+.food{
+  background-color: red;
+}
+.game-over{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  font-size: 2em;
+  color: red;
+}
 
 
 

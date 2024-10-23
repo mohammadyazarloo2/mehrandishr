@@ -6,10 +6,11 @@ import words from "../data/games/keyboard";
 import sounds from "../data/games/sounds";
 import wordSounds from "../data/games/sounds";
 import { Howl } from "howler";
+import { TbArrowBackUp } from "react-icons/tb";
 
 
 
-export default function SnakeGrid({ children,onClose },props) {
+export default function SnakeGrid({ children,onClose,back },props) {
   const [currentWord, setCurrentWord] = useState("");
   // const [currentLetter, setCurrentLetter] = useState("");
   const [userInput, setUserInput] = useState("");
@@ -100,7 +101,8 @@ export default function SnakeGrid({ children,onClose },props) {
 
   return (
     <div className="keyboard-game">
-      <h1>بازی کیبور</h1> { props.openGame }
+      <div className="backgame" onClick={()=>back()}><TbArrowBackUp /></div>
+      <h1>بازی کیبور</h1> 
       <p>
         {" "}
         {level === 1

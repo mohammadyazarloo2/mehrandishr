@@ -22,9 +22,12 @@ import { FcAbout } from "react-icons/fc";
 import { FaUserGraduate } from "react-icons/fa6";
 import { FaUserEdit } from "react-icons/fa";
 import { SiAmazongames } from "react-icons/si";
-import SnakeGrid from "./SnakeGrid";
+import KeyboardGame from "./KeyboardGame";
 import { IoClose } from "react-icons/io5";
 import ProjectRequest from "./ProjectRequest";
+import { FaKeyboard } from "react-icons/fa";
+import { VscSnake } from "react-icons/vsc";
+import SnakeGame from "./games/SnakeGame";
 
 export default function Header() {
   const [show, setShow] = useState(false);
@@ -33,6 +36,7 @@ export default function Header() {
   const [openp, setOpenP] = useState(false);
   const [proMenu, setProMenu] = useState(false);
   const [openGame, setOpenGame] = useState(false);
+  const [game, setGame] = useState("");
 
   const { data: session, status } = useSession();
 
@@ -75,6 +79,14 @@ export default function Header() {
       setOpenGame(false);
     } else {
       setOpenGame(true);
+    }
+  }
+
+  function chooseGame(game) {
+    if(game===''){
+      setGame('')
+    }else{
+      setGame(game)
     }
   }
 
@@ -161,17 +173,48 @@ export default function Header() {
                 <span className="cart-quantity">0</span>
               </Link>
 
-              <div className={openGame === true ? 'gamenetover show' : 'gamenetover'}>
+              <div
+                className={
+                  openGame === true ? "gamenetover show" : "gamenetover"
+                }
+              >
                 <div className="gamenet">
-                  <div className="game-close" onClick={()=>openGames()}>
+                  <div className="game-close" onClick={() => openGames()}>
                     <IoClose />
-                    </div>
-                    {openGame === true ? <SnakeGrid openGame={openGame} onClose={()=>openGames()} /> : ''}
+                  </div>
+
+                  {game === "keyboard-game" ? (
+                    <KeyboardGame openGame={game} back={()=>chooseGame('')} onClose={() => openGames()} />
+                  ) : game==='snake-game' ?(
+                    <SnakeGame  back={()=>chooseGame('')} />
+                  ) : (
+                    <>
+                      <div className="gamenet-title">
+                        <span>بازی های آموزشی</span>
+                      </div>
+                      <div className="gamenet-items">
+                        <div
+                          className="keyboaard-game"
+                          onClick={() => chooseGame("keyboard-game")}
+                        >
+                          <FaKeyboard />
+                          <span>کیبورد</span>
+                        </div>
+                        <div
+                          className="snake-game"
+                          onClick={() => chooseGame("snake-game")}
+                        >
+                          <VscSnake />
+                          <span>مار بازی</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
               <div className="games">
-                <SiAmazongames onClick={()=>openGames()} />
+                <SiAmazongames onClick={() => openGames()} />
               </div>
 
               <div className="profile">
