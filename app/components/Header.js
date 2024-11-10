@@ -28,6 +28,7 @@ import ProjectRequest from "./ProjectRequest";
 import { FaKeyboard } from "react-icons/fa";
 import { VscSnake } from "react-icons/vsc";
 import SnakeGame from "./games/SnakeGame";
+import { PiExam } from "react-icons/pi";
 
 export default function Header() {
   const [show, setShow] = useState(false);
@@ -37,6 +38,7 @@ export default function Header() {
   const [proMenu, setProMenu] = useState(false);
   const [openGame, setOpenGame] = useState(false);
   const [game, setGame] = useState("");
+  const [azmoonModal, setAzmoonModal] = useState(false);
 
   const { data: session, status } = useSession();
 
@@ -82,11 +84,19 @@ export default function Header() {
     }
   }
 
+  function openAzmoon() {
+    if (azmoonModal === true) {
+      setAzmoonModal(false);
+    } else {
+      setAzmoonModal(true);
+    }
+  }
+
   function chooseGame(game) {
-    if(game===''){
-      setGame('')
-    }else{
-      setGame(game)
+    if (game === "") {
+      setGame("");
+    } else {
+      setGame(game);
     }
   }
 
@@ -184,9 +194,13 @@ export default function Header() {
                   </div>
 
                   {game === "keyboard-game" ? (
-                    <KeyboardGame openGame={game} back={()=>chooseGame('')} onClose={() => openGames()} />
-                  ) : game==='snake-game' ?(
-                    <SnakeGame  back={()=>chooseGame('')} />
+                    <KeyboardGame
+                      openGame={game}
+                      back={() => chooseGame("")}
+                      onClose={() => openGames()}
+                    />
+                  ) : game === "snake-game" ? (
+                    <SnakeGame back={() => chooseGame("")} />
                   ) : (
                     <>
                       <div className="gamenet-title">
@@ -216,6 +230,44 @@ export default function Header() {
               <div className="games">
                 <SiAmazongames onClick={() => openGames()} />
               </div>
+              <div className="azmoon">
+                <PiExam onClick={() => openAzmoon()} />
+              </div>
+
+              {azmoonModal === true ? (
+                <div className="azmoon-modal">
+                  <div className="azmoon-body">
+                    <div
+                      className="azmoon-modal-close"
+                      onClick={() => openAzmoon()}
+                    >
+                      <IoClose />
+                    </div>
+                    <div className="azmoon-modal-content">
+                      <div className="azmoon-modal-title">
+                        <span>آزمون آنلاین</span>
+                      </div>
+                      <div className="azmoon-modal-items">
+                        <div className="azmoon-modal-item">
+                          <div className="azmoon-modal-item-title">
+                            <span>آزمون های آموزشی</span>
+                          </div>
+                          <div className="azmoon-modal-item-content">
+                            <div className="azmoon-modal-item-content-item">
+                              <div className="azmoon-modal-item-content-item-title">
+                                <span>آزمون های آموزشی</span>
+                              </div>
+                              <div className=""></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
 
               <div className="profile">
                 {status === "authenticated" && (

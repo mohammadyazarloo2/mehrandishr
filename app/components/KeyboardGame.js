@@ -109,6 +109,7 @@ export default function SnakeGrid({ children, onClose, back }, props) {
   };
 
   console.log(props);
+  const letters = "abcdefghijklmnopqrstuvwxyz";
 
   return (
     <div className="keyboard-game">
@@ -125,6 +126,15 @@ export default function SnakeGrid({ children, onClose, back }, props) {
         <>
           <div className="letter-display">{currentWord}</div>
           <p>ورودی شما:{userInput}</p>
+          <div className="display-keyboard">
+            {Array.from(letters).map((item) =>
+              item === userInput ? (
+                <div className="keyboard-key-active">{item}</div>
+              ) : (
+                <div className="keyboard-key">{item}</div>
+              )
+            )}
+          </div>
           <div className="game-play">
             <p className="score-display">امتیاز : {score}</p>
             <p className="mistake-display">اشتباه : {mistakes}</p>
@@ -136,11 +146,23 @@ export default function SnakeGrid({ children, onClose, back }, props) {
           <div className="word-show">
             <div className="word-display">{currentWord.name}</div>
             <div className="word-details">
-              <img src={currentWord.img} alt="word-image" />
+              {currentWord.img && (
+                <img src={currentWord.img} alt="word-image" />
+              )}
+              {/* <img src={currentWord.img} alt="word-image" /> */}
               <span> {currentWord.translate} </span>
             </div>
           </div>
           <p className="type-show">ورودی شما:{userInput}</p>
+          <div className="display-keyboard">
+            {Array.from(letters).map((item) =>
+              item === userInput ? (
+                <div className="keyboard-key-active">{item}</div>
+              ) : (
+                <div className="keyboard-key">{item}</div>
+              )
+            )}
+          </div>
           <div className="game-play">
             <p className="score-display">امتیاز : {score}</p>
             <p className="mistake-display">اشتباه : {mistakes}</p>
