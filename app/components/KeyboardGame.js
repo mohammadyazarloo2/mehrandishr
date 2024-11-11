@@ -7,14 +7,17 @@ import sounds from "../data/games/sounds";
 import wordSounds from "../data/games/sounds";
 import { Howl } from "howler";
 import { TbArrowBackUp } from "react-icons/tb";
+import { HiSpeakerWave } from "react-icons/hi2";
 
 export default function SnakeGrid({ children, onClose, back }, props) {
+  const [isPlaying, setIsPlaying] = useState(false);
   const [currentWord, setCurrentWord] = useState("");
   // const [currentLetter, setCurrentLetter] = useState("");
   const [userInput, setUserInput] = useState("");
   const [score, setScore] = useState(0);
   const [mistakes, setMistakes] = useState(0);
   const [level, setLevel] = useState(1);
+  const [activeKeys, setActiveKeys] = useState([]);
 
   useEffect(() => {
     if (level === 1) {
@@ -82,6 +85,8 @@ export default function SnakeGrid({ children, onClose, back }, props) {
         : currentWord.name.startsWith(updateUserInput)
     ) {
       setUserInput(updateUserInput);
+      setActiveKeys([...activeKeys, pressedKey]);
+
       if (
         currentWord.length < 2
           ? updateUserInput === currentWord
@@ -90,10 +95,12 @@ export default function SnakeGrid({ children, onClose, back }, props) {
         setScore(score + 1);
         generateRandomWord();
         setUserInput("");
+        setActiveKeys([]); // پاک کردن کلیدهای فعال
       }
     } else {
       setMistakes(mistakes + 1);
       setUserInput("");
+      setActiveKeys([]); // پاک کردن کلیدهای فعال در صورت اشتباه
     }
   };
 
@@ -106,6 +113,19 @@ export default function SnakeGrid({ children, onClose, back }, props) {
   const generateRandomWord = () => {
     const randomIndex = Math.floor(Math.random() * words.length);
     setCurrentWord(words[randomIndex]);
+  };
+
+  const speakWord = (text, lang) => {
+    // اگر در حال پخش هست، قبلش متوقف کنیم
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.onstart = () => setIsPlaying(true);
+    utterance.onend = () => setIsPlaying(false);
+    window.speechSynthesis.speak(utterance);
   };
 
   console.log(props);
@@ -127,13 +147,50 @@ export default function SnakeGrid({ children, onClose, back }, props) {
           <div className="letter-display">{currentWord}</div>
           <p>ورودی شما:{userInput}</p>
           <div className="display-keyboard">
-            {Array.from(letters).map((item,key) =>
-              item === userInput ? (
-                <div className="keyboard-key-active" key={key}>{item}</div>
-              ) : (
-                <div className="keyboard-key" key={key}>{item}</div>
-              )
-            )}
+            <div className="keyboard-row">
+              {["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"].map(
+                (item, key) => (
+                  <div
+                    className={
+                      item === userInput
+                        ? "keyboard-key-active"
+                        : "keyboard-key"
+                    }
+                    key={key}
+                  >
+                    {item}
+                  </div>
+                )
+              )}
+            </div>
+            <div className="keyboard-row">
+              {["a", "s", "d", "f", "g", "h", "j", "k", "l"].map(
+                (item, key) => (
+                  <div
+                    className={
+                      item === userInput
+                        ? "keyboard-key-active"
+                        : "keyboard-key"
+                    }
+                    key={key}
+                  >
+                    {item}
+                  </div>
+                )
+              )}
+            </div>
+            <div className="keyboard-row">
+              {["z", "x", "c", "v", "b", "n", "m"].map((item, key) => (
+                <div
+                  className={
+                    item === userInput ? "keyboard-key-active" : "keyboard-key"
+                  }
+                  key={key}
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
           <div className="game-play">
             <p className="score-display">امتیاز : {score}</p>
@@ -151,17 +208,63 @@ export default function SnakeGrid({ children, onClose, back }, props) {
               )}
               {/* <img src={currentWord.img} alt="word-image" /> */}
               <span> {currentWord.translate} </span>
+              <button
+                className="speak-button"
+                onClick={() => speakWord(currentWord.name, "en-US")}
+                disabled={isPlaying}
+              >
+                <HiSpeakerWave />
+              </button>
             </div>
           </div>
           <p className="type-show">ورودی شما:{userInput}</p>
           <div className="display-keyboard">
-            {Array.from(letters).map((item,key) =>
-              item === userInput ? (
-                <div className="keyboard-key-active" key={key}>{item}</div>
-              ) : (
-                <div className="keyboard-key" key={key}>{item}</div>
-              )
-            )}
+            <div className="keyboard-row">
+              {["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"].map(
+                (item, key) => (
+                  <div
+                    className={
+                      activeKeys.includes(item)
+                        ? "keyboard-key-active"
+                        : "keyboard-key"
+                    }
+                    key={key}
+                  >
+                    {item}
+                  </div>
+                )
+              )}
+            </div>
+            <div className="keyboard-row">
+              {["a", "s", "d", "f", "g", "h", "j", "k", "l"].map(
+                (item, key) => (
+                  <div
+                    className={
+                      activeKeys.includes(item)
+                        ? "keyboard-key-active"
+                        : "keyboard-key"
+                    }
+                    key={key}
+                  >
+                    {item}
+                  </div>
+                )
+              )}
+            </div>
+            <div className="keyboard-row">
+              {["z", "x", "c", "v", "b", "n", "m"].map((item, key) => (
+                <div
+                  className={
+                    activeKeys.includes(item)
+                      ? "keyboard-key-active"
+                      : "keyboard-key"
+                  }
+                  key={key}
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
           <div className="game-play">
             <p className="score-display">امتیاز : {score}</p>

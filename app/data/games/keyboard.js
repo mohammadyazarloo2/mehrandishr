@@ -1,7 +1,7 @@
 
 
 const words = [
-    {name:"apple",translate:"سیب",img:'./words/apple.jpg'},
+    {name:"apple",translate:"سیب",img:'./words/apple.jpg',sound:'./words/sounds/apple.mp3'},
     {name:"banana",translate:"موز",img:'./words/favicon.png'},
     {name:"cherry",translate:"گیلاس",img:'./words/cherry.webp'},
     {name:"grapes",translate:"انگور",img:'./words/grapes.png'},
