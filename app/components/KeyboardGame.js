@@ -127,11 +127,11 @@ export default function SnakeGrid({ children, onClose, back }, props) {
           <div className="letter-display">{currentWord}</div>
           <p>ورودی شما:{userInput}</p>
           <div className="display-keyboard">
-            {Array.from(letters).map((item) =>
+            {Array.from(letters).map((item,key) =>
               item === userInput ? (
-                <div className="keyboard-key-active">{item}</div>
+                <div className="keyboard-key-active" key={key}>{item}</div>
               ) : (
-                <div className="keyboard-key">{item}</div>
+                <div className="keyboard-key" key={key}>{item}</div>
               )
             )}
           </div>
@@ -155,11 +155,11 @@ export default function SnakeGrid({ children, onClose, back }, props) {
           </div>
           <p className="type-show">ورودی شما:{userInput}</p>
           <div className="display-keyboard">
-            {Array.from(letters).map((item) =>
+            {Array.from(letters).map((item,key) =>
               item === userInput ? (
-                <div className="keyboard-key-active">{item}</div>
+                <div className="keyboard-key-active" key={key}>{item}</div>
               ) : (
-                <div className="keyboard-key">{item}</div>
+                <div className="keyboard-key" key={key}>{item}</div>
               )
             )}
           </div>
