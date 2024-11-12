@@ -29,6 +29,11 @@ import { FaKeyboard } from "react-icons/fa";
 import { VscSnake } from "react-icons/vsc";
 import SnakeGame from "./games/SnakeGame";
 import { PiExam } from "react-icons/pi";
+import { FaComputer } from "react-icons/fa6";
+import { TbHtml } from "react-icons/tb";
+import { MdOutlineCss } from "react-icons/md";
+import { AiOutlineJavaScript } from "react-icons/ai";
+import { TbBrandPhp } from "react-icons/tb";
 
 export default function Header() {
   const [show, setShow] = useState(false);
@@ -234,8 +239,8 @@ export default function Header() {
                 <PiExam onClick={() => openAzmoon()} />
               </div>
 
-              {azmoonModal === true ? (
-                <div className="azmoon-modal">
+              
+                <div className={`azmoon-modal ${azmoonModal === true ? "show" : ""}`}>
                   <div className="azmoon-body">
                     <div
                       className="azmoon-modal-close"
@@ -250,24 +255,64 @@ export default function Header() {
                       <div className="azmoon-modal-items">
                         <div className="azmoon-modal-item">
                           <div className="azmoon-modal-item-title">
-                            <span>آزمون های آموزشی</span>
+                            <FaComputer />
                           </div>
                           <div className="azmoon-modal-item-content">
                             <div className="azmoon-modal-item-content-item">
-                              <div className="azmoon-modal-item-content-item-title">
-                                <span>آزمون های آموزشی</span>
-                              </div>
-                              <div className=""></div>
+                                <span>آزمون  icdl</span>
                             </div>
                           </div>
                         </div>
+                        <div className="azmoon-modal-item">
+                          <div className="azmoon-modal-item-title">
+                            <TbHtml />
+                          </div>
+                          <div className="azmoon-modal-item-content">
+                            <div className="azmoon-modal-item-content-item">
+                                <span>آزمون  HTML</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="azmoon-modal-item">
+                          <div className="azmoon-modal-item-title">
+                            <MdOutlineCss />
+                          </div>
+                          <div className="azmoon-modal-item-content">
+                            <div className="azmoon-modal-item-content-item">
+                                <span>آزمون  CSS</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="azmoon-modal-item">
+                          <div className="azmoon-modal-item-title">
+                            <AiOutlineJavaScript />
+                          </div>
+                          <div className="azmoon-modal-item-content">
+                            <div className="azmoon-modal-item-content-item">
+                                <span>آزمون  javascript</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="azmoon-modal-item">
+                          <div className="azmoon-modal-item-title">
+                            <TbBrandPhp />
+                          </div>
+                          <div className="azmoon-modal-item-content">
+                            <div className="azmoon-modal-item-content-item">
+                                <span>آزمون  PHP</span>
+                            </div>
+                          </div>
+                        </div>
+
+
                       </div>
                     </div>
                   </div>
                 </div>
-              ) : (
-                ""
-              )}
+              
 
               <div className="profile">
                 {status === "authenticated" && (

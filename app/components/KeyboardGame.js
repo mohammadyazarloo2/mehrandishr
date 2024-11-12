@@ -128,6 +128,15 @@ export default function SnakeGrid({ children, onClose, back }, props) {
     window.speechSynthesis.speak(utterance);
   };
 
+  const handleKeyClick = (key) => {
+    playSounds(key);
+    if (level === 1) {
+      handleLetterInput(key);
+    } else {
+      handleWordInput(key);
+    }
+  };
+
   console.log(props);
   const letters = "abcdefghijklmnopqrstuvwxyz";
 
@@ -157,6 +166,7 @@ export default function SnakeGrid({ children, onClose, back }, props) {
                         : "keyboard-key"
                     }
                     key={key}
+                    onClick={() => handleKeyClick(item)}
                   >
                     {item}
                   </div>
@@ -173,6 +183,7 @@ export default function SnakeGrid({ children, onClose, back }, props) {
                         : "keyboard-key"
                     }
                     key={key}
+                    onClick={() => handleKeyClick(item)}
                   >
                     {item}
                   </div>
@@ -186,6 +197,7 @@ export default function SnakeGrid({ children, onClose, back }, props) {
                     item === userInput ? "keyboard-key-active" : "keyboard-key"
                   }
                   key={key}
+                  onClick={() => handleKeyClick(item)}
                 >
                   {item}
                 </div>
@@ -229,6 +241,7 @@ export default function SnakeGrid({ children, onClose, back }, props) {
                         : "keyboard-key"
                     }
                     key={key}
+                    onClick={() => handleKeyClick(item)}
                   >
                     {item}
                   </div>
@@ -245,6 +258,7 @@ export default function SnakeGrid({ children, onClose, back }, props) {
                         : "keyboard-key"
                     }
                     key={key}
+                    onClick={() => handleKeyClick(item)}
                   >
                     {item}
                   </div>
@@ -260,6 +274,7 @@ export default function SnakeGrid({ children, onClose, back }, props) {
                       : "keyboard-key"
                   }
                   key={key}
+                  onClick={() => handleKeyClick(item)}
                 >
                   {item}
                 </div>
