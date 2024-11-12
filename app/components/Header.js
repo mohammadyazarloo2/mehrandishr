@@ -43,7 +43,9 @@ export default function Header() {
   const [proMenu, setProMenu] = useState(false);
   const [openGame, setOpenGame] = useState(false);
   const [game, setGame] = useState("");
+  
   const [azmoonModal, setAzmoonModal] = useState(false);
+  const [azmoon, setAzmoon] = useState(false);
 
   const { data: session, status } = useSession();
 
@@ -89,7 +91,7 @@ export default function Header() {
     }
   }
 
-  function openAzmoon() {
+  function openAzmoonModal() {
     if (azmoonModal === true) {
       setAzmoonModal(false);
     } else {
@@ -236,7 +238,7 @@ export default function Header() {
                 <SiAmazongames onClick={() => openGames()} />
               </div>
               <div className="azmoon">
-                <PiExam onClick={() => openAzmoon()} />
+                <PiExam onClick={() => openAzmoonModal()} />
               </div>
 
               
@@ -244,7 +246,7 @@ export default function Header() {
                   <div className="azmoon-body">
                     <div
                       className="azmoon-modal-close"
-                      onClick={() => openAzmoon()}
+                      onClick={() => openAzmoonModal()}
                     >
                       <IoClose />
                     </div>
