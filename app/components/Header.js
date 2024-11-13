@@ -34,6 +34,7 @@ import { TbHtml } from "react-icons/tb";
 import { MdOutlineCss } from "react-icons/md";
 import { AiOutlineJavaScript } from "react-icons/ai";
 import { TbBrandPhp } from "react-icons/tb";
+import IcdlExam from "./exams/IcdlExam";
 
 export default function Header() {
   const [show, setShow] = useState(false);
@@ -43,7 +44,7 @@ export default function Header() {
   const [proMenu, setProMenu] = useState(false);
   const [openGame, setOpenGame] = useState(false);
   const [game, setGame] = useState("");
-  
+
   const [azmoonModal, setAzmoonModal] = useState(false);
   const [azmoon, setAzmoon] = useState(false);
 
@@ -104,6 +105,14 @@ export default function Header() {
       setGame("");
     } else {
       setGame(game);
+    }
+  }
+
+  function chooseAzmoon(azmoon) {
+    if (azmoon === "") {
+      setAzmoon("");
+    } else {
+      setAzmoon(azmoon);
     }
   }
 
@@ -241,27 +250,34 @@ export default function Header() {
                 <PiExam onClick={() => openAzmoonModal()} />
               </div>
 
-              
-                <div className={`azmoon-modal ${azmoonModal === true ? "show" : ""}`}>
-                  <div className="azmoon-body">
-                    <div
-                      className="azmoon-modal-close"
-                      onClick={() => openAzmoonModal()}
-                    >
-                      <IoClose />
-                    </div>
+              <div
+                className={`azmoon-modal ${azmoonModal === true ? "show" : ""}`}
+              >
+                <div className="azmoon-body">
+                  <div
+                    className="azmoon-modal-close"
+                    onClick={() => openAzmoonModal()}
+                  >
+                    <IoClose />
+                  </div>
+                  {azmoon === "icdl" ? (
+                    <div className="icdl"> <IcdlExam back={() => chooseAzmoon("")} /> </div>
+                  ) : (
                     <div className="azmoon-modal-content">
                       <div className="azmoon-modal-title">
                         <span>آزمون آنلاین</span>
                       </div>
                       <div className="azmoon-modal-items">
-                        <div className="azmoon-modal-item">
+                        <div
+                          className="azmoon-modal-item"
+                          onClick={() => chooseAzmoon("icdl")}
+                        >
                           <div className="azmoon-modal-item-title">
                             <FaComputer />
                           </div>
                           <div className="azmoon-modal-item-content">
                             <div className="azmoon-modal-item-content-item">
-                                <span>آزمون  icdl</span>
+                              <span>آزمون icdl</span>
                             </div>
                           </div>
                         </div>
@@ -271,7 +287,7 @@ export default function Header() {
                           </div>
                           <div className="azmoon-modal-item-content">
                             <div className="azmoon-modal-item-content-item">
-                                <span>آزمون  HTML</span>
+                              <span>آزمون HTML</span>
                             </div>
                           </div>
                         </div>
@@ -282,7 +298,7 @@ export default function Header() {
                           </div>
                           <div className="azmoon-modal-item-content">
                             <div className="azmoon-modal-item-content-item">
-                                <span>آزمون  CSS</span>
+                              <span>آزمون CSS</span>
                             </div>
                           </div>
                         </div>
@@ -293,7 +309,7 @@ export default function Header() {
                           </div>
                           <div className="azmoon-modal-item-content">
                             <div className="azmoon-modal-item-content-item">
-                                <span>آزمون  javascript</span>
+                              <span>آزمون javascript</span>
                             </div>
                           </div>
                         </div>
@@ -304,17 +320,15 @@ export default function Header() {
                           </div>
                           <div className="azmoon-modal-item-content">
                             <div className="azmoon-modal-item-content-item">
-                                <span>آزمون  PHP</span>
+                              <span>آزمون PHP</span>
                             </div>
                           </div>
                         </div>
-
-
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-              
+              </div>
 
               <div className="profile">
                 {status === "authenticated" && (
