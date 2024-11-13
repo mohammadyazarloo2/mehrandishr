@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/css/effect-coverflow";
+import { useCart } from '@/contexts/CartContext'
 
 import { Autoplay, EffectCoverflow, Navigation } from "swiper/modules";
 
@@ -91,6 +92,7 @@ export default function Index() {
     progressCircle.current.style.setProperty("--progress", 1 - progress);
     progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
   };
+  const { addToCart } = useCart()
 
   return (
     <main>
@@ -192,7 +194,16 @@ export default function Index() {
                         ادامه مطلب
                       </button>
                     </div>
-                    <div className="addbasket">
+                    <div
+                      className="addbasket"
+                      onClick={() =>
+                        addToCart({
+                          title: "دوره php",
+                          price: "30,000,000",
+                          image: "/img/javascript.png",
+                        })
+                      }
+                    >
                       <SlBasket />
                     </div>
                   </div>
@@ -391,10 +402,10 @@ export default function Index() {
           </div>
           <div className="course-learning-body">
             <div className="images">
-              {courses.map((item,index) => {
+              {courses.map((item, index) => {
                 return (
                   <Image
-                  key={index}
+                    key={index}
                     src={item.logo}
                     width={100}
                     height={100}
@@ -404,10 +415,10 @@ export default function Index() {
               })}
             </div>
             <div className="images">
-              {courses.map((item,index) => {
+              {courses.map((item, index) => {
                 return (
                   <Image
-                  key={index}
+                    key={index}
                     src={item.logo}
                     width={100}
                     height={100}
