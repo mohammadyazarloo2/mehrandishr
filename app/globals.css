@@ -2379,6 +2379,7 @@ body.dark .article-item {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2222;
 }
 .azmoon-modal-items{
   margin-top: 20px;
@@ -2419,8 +2420,6 @@ body.dark .article-item {
 }
 
 .category-btn{
-  background: rgb(24,24,18);
-  background: linear-gradient(90deg, rgba(24,24,18,1) 13%, rgba(49,51,28,1) 59%, rgba(0,0,0,1) 100%);  color: #fff;
   padding: 10px;
   border-radius: 10px;
   display: flex;
@@ -2428,6 +2427,9 @@ body.dark .article-item {
   align-items: center;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+}
+.category-name{
+  color:#000;
 }
 .category-btn:hover{
   background: unset;
@@ -2452,6 +2454,100 @@ body.dark .article-item {
   background-color: #FEF9A7;
   border-radius: 10px;
 }
+.question-card {
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 20px 20px 60px #bebebe,
+              -20px -20px 60px #ffffff;
+  transform-style: preserve-3d;
+  transition: all 0.3s ease;
+  margin: 2rem auto;
+  max-width: 800px;
+}
+
+.question-card:hover {
+  transform: translateY(-5px) rotateX(5deg);
+  box-shadow: 25px 25px 75px #bebebe,
+              -25px -25px 75px #ffffff;
+}
+
+.question-text {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.option-btn {
+  background: linear-gradient(145deg, #e6e6e6, #ffffff);
+  border: none;
+  padding: 1rem;
+  border-radius: 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 5px 5px 15px #d1d1d1,
+              -5px -5px 15px #ffffff;
+}
+
+.option-btn:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(145deg, #ffffff, #e6e6e6);
+  box-shadow: 8px 8px 20px #d1d1d1,
+              -8px -8px 20px #ffffff;
+}
+
+.option-btn:active {
+  transform: translateY(0);
+  box-shadow: inset 5px 5px 10px #d1d1d1,
+              inset -5px -5px 10px #ffffff;
+}
+
+.exam-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: linear-gradient(145deg, #f0f0f0, #ffffff);
+  border-radius: 15px;
+  box-shadow: 10px 10px 30px #d1d1d1,
+              -10px -10px 30px #ffffff;
+}
+
+.progress {
+  font-size: 1.1rem;
+  color: #3498db;
+  margin-top: 0.5rem;
+}
+
+.restart-btn {
+  background: linear-gradient(145deg, #3498db, #2980b9);
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1;
+  box-shadow: 5px 5px 15px rgba(41, 128, 185, 0.3);
+}
+
+.restart-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 8px 8px 20px rgba(41, 128, 185, 0.4);
+}
+
+
+
+
+
 
 /* 404 page */
 .notfound{
