@@ -35,6 +35,11 @@ import { MdOutlineCss } from "react-icons/md";
 import { AiOutlineJavaScript } from "react-icons/ai";
 import { TbBrandPhp } from "react-icons/tb";
 import IcdlExam from "./exams/IcdlExam";
+import { useCart } from "@/contexts/CartContext";
+import { MdRemoveShoppingCart } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { decreaseQuantity,removeFromCart,addToCart } from "../redux/cartSlice";
+
 
 export default function Header() {
   const [show, setShow] = useState(false);
@@ -47,8 +52,20 @@ export default function Header() {
 
   const [azmoonModal, setAzmoonModal] = useState(false);
   const [azmoon, setAzmoon] = useState(false);
+  const [basket, setBasket] = useState(false);
 
   const { data: session, status } = useSession();
+  // const { cart, addToCart, removeFromCart, decreaseQuantity } = useCart();
+  const cart=useSelector(state=>state.cart.items)
+  const dispatch = useDispatch();
+
+  function showBasket() {
+    if (basket === true) {
+      setBasket(false);
+    } else {
+      setBasket(true);
+    }
+  }
 
   function openProject() {
     if (openp === true) {
@@ -195,8 +212,14 @@ export default function Header() {
 
             <div className="icons-mob-left">
               <Link href="/" className="showbasket">
-                <SlBasket />
-                <span className="cart-quantity">0</span>
+                <SlBasket onClick={() => showBasket()} />
+                <span className="cart-quantity">
+                  {cart.length > 0 ? (
+                    <span className="cart-counter">{cart.length}</span>
+                  ) : (
+                    0
+                  )}
+                </span>
               </Link>
 
               <div
@@ -261,7 +284,10 @@ export default function Header() {
                     <IoClose />
                   </div>
                   {azmoon === "icdl" ? (
-                    <div className="icdl"> <IcdlExam back={() => chooseAzmoon("")} /> </div>
+                    <div className="icdl">
+                      {" "}
+                      <IcdlExam back={() => chooseAzmoon("")} />{" "}
+                    </div>
                   ) : (
                     <div className="azmoon-modal-content">
                       <div className="azmoon-modal-title">
@@ -483,6 +509,46 @@ export default function Header() {
           </button>
           <div className={openp === true ? "open requests" : "requests"}>
             <ProjectRequest onClose={() => openProject()} />
+          </div>
+        </div>
+
+        <div className={`cart-controls ${basket === true ? "show" : ""}`}>
+          <div className="cart-item-controls">
+            <div className="cart-item-head">
+              <div className="cart-item-head-title">سبد خرید</div>
+              <IoClose onClick={() => showBasket()} />
+            </div>
+            {cart.map((product) => (
+              <>
+                <div className="cart-item">
+                  <div className="cart-item-title">{product.title}</div>
+                  <div className="cart-item-action">
+                    <button
+                      className="cart-item-minus"
+                      onClick={() => dispatch(decraceQuantity(product.title))}
+                    >
+                      -
+                    </button>
+                    <span>
+                      {cart.find((item) => item.title === product.title)
+                        ?.quantity || 0}
+                    </span>
+                    <button
+                      className="cart-item-pluse"
+                      onClick={() => dispatch(addToCart(product))}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    className="cart-item-remove"
+                    onClick={() => dispatch(removeFromCart(product.title))}
+                  >
+                    <MdRemoveShoppingCart />
+                  </button>
+                </div>
+              </>
+            ))}
           </div>
         </div>
       </header>

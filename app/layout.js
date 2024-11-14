@@ -5,7 +5,9 @@ import React, { Suspense } from "react";
 import Loading from "./components/Loading";
 import ClientLayout from "./ClientLayout";
 import { AuthProvider } from "./Providers";
-import { CartProvider } from '@/contexts/CartContext'
+import { store } from "./redux/store";
+import { Provider } from "react-redux";
+import Providers from "./components/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,16 +28,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>
-          <CartProvider>
+        <Providers>
+          <AuthProvider>
             <Header />
             <ClientLayout>
               <Suspense fallback={<Loading />}>
-                <DelayedSupense ms={2000}>{children}</DelayedSupense>
+                {/* <DelayedSupense ms={2000}>{children}</DelayedSupense> */}
+                {children}
               </Suspense>
             </ClientLayout>
-          </CartProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </Providers>
       </body>
     </html>
   );
