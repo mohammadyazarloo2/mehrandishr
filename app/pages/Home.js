@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { SlBasket } from "react-icons/sl";
@@ -11,6 +12,7 @@ import "swiper/css/navigation";
 import "swiper/css/effect-coverflow";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
+import { products } from '@/app/data/products'
 
 import { Autoplay, EffectCoverflow, Navigation } from "swiper/modules";
 
@@ -85,113 +87,7 @@ const courses = [
     logo: "/img/lan/figma.jfif",
   },
 ];
-const data = [
-  {
-    id: 1,
-    title: "دوره html and css",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 6300000,
-    img: "/img/lan/html.png",
-  },
-  {
-    id: 2,
-    title: "دوره جاوا اسکریپت",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 7500000,
-    img: "/img/lan/javascript.webp",
-  },
-  {
-    id: 3,
-    title: "دوره php",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 10000000,
-    img: "/img/lan/php.png",
-  },
-  {
-    id: 4,
-    title: "دوره nodejs",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 8000000,
-    img: "/img/lan/nodejs.png",
-  },
-  {
-    id: 5,
-    title: "دوره reactjs",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 8000000,
-    img: "/img/lan/reactjs.png",
-  },
-  {
-    id: 6,
-    title: "دوره nextjs",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 8000000,
-    img: "/img/lan/nextjs.png",
-  },
-  {
-    id: 7,
-    title: "دوره tailwindcss",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 6500000,
-    img: "/img/lan/tailwind.webp",
-  },
-  {
-    id: 8,
-    title: "دوره bootstrap",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 6500000,
-    img: "/img/lan/bootstrap.png",
-  },
-  {
-    id: 9,
-    title: "دوره jquery",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 6500000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 10,
-    title: "دوره ICDL",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 4700000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 11,
-    title: "دوره photoshop",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 12000000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 12,
-    title: "دوره illustrator",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 12000000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 13,
-    title: "دوره figman and zeplin",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 5000000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 14,
-    title: "دوره after effect",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 12000000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 15,
-    title: "دوره premier",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 12000000,
-    img: "/img/lan/empty.jpg",
-  },
-];
+const data = products
 
 export default function Index() {
   const progressCircle = useRef(null);
@@ -201,6 +97,27 @@ export default function Index() {
     progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
   };
   const dispatch = useDispatch();
+
+  useEffect(() => {
+  const images = document.querySelectorAll('.course-image');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('center');
+      } else {
+        entry.target.classList.remove('center');
+      }
+    });
+  }, {
+    root: document.querySelector('.scroll-container'),
+    threshold: 1.0,
+    rootMargin: '-50% 0px -50% 0px'
+  });
+
+  images.forEach(img => observer.observe(img));
+
+  return () => observer.disconnect();
+}, []);
 
   return (
     <main>
@@ -354,41 +271,40 @@ export default function Index() {
             </div>
           </div>
         </div>
-
-        <div className="course-learning">
-          <div className="course-learning-head">
-            <h2>دورهای آموزشی</h2>
-          </div>
-          <div className="course-learning-body">
-            <div className="images">
-              {courses.map((item, index) => {
-                return (
-                  <Image
-                    key={index}
-                    src={item.logo}
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                );
-              })}
+          <div className="course-learning">
+            <div className="course-learning-head">
+              <h2>دورهای آموزشی</h2>
             </div>
-            <div className="images">
-              {courses.map((item, index) => {
-                return (
-                  <Image
-                    key={index}
-                    src={item.logo}
-                    width={100}
-                    height={100}
-                    alt=""
-                  />
-                );
-              })}
+            <div className="course-learning-body">
+              <div className="scroll-container">
+                <div className="primary-images">
+                  {courses.map((item, index) => (
+                    <Image
+                      key={index}
+                      src={item.logo}
+                      width={100}
+                      height={100}
+                      alt=""
+                      className="course-image"
+                    />
+                  ))}
+                </div>
+                <div className="secondary-images">
+                  {courses.map((item, index) => (
+                    <Image
+                      key={index}
+                      src={item.logo}
+                      width={100}
+                      height={100}
+                      alt=""
+                      className="course-image"
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
       <div className="course-padcast">
         <div className="course-padcast-head">
@@ -592,3 +508,5 @@ export default function Index() {
     </main>
   );
 }
+
+

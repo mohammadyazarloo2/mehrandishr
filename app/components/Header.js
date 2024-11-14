@@ -38,7 +38,7 @@ import IcdlExam from "./exams/IcdlExam";
 import { useCart } from "@/contexts/CartContext";
 import { MdRemoveShoppingCart } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { decreaseQuantity,removeFromCart,addToCart } from "../redux/cartSlice";
+import { decraceQuantity,removeFromCart,addToCart } from "../redux/cartSlice";
 
 
 export default function Header() {
