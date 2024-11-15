@@ -35,7 +35,6 @@ import { MdOutlineCss } from "react-icons/md";
 import { AiOutlineJavaScript } from "react-icons/ai";
 import { TbBrandPhp } from "react-icons/tb";
 import IcdlExam from "./exams/IcdlExam";
-import { useCart } from "@/contexts/CartContext";
 import { MdRemoveShoppingCart } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { decraceQuantity,removeFromCart,addToCart } from "../redux/cartSlice";
@@ -211,7 +210,7 @@ export default function Header() {
             </Link>
 
             <div className="icons-mob-left">
-              <Link href="/" className="showbasket">
+              <div className="showbasket">
                 <SlBasket onClick={() => showBasket()} />
                 <span className="cart-quantity">
                   {cart.length > 0 ? (
@@ -220,7 +219,7 @@ export default function Header() {
                     0
                   )}
                 </span>
-              </Link>
+              </div>
 
               <div
                 className={
@@ -518,7 +517,7 @@ export default function Header() {
               <div className="cart-item-head-title">سبد خرید</div>
               <IoClose onClick={() => showBasket()} />
             </div>
-            {cart.map((product) => (
+            { cart.length >0 ? cart.map((product) => (
               <>
                 <div className="cart-item">
                   <div className="cart-item-title">{product.title}</div>
@@ -548,7 +547,9 @@ export default function Header() {
                   </button>
                 </div>
               </>
-            ))}
+            )) : (
+              <h2 className=" rounded-md p-4 mb-4 text-yellow-800 border-t-4 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:bg-gray-800 dark:border-yellow-800">سبد خرید شما خالی می باشد</h2>
+            )}
           </div>
         </div>
       </header>

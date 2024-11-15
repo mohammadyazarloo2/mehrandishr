@@ -8,6 +8,7 @@ import { AuthProvider } from "./Providers";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import Providers from "./components/Providers";
+import Footer from "./components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,6 +38,7 @@ export default function RootLayout({ children }) {
                 {children}
               </Suspense>
             </ClientLayout>
+            <Footer />
           </AuthProvider>
         </Providers>
       </body>

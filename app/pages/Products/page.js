@@ -1,223 +1,189 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
-import { FaChevronLeft } from "react-icons/fa";
-
-const data = [
-  {
-    id: 1,
-    title: "دوره html and css",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 6300000,
-    img: "/img/lan/html.png",
-  },
-  {
-    id: 2,
-    title: "دوره جاوا اسکریپت",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 7500000,
-    img: "/img/lan/javascript.webp",
-  },
-  {
-    id: 3,
-    title: "دوره php",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 10000000,
-    img: "/img/lan/php.png",
-  },
-  {
-    id: 4,
-    title: "دوره nodejs",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 8000000,
-    img: "/img/lan/nodejs.png",
-  },
-  {
-    id: 5,
-    title: "دوره reactjs",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 8000000,
-    img: "/img/lan/reactjs.png",
-  },
-  {
-    id: 6,
-    title: "دوره nextjs",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 8000000,
-    img: "/img/lan/nextjs.png",
-  },
-  {
-    id: 7,
-    title: "دوره tailwindcss",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 6500000,
-    img: "/img/lan/tailwind.webp",
-  },
-  {
-    id: 8,
-    title: "دوره bootstrap",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 6500000,
-    img: "/img/lan/bootstrap.png",
-  },
-  {
-    id: 9,
-    title: "دوره jquery",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 6500000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 10,
-    title: "دوره ICDL",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 4700000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 11,
-    title: "دوره photoshop",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 12000000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 12,
-    title: "دوره illustrator",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 12000000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 13,
-    title: "دوره figman and zeplin",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 5000000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 14,
-    title: "دوره after effect",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 12000000,
-    img: "/img/lan/empty.jpg",
-  },
-  {
-    id: 15,
-    title: "دوره premier",
-    description: "آموزش در دو دوره مقدماتی و پیشرفته",
-    price: 12000000,
-    img: "/img/lan/empty.jpg",
-  },
-];
+import { FaChevronLeft, FaFilter, FaSortAmountDown } from "react-icons/fa";
+import { products } from "@/app/data/products";
+import { useState } from "react";
 
 export default function Products() {
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortedProducts, setSortedProducts] = useState(products);
+  const [showFilters, setShowFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(9); // تعداد محصولات در هر صفحه
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = sortedProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleSort = (order) => {
+    setSortOrder(order);
+    const sorted = [...products].sort((a, b) =>
+      order === "asc" ? a.id - b.id : b.id - a.id
+    );
+    setSortedProducts(sorted);
+  };
+
+  const handlePrice = (order) => {
+    const sorted = [...products].sort((a, b) =>
+      order === "asc" ? a.price - b.price : b.price - a.price
+    );
+    setSortedProducts(sorted);
+  };
+
   return (
-    <main>
+    <main className="bg-gray-50 min-h-screen">
       <div class="breadcrumbs">
         <ul class="breadcrumb-nav">
           <li class="breadcrumb-item">
-            <Link class="breadcrumb-link" href="/">
+            <Link class="text-white hover:text-primary" href="/">
               صفحه اصلی
             </Link>
           </li>
           <FaChevronLeft color="#fff" />
           <li class="breadcrumb-item">
-            <Link class="breadcrumb-link active" href="#">
+            <Link class="text-primary" href="#">
               محصولات
             </Link>
           </li>
         </ul>
       </div>
 
-      <div class="products-page">
-        <div class="products-sidebar">
-          <div class="product-sidebar-over">
-            <div class="product-sidebar-category">
-              <div class="product-sidebar-category-head">
-                <h2>دسته بندی</h2>
-                <i class="bi bi-chevron-bar-down"></i>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+
+        <div className="flex items-start gap-8">
+          {/* Sidebar */}
+          <aside className="w-64 hidden md:block">
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="mb-6">
+                <h3 className="font-bold text-lg mb-4">دسته‌بندی</h3>
+                <ul className="space-y-2">
+                  {["شلوار", "مانتو", "پیراهن", "کمربند", "کلاه"].map((cat) => (
+                    <li
+                      key={cat}
+                      className="cursor-pointer hover:text-primary transition"
+                    >
+                      {cat}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div class="product-sidebar-category-body">
-                <ul>
-                  <li>شلوار</li>
-                  <li>مانتو</li>
-                  <li>پیرهن</li>
-                  <li>کمربند</li>
-                  <li>کلاه</li>
+
+              <div>
+                <h3 className="font-bold text-lg mb-4">برندها</h3>
+                <ul className="space-y-2">
+                  {["نایک", "آدیداس", "پوما", "ریبوک"].map((brand) => (
+                    <li
+                      key={brand}
+                      className="cursor-pointer hover:text-primary transition"
+                    >
+                      {brand}
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
+          </aside>
 
-            <div class="product-sidebar-brand">
-              <div class="product-sidebar-brand-head">
-                <h2>برند ها</h2>
-                <i class="bi bi-chevron-bar-down"></i>
-              </div>
-              <div class="product-sidebar-brand-body">
-                <ul>
-                  <li>شلوار</li>
-                  <li>مانتو</li>
-                  <li>پیرهن</li>
-                  <li>کمربند</li>
-                  <li>کلاه</li>
-                </ul>
+          {/* Main Content */}
+          <div className="flex-1">
+            <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap gap-2">
+                  {["ارزان‌ترین", "گران‌ترین", "جدیدترین", "پربازدیدترین"].map(
+                    (filter) => (
+                      <button
+                        key={filter}
+                        onClick={() =>
+                          handlePrice(filter === "ارزان‌ترین" ? "asc" : "desc")
+                        }
+                        className="px-4 py-2 rounded-full bg-gray-100 hover:bg-primary hover:text-white transition"
+                      >
+                        {filter}
+                      </button>
+                    )
+                  )}
+                </div>
+
+                <select
+                  value={sortOrder}
+                  onChange={(e) => handleSort(e.target.value)}
+                  className="rounded-lg border-gray-200 focus:ring-primary"
+                >
+                  <option value="asc">نزولی</option>
+                  <option value="desc">صعودی</option>
+                </select>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="products-grid">
-          <div class="products-grid-over">
-            <div class="product-filter">
-              <div class="product-filter-buttons">
-                <button class="product-filter-btn">ارزانترین</button>
-                <button class="product-filter-btn">گرانترین</button>
-                <button class="product-filter-btn">جدیدترین</button>
-                <button class="product-filter-btn">پربازدیدترین</button>
-                <button class="product-filter-btn">پرفروشترین</button>
-              </div>
-              <select class="product-filter-select">
-                <option value="asc">نزولی</option>
-                <option value="desc">صعودی</option>
-              </select>
-            </div>
 
-            <div class="products-items">
-              {data.map((item, index) => {
-                return (
-                  <div class="p-item" key={index}>
-                    <div class="p-item-img">
-                      <Image
-                        width={100}
-                        height={100}
-                        alt="product"
-                        src={item.img}
-                      />
-                    </div>
-                    <div class="p-item-content">
-                      <div class="p-item-title"> {item.title} </div>
-                      <div class="p-item-foot">
-                        <div class="p-item-foot-prices">
-                          <span class="p-item-price-org">
-                            {" "}
-                            {item.price.toLocaleString()}{" "}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition"
+                >
+                  <div className="aspect-w-1 aspect-h-1">
+                    <Image
+                      src='/img/lan/html.png'
+                      alt={product.title}
+                      width={300}
+                      height={300}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+
+                  <div className="p-4">
+                    <h3 className="font-medium text-lg mb-2">
+                      {product.title}
+                    </h3>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-primary font-bold">
+                          {product.price.toLocaleString()} تومان
+                        </span>
+                        {product.discount && (
+                          <span className="text-sm text-gray-500 line-through mr-2">
+                            {(product.price * 1.2).toLocaleString()} تومان
                           </span>
-                          <span class="p-item-price-off">120</span>
-                        </div>
-                        <div class="p-item-basket">
-                          <Link
-                            href={`/pages/Products/details/${encodeURIComponent(
-                              item.title.replace(/\s+/g, "-")
-                            )}`}
-                          >
-                            خرید
-                          </Link>
-                        </div>
+                        )}
                       </div>
+                      <Link
+                        href={`/pages/Products/details/${encodeURIComponent(
+                          product.title.replace(/\s+/g, "-")
+                        )}`}
+                        className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition"
+                      >
+                        خرید
+                      </Link>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
+              
             </div>
+            <div className="mt-8 flex justify-center">
+                <div className="flex gap-2">
+                  {Array.from({
+                    length: Math.ceil(sortedProducts.length / productsPerPage),
+                  }).map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => paginate(index + 1)}
+                      className={`px-4 py-2 rounded-lg ${
+                        currentPage === index + 1
+                          ? "bg-primary text-white"
+                          : "bg-gray-100 hover:bg-gray-200"
+                      }`}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+                </div>
+              </div>
           </div>
         </div>
       </div>
