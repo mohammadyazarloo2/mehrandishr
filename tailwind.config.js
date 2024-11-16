@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      borderRadius: {
+        'blob': '60% 40% 30% 70% / 60% 30% 70% 40%'
+      },
       colors: {
         primary: {
           DEFAULT: '#3B82F6',

@@ -65,7 +65,7 @@ export default function Products() {
                   {["شلوار", "مانتو", "پیراهن", "کمربند", "کلاه"].map((cat) => (
                     <li
                       key={cat}
-                      className="cursor-pointer hover:text-primary transition"
+                      className="cursor-pointer hover:text-yellow-400 transition"
                     >
                       {cat}
                     </li>
@@ -79,7 +79,7 @@ export default function Products() {
                   {["نایک", "آدیداس", "پوما", "ریبوک"].map((brand) => (
                     <li
                       key={brand}
-                      className="cursor-pointer hover:text-primary transition"
+                      className="cursor-pointer hover:text-yellow-400 transition"
                     >
                       {brand}
                     </li>
@@ -101,7 +101,7 @@ export default function Products() {
                         onClick={() =>
                           handlePrice(filter === "ارزان‌ترین" ? "asc" : "desc")
                         }
-                        className="px-4 py-2 rounded-full bg-gray-100 hover:bg-primary hover:text-white transition"
+                        className="px-4 py-2 rounded-full bg-gray-100 hover:bg-yellow-400 hover:text-white transition"
                       >
                         {filter}
                       </button>
@@ -112,7 +112,7 @@ export default function Products() {
                 <select
                   value={sortOrder}
                   onChange={(e) => handleSort(e.target.value)}
-                  className="rounded-lg border-gray-200 focus:ring-primary"
+                  className="rounded-lg border-gray-200 focus:ring-yellow-400"
                 >
                   <option value="asc">نزولی</option>
                   <option value="desc">صعودی</option>
@@ -142,7 +142,7 @@ export default function Products() {
                     </h3>
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-primary font-bold">
+                        <span className="text-green-500 font-bold">
                           {product.price.toLocaleString()} تومان
                         </span>
                         {product.discount && (
@@ -155,7 +155,7 @@ export default function Products() {
                         href={`/pages/Products/details/${encodeURIComponent(
                           product.title.replace(/\s+/g, "-")
                         )}`}
-                        className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition"
+                        className="px-4 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-600 transition"
                       >
                         خرید
                       </Link>
@@ -175,7 +175,7 @@ export default function Products() {
                       onClick={() => paginate(index + 1)}
                       className={`px-4 py-2 rounded-lg ${
                         currentPage === index + 1
-                          ? "bg-primary text-white"
+                          ? "bg-yellow-400 text-white"
                           : "bg-gray-100 hover:bg-gray-200"
                       }`}
                     >

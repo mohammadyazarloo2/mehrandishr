@@ -9,6 +9,7 @@ import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import Providers from "./components/Providers";
 import Footer from "./components/Footer";
+import AudioPlayer from "./components/AudioPlayer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,6 +37,9 @@ export default function RootLayout({ children }) {
               <Suspense fallback={<Loading />}>
                 {/* <DelayedSupense ms={2000}>{children}</DelayedSupense> */}
                 {children}
+                <div className="fixed bottom-0 left-0 right-0 z-50">
+                  <AudioPlayer />
+                </div>
               </Suspense>
             </ClientLayout>
             <Footer />

@@ -14,16 +14,16 @@ export default function Footer() {
               آکادمی ما با ارائه آموزش‌های تخصصی و کاربردی، مسیر یادگیری شما را هموار می‌کند.
             </p>
             <div className="flex space-x-4 rtl:space-x-reverse">
-              <Link href="#" className="hover:text-primary transition-colors">
+              <Link href="#" className="hover:text-yellow-400 transition-colors">
                 <FaInstagram size={24} />
               </Link>
-              <Link href="#" className="hover:text-primary transition-colors">
+              <Link href="#" className="hover:text-yellow-400 transition-colors">
                 <FaTelegram size={24} />
               </Link>
-              <Link href="#" className="hover:text-primary transition-colors">
+              <Link href="#" className="hover:text-yellow-400 transition-colors">
                 <FaTwitter size={24} />
               </Link>
-              <Link href="#" className="hover:text-primary transition-colors">
+              <Link href="#" className="hover:text-yellow-400 transition-colors">
                 <FaLinkedin size={24} />
               </Link>
             </div>
@@ -33,10 +33,10 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-bold mb-4 text-white">دسترسی سریع</h3>
             <ul className="space-y-2">
-              <li><Link href="/" className="hover:text-primary transition-colors">صفحه اصلی</Link></li>
-              <li><Link href="/courses" className="hover:text-primary transition-colors">دوره‌ها</Link></li>
-              <li><Link href="/blog" className="hover:text-primary transition-colors">وبلاگ</Link></li>
-              <li><Link href="/about" className="hover:text-primary transition-colors">درباره ما</Link></li>
+              <li><Link href="/" className="hover:text-yellow-400 transition-colors">صفحه اصلی</Link></li>
+              <li><Link href="/courses" className="hover:text-yellow-400 transition-colors">دوره‌ها</Link></li>
+              <li><Link href="/blog" className="hover:text-yellow-400 transition-colors">وبلاگ</Link></li>
+              <li><Link href="/about" className="hover:text-yellow-400 transition-colors">درباره ما</Link></li>
             </ul>
           </div>
 
@@ -44,10 +44,10 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-bold mb-4 text-white">دوره‌های محبوب</h3>
             <ul className="space-y-2">
-              <li><Link href="#" className="hover:text-primary transition-colors">آموزش ری‌اکت</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">آموزش نکست</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">برنامه‌نویسی پایتون</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">طراحی UI/UX</Link></li>
+              <li><Link href="#" className="hover:text-yellow-400 transition-colors">آموزش ری‌اکت</Link></li>
+              <li><Link href="#" className="hover:text-yellow-400 transition-colors">آموزش نکست</Link></li>
+              <li><Link href="#" className="hover:text-yellow-400 transition-colors">برنامه‌نویسی پایتون</Link></li>
+              <li><Link href="#" className="hover:text-yellow-400 transition-colors">طراحی UI/UX</Link></li>
             </ul>
           </div>
 
@@ -59,9 +59,9 @@ export default function Footer() {
               <input 
                 type="email" 
                 placeholder="ایمیل خود را وارد کنید"
-                className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:border-primary"
+                className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:border-yellow-400"
               />
-              <button className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+              <button className="w-full px-4 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-400/90 transition-colors">
                 عضویت
               </button>
             </form>

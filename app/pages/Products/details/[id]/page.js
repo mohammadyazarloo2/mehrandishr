@@ -120,6 +120,64 @@ export default function Page({ params }) {
           )}
 
           {activeTab === "reviews" && (
+            <div className="space-y-8">
+            {/* فرم ثبت نظر جدید */}
+            <div className="bg-gray-50 p-6 rounded-xl">
+              <h3 className="text-xl font-bold mb-6">ثبت نظر جدید</h3>
+              <form className="space-y-4">
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">نام شما</label>
+                    <input 
+                      type="text" 
+                      className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
+                      placeholder="نام خود را وارد کنید"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">ایمیل</label>
+                    <input 
+                      type="email" 
+                      className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
+                      placeholder="ایمیل خود را وارد کنید"
+                    />
+                  </div>
+                </div>
+        
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">امتیاز شما</label>
+                  <div className="flex gap-2">
+                    {[5, 4, 3, 2, 1].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        className="text-2xl text-gray-300 hover:text-yellow-400 transition-colors"
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                </div>
+        
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">متن نظر</label>
+                  <textarea 
+                    rows="4" 
+                    className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
+                    placeholder="نظر خود را بنویسید..."
+                  ></textarea>
+                </div>
+        
+                <button 
+                  type="submit"
+                  className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  ثبت نظر
+                </button>
+              </form>
+            </div>
+        
+            {/* نمایش نظرات قبلی */}
             <div className="space-y-6">
               {[1, 2, 3].map((review) => (
                 <div
@@ -153,6 +211,8 @@ export default function Page({ params }) {
                 </div>
               ))}
             </div>
+          </div>
+            
           )}
         </div>
       </div>
@@ -188,10 +248,10 @@ export default function Page({ params }) {
                       {product.title}
                     </h3>
                     <div className="flex justify-between items-center">
-                      <span className="text-primary font-bold">
+                      <span className="text-green-500 font-bold">
                         {product.price.toLocaleString()} تومان
                       </span>
-                      <span className="bg-primary/10 text-primary text-sm py-1 px-3 rounded-full">
+                      <span className="bg-yellow-400/10 text-primary text-sm py-1 px-3 rounded-full">
                         {product.category}
                       </span>
                     </div>

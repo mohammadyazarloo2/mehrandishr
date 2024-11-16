@@ -1058,73 +1058,44 @@ body.dark .login-section-main {
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
-.about-home {
-  padding: 10px;
-  margin: 10px;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
-    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-  background-color: whitesmoke;
-  overflow: hidden;
-  border-radius: 5px;
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
 }
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.about-home {
+  padding: 6rem 2rem;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Hover Effects */
+.about-me-images .images > div:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
 body.dark .about-home {
   background-color: #021526;
 }
-.about-home-head {
-  padding-bottom: 10px;
-}
-.about-home-body {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-}
-.about-me-content p {
-  letter-spacing: 1px;
-  line-height: 40px;
-}
-body.dark .about-me-content p {
-  color: #eeedeb;
-}
-.about-me-content,
-.about-me-images {
-  width: 50%;
-  position: relative;
-}
-.images {
-  width: 100%;
-  height: 100%;
-}
-.about-me-images {
-  height: 300px;
-}
-.about-me-images .images img {
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
-    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-  border-radius: 10px;
-  background-color: #5a639c;
-  height: 200px;
-}
-.about-me-images .images img:nth-child(1) {
-  position: absolute;
-  bottom: 40%;
-  left: 10%;
-  width: 200px;
-}
-.about-me-images .images img:nth-child(2) {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 200px;
-}
 
-.about-me-images .images img:nth-child(3) {
-  position: absolute;
-  bottom: 0;
-  left: 30%;
-  width: 200px;
-  opacity: 0.9;
-}
 
 .course-learning {
   margin-top: 20px;
@@ -1243,9 +1214,11 @@ body.dark .about-me-content p {
   align-items: center;
   justify-content: space-between;
 }
-.course-padcast-content,
+.course-padcast-content{
+  width: 30%;
+}
 .course-padcast-player {
-  width: calc(100% / 2);
+  width: auto;
 }
 .course-padcast-content p {
   letter-spacing: 1px;
@@ -1271,13 +1244,38 @@ body.dark .about-me-content p {
   height: 100%;
 }
 .player-actions {
-  width: 60%;
   display: flex;
   justify-content: space-around;
 }
 .player-actions i {
   font-size: 40px;
 }
+.liquid-blob {
+  filter: blur(40px);
+  will-change: transform, border-radius;
+}
+
+@keyframes floatingBlobOne {
+  0%, 100% { border-radius: 33% 67% 70% 30% / 30% 30% 70% 70%; transform: translate(0, 0) rotate(0deg); }
+  25% { border-radius: 37% 63% 51% 49% / 37% 65% 35% 63%; transform: translate(-50%, 50%) rotate(90deg); }
+  50% { border-radius: 36% 64% 64% 36% / 64% 48% 52% 36%; transform: translate(-75%, -50%) rotate(180deg); }
+  75% { border-radius: 37% 63% 51% 49% / 30% 30% 70% 70%; transform: translate(-25%, -75%) rotate(270deg); }
+}
+
+@keyframes floatingBlobTwo {
+  0%, 100% { border-radius: 40% 60% 42% 58% / 41% 51% 49% 59%; transform: translate(-25%, -25%) rotate(0deg); }
+  25% { border-radius: 37% 63% 51% 49% / 30% 30% 70% 70%; transform: translate(-75%, 25%) rotate(90deg); }
+  50% { border-radius: 36% 64% 64% 36% / 64% 48% 52% 36%; transform: translate(-50%, 75%) rotate(180deg); }
+  75% { border-radius: 37% 63% 51% 49% / 37% 65% 35% 63%; transform: translate(0, 50%) rotate(270deg); }
+}
+
+@keyframes floatingBlobThree {
+  0%, 100% { border-radius: 37% 63% 51% 49% / 37% 65% 35% 63%; transform: translate(-50%, 0) rotate(0deg); }
+  33% { border-radius: 36% 64% 64% 36% / 64% 48% 52% 36%; transform: translate(0, -50%) rotate(120deg); }
+  66% { border-radius: 40% 60% 42% 58% / 41% 51% 49% 59%; transform: translate(-75%, 75%) rotate(240deg); }
+}
+
+
 
 .addbasket {
   z-index: 222;
@@ -1563,7 +1561,9 @@ body.dark .article-item {
   .course-padcast-body {
     display: block;
   }
-  .course-padcast-content,
+  .course-padcast-content{
+    width: 30%;
+  }
   .course-padcast-player {
     width: auto;
   }
