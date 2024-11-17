@@ -10,7 +10,8 @@ const initialState = {
   isMuted: false,
   repeatMode: 'off', // off, one, all
   isShuffleOn: false,
-  queue: [...podcasts]
+  queue: [...podcasts],
+  loading: false,
 };
 
 const audioSlice = createSlice({
@@ -65,10 +66,12 @@ const audioSlice = createSlice({
       const currentIndex = state.queue.findIndex(p => p.id === state.currentPodcast.id);
       const prevIndex = currentIndex === 0 ? state.queue.length - 1 : currentIndex - 1;
       state.currentPodcast = state.queue[prevIndex];
-    }
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
   }
 });
-
 export const {
   setCurrentPodcast,
   togglePlay,
@@ -80,7 +83,7 @@ export const {
   setRepeatMode,
   toggleShuffle,
   nextTrack,
-  prevTrack
+  prevTrack,
+  setLoading
 } = audioSlice.actions;
-
 export default audioSlice.reducer;

@@ -20,13 +20,15 @@ import {
   toggleShuffle,
   setIsPlaying,
 } from "../redux/audioSlice";
-import { podcasts } from '../data/podcasts';  // یا مسیر صحیح فایل podcasts
-
+import { podcasts } from "../data/podcasts"; // یا مسیر صحیح فایل podcasts
+import { AudioController } from "../utils/AudioController";
 
 export default function AudioPlayer() {
   const audioRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     currentPodcast,
     isPlaying,
@@ -40,88 +42,110 @@ export default function AudioPlayer() {
 
   const handleAudioEnd = () => {
     if (repeatMode === "one") {
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play();
-      }
-    } else if (repeatMode === "all") {
-      if (isShuffleOn) {
-        dispatch(nextTrack());
-        dispatch(setIsPlaying(true));
-      } else {
-        dispatch(nextTrack());
-        dispatch(setIsPlaying(true));
-      }
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
     } else {
-      const currentIndex = podcasts.findIndex(
-        (p) => p.id === currentPodcast.id
-      );
-      if (currentIndex < podcasts.length - 1) {
-        if (isShuffleOn) {
-          dispatch(nextTrack());
-        } else {
-          dispatch(nextTrack());
-        }
-        dispatch(setIsPlaying(true));
-      } else {
-        dispatch(setIsPlaying(false));
-      }
+      dispatch(nextTrack());
+      dispatch(setIsPlaying(true));
     }
   };
 
   useEffect(() => {
     if (audioRef.current) {
-      setIsReady(true);
+      audioRef.current.volume = isMuted ? 0 : volume;
     }
-  }, []);
+  }, [volume, isMuted]);
+
+  // useEffect(() => {
+  //   if (audioRef.current) {
+  //     setIsReady(true);
+  //   }
+  // }, []);
   useEffect(() => {
-    console.log("Current Podcast:", currentPodcast);
-    console.log("Audio URL:", currentPodcast?.audioSrc);
-  }, [currentPodcast]);
+    if (currentPodcast?.audioSrc) {
+      AudioController.initialize(currentPodcast.audioSrc, dispatch);
+    }
+    return () => AudioController.cleanup();
+  }, [currentPodcast?.audioSrc]);
 
   useEffect(() => {
-    if (!isReady || !audioRef.current || !currentPodcast?.audioSrc) return;
+    if (audioRef.current) {
+        audioRef.current.addEventListener('play', () => dispatch(setIsPlaying(true)));
+        audioRef.current.addEventListener('pause', () => dispatch(setIsPlaying(false)));
+        audioRef.current.addEventListener('ended', handleAudioEnd);
+        
+        return () => {
+            audioRef.current?.removeEventListener('play', () => dispatch(setIsPlaying(true)));
+            audioRef.current?.removeEventListener('pause', () => dispatch(setIsPlaying(false)));
+            audioRef.current?.removeEventListener('ended', handleAudioEnd);
+        };
+    }
+}, []);
 
-    const audio = audioRef.current;
+  // useEffect(() => {
+  //   if (!isReady || !audioRef.current || !currentPodcast?.audioSrc) return;
+
+  //   const audio = audioRef.current;
+  //   audio.load(); // Force reload audio when source changes
+
+  //   // ... rest of the code
+  // }, [isReady, isPlaying, currentPodcast]);
+
+  //   if (isPlaying) {
+  //     const playPromise = audio.play();
+  //     if (playPromise !== undefined) {
+  //       playPromise
+  //         .then(() => {
+  //           console.log("Audio started playing");
+  //         })
+  //         .catch((error) => {
+  //           console.log("Playback error:", error);
+  //           dispatch(setIsPlaying(false));
+  //         });
+  //     }
+  //   } else {
+  //     audio.pause();
+  //   }
+
+  //   // Cleanup function
+  //   return () => {
+  //     audio.pause();
+  //   };
+  // }, [isReady, isPlaying, currentPodcast]);
+
+  const handlePlayPause = async () => {
     if (isPlaying) {
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log("Audio started playing");
-          })
-          .catch((error) => {
-            console.log("Playback error:", error);
-            dispatch(setIsPlaying(false));
-          });
-      }
+      await AudioController.pause(dispatch);
     } else {
-      audio.pause();
+      await AudioController.play(dispatch);
     }
-  }, [isReady, isPlaying, currentPodcast]);
-
-  const handlePlayPause = () => {
-    dispatch(togglePlay());
   };
 
-  const handleTimeUpdate = () => {
-    dispatch(setCurrentTime(audioRef.current.currentTime));
+  const handleTimeUpdate = (e) => {
+    const currentTime = e.target.currentTime;
+    dispatch(setCurrentTime(currentTime));
   };
 
   const handleLoadMetadata = (e) => {
     if (audioRef.current) {
       const duration = audioRef.current.duration;
       dispatch(setDuration(duration));
-      setCurrentTime(0);
+      dispatch(setCurrentTime(0));
+      audioRef.current.volume = isMuted ? 0 : volume;
     }
   };
 
   const handleSeek = (e) => {
-    const timelineWidth = e.currentTarget.clientWidth;
-    const clickPosition = timelineWidth - e.nativeEvent.offsetX;
-    const seekTime = (clickPosition / timelineWidth) * duration;
-    audioRef.current.currentTime = seekTime;
-    dispatch(setCurrentTime(seekTime));
+    e.preventDefault();
+    const rect = e.target.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percentage = x / rect.width;
+    const time = percentage * duration;
+
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      dispatch(setCurrentTime(time));
+    }
   };
 
   const handleVolumeChange = (e) => {
@@ -143,15 +167,32 @@ export default function AudioPlayer() {
     dispatch(toggleShuffle());
   };
 
-  const handleNext = () => {
-    dispatch(nextTrack());
-    dispatch(setIsPlaying(true)); // اضافه کردن این خط
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-    }
+
+  const getCurrentIndex = () => {
+    return podcasts.findIndex(podcast => podcast.id === currentPodcast?.id);
+  };
+  
+  const getNextIndex = () => {
+    const currentIndex = getCurrentIndex();
+    return isShuffleOn 
+      ? Math.floor(Math.random() * podcasts.length)
+      : (currentIndex + 1) % podcasts.length;
+  };
+  
+  const getPrevIndex = () => {
+    const currentIndex = getCurrentIndex();
+    return currentIndex === 0 ? podcasts.length - 1 : currentIndex - 1;
   };
 
+  const handleNext = () => {
+    const nextIndex = getNextIndex();
+    AudioController.changeTrack(podcasts[nextIndex].audioSrc, dispatch);
+    dispatch(nextTrack());
+  };
+  
   const handlePrev = () => {
+    const prevIndex = getPrevIndex();
+    AudioController.changeTrack(podcasts[prevIndex].audioSrc, dispatch);
     dispatch(prevTrack());
   };
 
@@ -233,6 +274,15 @@ export default function AudioPlayer() {
             onChange={handleVolumeChange}
             className="w-16"
           />
+          <div
+            className="h-2 bg-gray-200 rounded-full overflow-hidden cursor-pointer"
+            onClick={handleSeek}
+          >
+            <div
+              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transform origin-left hover:scale-x-105 transition-transform"
+              style={{ width: `${(currentTime / duration) * 100}%` }}
+            ></div>
+          </div>
         </div>
       </div>
     </>
