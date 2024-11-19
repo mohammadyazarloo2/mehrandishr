@@ -416,7 +416,7 @@ export default function Index() {
               </p>
             </div>
           </div>
-          <div className="about-me-images perspective-1000">
+          <div className="about-me-images perspective-1000 mt-5">
             <div className="images grid grid-cols-3 gap-6">
               {["/img/1.png", "/img/2.png", "/img/3.jpg"].map((src, index) => (
                 <div
@@ -658,7 +658,7 @@ export default function Index() {
           <span className="text-2xl pb-4 font-bold text-gray-800 relative after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-1/2 after:h-1 after:bg-yellow-400">
             جدیدترین مقالات
           </span>
-          <Link href="" className="article-more">
+          <Link href="/pages/articles" className="article-more">
             بیشتر
           </Link>
         </div>

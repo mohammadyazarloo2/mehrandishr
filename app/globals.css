@@ -1202,6 +1202,21 @@ body.dark .about-home {
     rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 }
 
+.custom-audio {
+  border-radius: 0.5rem;
+  height: 36px;
+}
+
+.custom-audio::-webkit-media-controls-panel {
+  background-color: #f3f4f6;
+}
+
+.custom-audio::-webkit-media-controls-play-button {
+  background-color: #8b5cf6;
+  border-radius: 50%;
+  transform: scale(1.5);
+}
+
 .course-padcast {
   padding: 10px;
   margin: 10px;
@@ -1529,6 +1544,9 @@ body.dark .article-item {
 /* mobile screen */
 
 @media screen and (max-width: 480px) {
+  .player{
+    flex-wrap: wrap;
+  }
   .nav-menu {
     display: none;
   }
@@ -1552,7 +1570,7 @@ body.dark .article-item {
     display: block;
   }
   .about-me-images {
-    height: 450px;
+    height: auto;
   }
   .about-me-content,
   .about-me-images {
@@ -1562,7 +1580,7 @@ body.dark .article-item {
     display: block;
   }
   .course-padcast-content{
-    width: 30%;
+    width: auto;
   }
   .course-padcast-player {
     width: auto;
