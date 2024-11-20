@@ -26,31 +26,33 @@ export default function Page({ params }) {
           className="w-full h-full object-cover"
           alt={item.title}
         />
-        <div className="absolute bottom-0 right-0 left-0 z-20 p-12 text-white">
+        <div className="absolute bottom-10 lg:bottom-0 md:bottom-0 right-0 left-0 z-20 p-4 md:p-8 lg:p-12 text-white">
           <div className="container mx-auto">
-            <div className="flex gap-3 mb-6">
+            <div className="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
               {item.tags?.map((tag) => (
                 <span
                   key={tag}
-                  className="px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm"
+                  className="px-3 md:px-4 py-1 md:py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-xs md:text-sm"
                 >
                   {tag}
                 </span>
               ))}
             </div>
-            <h1 className="text-5xl font-bold mb-4">{item.title}</h1>
-            <div className="flex items-center gap-6 text-gray-200">
+            <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold mb-4">
+              {item.title}
+            </h1>
+            <div className="flex flex-wrap items-center gap-3 md:gap-6 text-gray-200 text-sm md:text-base">
               <div className="flex items-center gap-2">
                 <img
                   src={item.author.avatar}
-                  className="w-10 h-10 rounded-full"
+                  className="w-8 h-8 md:w-10 md:h-10 rounded-full"
                 />
                 <span>{item.author.name}</span>
               </div>
-              <span>|</span>
+              <span className="hidden md:block">|</span>
               <div className="flex items-center gap-2">
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4 md:w-5 md:h-5"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -61,6 +63,77 @@ export default function Page({ params }) {
               <span>{item.date}</span>
             </div>
           </div>
+
+          <button className="fixed md:absolute bottom-4 md:bottom-8 left-4 md:left-8 z-30 px-4 md:px-6 py-2.5 md:py-3.5 bg-white/10 backdrop-blur-md rounded-full text-white hover:bg-white/20 transition-all duration-500 flex items-center gap-2 md:gap-3 group border border-white/20 hover:border-white/40 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20">
+            <svg
+              className="w-4 h-4 md:w-5 md:h-5 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+            </svg>
+            <span className="font-medium tracking-wide text-xs md:text-sm">
+              ذخیره مقاله
+            </span>
+          </button>
+        </div>
+        <div className="absolute bottom-0 right-4 md:right-10 z-30">
+          <nav className="flex items-center gap-1 md:gap-2 bg-white/10 backdrop-blur-md px-3 md:px-6 py-2 md:py-3 rounded-lg border border-white/20">
+            <Link
+              href="/"
+              className="text-white/70 hover:text-white transition-colors duration-300 flex items-center gap-1 md:gap-2 text-xs md:text-sm"
+            >
+              <svg
+                className="w-3 h-3 md:w-4 md:h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                />
+              </svg>
+              <span className="hidden sm:inline">خانه</span>
+            </Link>
+            <span className="text-white/40">
+              <svg
+                className="w-3 h-3 md:w-4 md:h-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </span>
+            <Link
+              href="/pages/articles"
+              className="text-white/70 hover:text-white transition-colors duration-300 text-xs md:text-sm"
+            >
+              مقالات
+            </Link>
+            <span className="text-white/40">
+              <svg
+                className="w-3 h-3 md:w-4 md:h-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </span>
+            <span className="text-white font-medium text-xs md:text-sm truncate max-w-[100px] sm:max-w-[200px] md:max-w-none">
+              {item.title}
+            </span>
+          </nav>
         </div>
       </div>
 
@@ -222,7 +295,12 @@ export default function Page({ params }) {
                       <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">
                         {related.excerpt}
                       </p>
-                      <Link href={`/pages/articles/details/${encodeURIComponent(related.title.replace(/\s+/g, "-"))}`} className="mt-4 flex items-center justify-between">
+                      <Link
+                        href={`/pages/articles/details/${encodeURIComponent(
+                          related.title.replace(/\s+/g, "-")
+                        )}`}
+                        className="mt-4 flex items-center justify-between"
+                      >
                         <span className="text-sm text-violet-500 font-medium">
                           ادامه مطلب
                         </span>

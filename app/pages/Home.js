@@ -42,6 +42,7 @@ import { podcasts } from "../data/podcasts";
 import { AudioController } from "../utils/AudioController";
 
 import { Autoplay, EffectCoverflow, Navigation } from "swiper/modules";
+import Weather from "../components/Weather";
 
 const courses = [
   {
@@ -128,6 +129,9 @@ export default function Index() {
   // const [currentPodcast, setCurrentPodcast] = useState(0);
   const [currentPodcastIndex, setCurrentPodcastIndex] = useState(0);
 
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const dispatch = useDispatch();
   const audioRef = useRef(null);
   const {
@@ -140,12 +144,11 @@ export default function Index() {
     repeatMode,
   } = useSelector((state) => state.audio);
 
-
   useEffect(() => {
     if (currentPodcast?.audioSrc) {
       AudioController.initialize(currentPodcast.audioSrc, dispatch);
     }
-    
+
     return () => {
       AudioController.cleanup();
     };
@@ -213,7 +216,7 @@ export default function Index() {
       AudioController.changeTrack(nextPodcast.audioSrc, dispatch);
     }
   };
-  
+
   const handlePrevious = () => {
     dispatch(prevTrack());
     const prevPodcast = podcasts[currentPodcastIndex - 1];
@@ -221,7 +224,6 @@ export default function Index() {
       AudioController.changeTrack(prevPodcast.audioSrc, dispatch);
     }
   };
-  
 
   const handleTimeUpdate = (e) => {
     const currentTime = e.target.currentTime;
@@ -266,6 +268,9 @@ export default function Index() {
   return (
     <main>
       <div className="bottem-img">
+        <div className="absolute top-4 left-4 z-10">
+          <Weather />
+        </div>
         <Swiper
           dir="rtl"
           spaceBetween={30}
@@ -721,7 +726,9 @@ export default function Index() {
                       </div>
 
                       <Link
-                        href="/article/1"
+                        href={`/pages/articles/details/${encodeURIComponent(
+                          item.title.replace(/\s+/g, "-")
+                        )}`}
                         className="text-blue-600 p-2 border border-solid border-yellow-400 hover:text-blue-700 text-sm flex items-center gap-1 group-hover:gap-2 transition-all"
                       >
                         مطالعه
