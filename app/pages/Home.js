@@ -40,6 +40,8 @@ import {
 } from "../redux/audioSlice";
 import { podcasts } from "../data/podcasts";
 import { AudioController } from "../utils/AudioController";
+import { usePathname } from "next/navigation";
+import ChatModal from '../components/ChatModal';
 
 import { Autoplay, EffectCoverflow, Navigation } from "swiper/modules";
 import Weather from "../components/Weather";
@@ -143,6 +145,21 @@ export default function Index() {
     isMuted,
     repeatMode,
   } = useSelector((state) => state.audio);
+  const [viewCount, setViewCount] = useState(0);
+
+  useEffect(() => {
+    const recordPageView = async () => {
+      await fetch("/api/analytics/record", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ path: "/home" }),
+      });
+    };
+
+    recordPageView();
+  }, []);
 
   useEffect(() => {
     if (currentPodcast?.audioSrc) {
@@ -267,6 +284,7 @@ export default function Index() {
 
   return (
     <main>
+      <ChatModal />
       <div className="bottem-img">
         <div className="absolute top-4 left-4 z-10">
           <Weather />
@@ -402,8 +420,12 @@ export default function Index() {
           <div className="absolute bottom-0 left-50 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
         </div>
         <div className="about-home-head mb-4">
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent transform hover:scale-105 transition-all duration-300">
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
             درباره ما
+            <span className="text-sm text-gray-600 mr-4">
+              <FaEye className="inline ml-1" />
+              {viewCount} بازدید
+            </span>
           </h2>
         </div>
         <div className="about-home-body container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">

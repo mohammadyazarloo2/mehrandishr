@@ -13,6 +13,7 @@ const categorySchema = new Schema(
     sub: {
       type: String,
     },
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Products" }],
   },
   { timestamps: true }
 );

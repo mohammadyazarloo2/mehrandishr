@@ -10,7 +10,7 @@ export const authOptions = {
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
-      account:'mohammadyazarloo2'
+      account: "mohammadyazarloo2",
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -25,7 +25,7 @@ export const authOptions = {
           //   return null;
           // }
           // if(user.admin === true) {
-          //   return null 
+          //   return null
           // }
 
           const passwordMatch = await bcrypt.compare(password, user.password);
@@ -33,7 +33,7 @@ export const authOptions = {
           if (!passwordMatch) {
             return null;
           }
-          console.log('ok')
+          console.log("ok");
 
           return user;
         } catch (error) {
@@ -42,6 +42,20 @@ export const authOptions = {
       },
     }),
   ],
+  callbacks: {
+    async session({ session, token }) {
+      if (session?.user) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+  },
   session: {
     strategy: "jwt",
   },
