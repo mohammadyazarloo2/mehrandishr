@@ -1,15 +1,35 @@
+import { NextResponse } from 'next/server';
 import { connectMongoDB } from "@/lib/mongodb";
-import Article from "@/models/article";
-import { NextResponse } from "next/server";
+import Article from '@/models/Article';
 
 // GET all articles
-export async function GET() {
+export async function GET(request) {
   try {
     await connectMongoDB();
-    const articles = await Article.find({}).sort({ createdAt: -1 });
+    const { searchParams } = new URL(request.url);
+    const categoryId = searchParams.get('category');
+    const tag = searchParams.get('tag');
+    const authorName = searchParams.get('author');
+
+    let query = {};
+    if (categoryId && categoryId !== 'undefined' && categoryId !== 'null') {
+      query.category = categoryId;
+    }
+    if (tag && tag !== 'undefined' && tag !== 'null') {
+      query.tags = { $in: [tag] };  // استفاده از عملگر $in برای جستجو در آرایه tags
+    }
+    if (authorName && authorName !== 'undefined' && authorName !== 'null') {
+      query['author.name'] = authorName;  // Filter by author.name
+    }
+
+    const articles = await Article.find(query)
+      .populate('category')
+      .populate('author')
+      .sort({ date: -1 });
+
     return NextResponse.json(articles);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch articles" }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 

@@ -1,31 +1,28 @@
-import mongoose, { Schema, models } from "mongoose";
+import mongoose from "mongoose";
 
-const productsSchema = new Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    title: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    category: {
-      type: String,
-      required: true,
-    },
-    price: {
-      type: String,
-      required: true,
-    },
+const productSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true
   },
-  { timestamps: true }
-);
+  description: {
+    type: String,
+    required: true
+  },
+  price: {
+    type: Number,
+    required: true
+  },
+  features: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Features'
+  }],
+  image: {
+    type: String
+  }
+}, {
+  timestamps: true
+});
 
-const Products = models.Products || mongoose.model("Products", productsSchema);
-
+const Products = mongoose.models.Products || mongoose.model("Products", productSchema);
 export default Products;

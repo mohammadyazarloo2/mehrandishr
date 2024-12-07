@@ -77,7 +77,7 @@ export default function ChatModal() {
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 bg-yellow-400 text-white p-4 rounded-full shadow-lg hover:bg-yellow-500 transition-all duration-300"
+        className="fixed z-50 bottom-4 right-4 bg-yellow-400 text-white p-4 rounded-full shadow-lg hover:bg-yellow-500 transition-all duration-300"
       >
         <IoChatbubbleEllipsesOutline size={24} />
       </button>

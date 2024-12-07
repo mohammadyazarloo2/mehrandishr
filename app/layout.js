@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import Header from "./components/Header";
 import React, { Suspense } from "react";
 import Loading from "./components/Loading";
-import ClientLayout from "./ClientLayout";
+// import ClientLayout from "./ClientLayout";
 import { AuthProvider } from "./Providers";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
@@ -33,7 +33,7 @@ export default function RootLayout({ children }) {
         <Providers>
           <AuthProvider>
             <Header />
-            <ClientLayout>
+            {/* <ClientLayout> */}
               <Suspense fallback={<Loading />}>
                 {/* <DelayedSupense ms={2000}>{children}</DelayedSupense> */}
                 {children}
@@ -41,7 +41,7 @@ export default function RootLayout({ children }) {
                   <AudioPlayer />
                 </div>
               </Suspense>
-            </ClientLayout>
+            {/* </ClientLayout> */}
             <Footer />
           </AuthProvider>
         </Providers>

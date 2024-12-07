@@ -1,20 +1,134 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaChevronLeft } from "react-icons/fa";
 import Head from "next/head";
 import Image from "next/image";
-import { articles } from "@/app/data/articles";
-
-const data = articles;
 
 export default function Page({ params }) {
-  const item = data.find(
-    (item) =>
-      item.title === decodeURIComponent(params.id.toString().replace(/-/g, " "))
-  );
-  const title = decodeURIComponent(params.id.toString().replace(/-/g, " "));
-  console.log(title);
+  const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArticle = async () => {
+      if (!params?.id) {
+        console.error("No ID provided");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/articles/${params.id}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch article");
+        }
+
+        setArticle(data);
+      } catch (error) {
+        console.error("Error fetching article:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticle();
+  }, [params?.id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f8fafc]">
+        {/* Hero Section Skeleton */}
+        <div className="relative h-[60vh] w-full bg-gray-200 animate-pulse">
+          <div className="absolute bottom-10 lg:bottom-0 md:bottom-0 right-0 left-0 z-20 p-4 md:p-8 lg:p-12">
+            <div className="container mx-auto">
+              {/* Tags skeleton */}
+              <div className="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                {[1, 2, 3].map((n) => (
+                  <div key={n} className="h-8 w-24 bg-white/20 rounded-full" />
+                ))}
+              </div>
+              {/* Title skeleton */}
+              <div className="h-12 md:h-16 bg-white/20 rounded-lg w-3/4 mb-4" />
+              {/* Author info skeleton */}
+              <div className="flex flex-wrap items-center gap-3 md:gap-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-white/20" />
+                  <div className="h-6 w-32 bg-white/20 rounded" />
+                </div>
+                <div className="h-6 w-32 bg-white/20 rounded" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Skeleton */}
+        <div className="container mx-auto px-6 py-16">
+          <div className="max-w-3xl mx-auto">
+            {/* Summary box skeleton */}
+            <div className="bg-violet-50 rounded-2xl p-8 mb-12">
+              <div className="h-8 bg-violet-200/50 rounded w-48 mb-4" />
+              <div className="space-y-2">
+                <div className="h-4 bg-violet-200/50 rounded w-full" />
+                <div className="h-4 bg-violet-200/50 rounded w-5/6" />
+                <div className="h-4 bg-violet-200/50 rounded w-4/6" />
+              </div>
+            </div>
+
+            {/* Content skeleton */}
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <div key={n} className="space-y-2">
+                  <div className="h-6 bg-gray-200 rounded w-3/4" />
+                  <div className="h-4 bg-gray-200 rounded w-full" />
+                  <div className="h-4 bg-gray-200 rounded w-5/6" />
+                </div>
+              ))}
+            </div>
+
+            {/* Podcast section skeleton */}
+            <div className="mt-16 bg-gradient-to-r from-violet-50 to-purple-50 rounded-2xl p-8">
+              <div className="h-8 bg-violet-200/50 rounded w-48 mb-6" />
+              <div className="bg-white rounded-xl p-6">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-20 h-20 bg-gray-200 rounded-lg" />
+                  <div className="space-y-2">
+                    <div className="h-6 bg-gray-200 rounded w-64" />
+                    <div className="h-4 bg-gray-200 rounded w-32" />
+                  </div>
+                </div>
+                <div className="h-12 bg-gray-200 rounded-lg w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <div className="animate-pulse">در حال بارگذاری...</div>
+  //     </div>
+  //   );
+  // }
+
+  if (!article) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">مقاله مورد نظر یافت نشد</h1>
+          <Link
+            href="/pages/articles"
+            className="text-violet-600 hover:text-violet-700"
+          >
+            بازگشت به لیست مقالات
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f8fafc] relative">
@@ -22,32 +136,34 @@ export default function Page({ params }) {
       <div className="relative h-[60vh] w-full">
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/30 z-10" />
         <img
-          src={item.coverImage}
+          src={article.image}
           className="w-full h-full object-cover"
-          alt={item.title}
+          alt={article.title}
         />
         <div className="absolute bottom-10 lg:bottom-0 md:bottom-0 right-0 left-0 z-20 p-4 md:p-8 lg:p-12 text-white">
           <div className="container mx-auto">
             <div className="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
-              {item.tags?.map((tag) => (
-                <span
+              {article.tags?.map((tag) => (
+                <Link
                   key={tag}
+                  href={`/pages/articles?tag=${tag}`}
                   className="px-3 md:px-4 py-1 md:py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-xs md:text-sm"
                 >
                   {tag}
-                </span>
+                </Link>
               ))}
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold mb-4">
-              {item.title}
+              {article.title}
             </h1>
             <div className="flex flex-wrap items-center gap-3 md:gap-6 text-gray-200 text-sm md:text-base">
               <div className="flex items-center gap-2">
                 <img
-                  src={item.author.avatar}
+                  // src={article.author.avatar}
+                  src={"img/ast.png"}
                   className="w-8 h-8 md:w-10 md:h-10 rounded-full"
                 />
-                <span>{item.author.name}</span>
+                <span>{article.author?.name}</span>
               </div>
               <span className="hidden md:block">|</span>
               <div className="flex items-center gap-2">
@@ -58,9 +174,9 @@ export default function Page({ params }) {
                 >
                   <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
                 </svg>
-                <span>{item.readTime} دقیقه مطالعه</span>
+                <span>{article.readTime} دقیقه مطالعه</span>
               </div>
-              <span>{item.date}</span>
+              <span>{article.date}</span>
             </div>
           </div>
 
@@ -131,7 +247,7 @@ export default function Page({ params }) {
               </svg>
             </span>
             <span className="text-white font-medium text-xs md:text-sm truncate max-w-[100px] sm:max-w-[200px] md:max-w-none">
-              {item.title}
+              {article.title}
             </span>
           </nav>
         </div>
@@ -173,7 +289,7 @@ export default function Page({ params }) {
               </svg>
             </div>
             <div>
-              <h4 className="font-bold text-xl mb-1">{item.title}</h4>
+              <h4 className="font-bold text-xl mb-1">{article.title}</h4>
               <p className="text-gray-600 flex items-center gap-2">
                 <svg
                   className="w-4 h-4"
@@ -188,12 +304,12 @@ export default function Page({ params }) {
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                {item.readTime} دقیقه
+                {article.readTime} دقیقه
               </p>
             </div>
           </div>
           <audio className="w-full custom-audio" controls>
-            <source src={item.podcast.url} type="audio/mpeg" />
+            <source src={article.podcast?.url} type="audio/mpeg" />
             مرورگر شما از پخش صوت پشتیبانی نمی‌کند.
           </audio>
         </div>
@@ -207,10 +323,10 @@ export default function Page({ params }) {
               <h2 className="text-2xl font-bold text-violet-900 mb-4">
                 خلاصه مقاله
               </h2>
-              <p className="text-violet-700">{item.summary}</p>
+              <p className="text-violet-700">{article.summary}</p>
             </div>
 
-            <div className="space-y-6">{item.content}</div>
+            <div className="space-y-6">{article.content}</div>
 
             {/* Table of Contents */}
             {/* <div className="sticky top-72 right-[calc(50%+24rem)] w-64 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
@@ -270,7 +386,7 @@ export default function Page({ params }) {
               مقالات مرتبط
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {item.relatedArticles?.map((relatedId) => {
+              {article.relatedArticles?.map((relatedId) => {
                 const related = data.find(
                   (article) => article.id === relatedId
                 );

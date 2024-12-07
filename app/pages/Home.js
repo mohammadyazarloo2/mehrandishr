@@ -11,7 +11,6 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/css/effect-coverflow";
 import { addToCart } from "../redux/cartSlice";
-import { products } from "@/app/data/products";
 import { articles } from "../data/articles";
 import { FaEye } from "react-icons/fa6";
 import { CiShuffle } from "react-icons/ci";
@@ -41,7 +40,7 @@ import {
 import { podcasts } from "../data/podcasts";
 import { AudioController } from "../utils/AudioController";
 import { usePathname } from "next/navigation";
-import ChatModal from '../components/ChatModal';
+import ChatModal from "../components/ChatModal";
 
 import { Autoplay, EffectCoverflow, Navigation } from "swiper/modules";
 import Weather from "../components/Weather";
@@ -117,8 +116,6 @@ const courses = [
     logo: "/img/lan/figma.jfif",
   },
 ];
-const data = products;
-let globalAudio = null;
 
 export default function Index() {
   const progressCircle = useRef(null);
@@ -146,6 +143,31 @@ export default function Index() {
     repeatMode,
   } = useSelector((state) => state.audio);
   const [viewCount, setViewCount] = useState(0);
+  const [products, setProducts] = useState([]);
+  const [articles, setArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const [productsRes, articlesRes] = await Promise.all([
+          fetch("/api/products"),
+          fetch("/api/articles"),
+        ]);
+        const productsData = await productsRes.json();
+        const articlesData = await articlesRes.json();
+
+        setProducts(Array.isArray(productsData.data) ? productsData.data : []);
+        setArticles(Array.isArray(articlesData) ? articlesData : []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const recordPageView = async () => {
@@ -282,11 +304,107 @@ export default function Index() {
     return () => observer.disconnect();
   }, []);
 
-  return (
+  console.log(products);
+
+  const LoadingSkeleton = () => (
+    <main>
+      {/* Hero Section Skeleton */}
+      <div className="bottem-img">
+        <div className="h-[60vh] bg-gray-200 animate-pulse rounded-b-2xl" />
+      </div>
+
+      {/* Products Section Skeleton */}
+      <div className="bottom">
+        <div className="bottom-head">
+          <div className="h-8 w-32 bg-gray-200 animate-pulse rounded-lg" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+          {[1, 2, 3, 4].map((n) => (
+            <div key={n} className="bg-white rounded-2xl p-4 shadow-lg">
+              <div className="h-48 bg-gray-200 animate-pulse rounded-xl mb-4" />
+              <div className="space-y-3">
+                <div className="h-6 bg-gray-200 animate-pulse rounded w-3/4" />
+                <div className="h-4 bg-gray-200 animate-pulse rounded w-1/2" />
+                <div className="h-8 bg-gray-200 animate-pulse rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* About Section Skeleton */}
+      <div className="about-home relative">
+        <div className="container mx-auto px-4 py-16">
+          <div className="h-10 w-48 bg-gray-200 animate-pulse rounded-lg mb-8" />
+          <div className="grid md:grid-cols-2 gap-12">
+            <div className="space-y-4">
+              {[1, 2, 3].map((n) => (
+                <div
+                  key={n}
+                  className="h-4 bg-gray-200 animate-pulse rounded"
+                />
+              ))}
+            </div>
+            <div className="grid grid-cols-3 gap-6">
+              {[1, 2, 3].map((n) => (
+                <div
+                  key={n}
+                  className="h-40 bg-gray-200 animate-pulse rounded-xl"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Podcast Section Skeleton */}
+      <div className="course-padcast relative py-20">
+        <div className="container mx-auto px-4">
+          <div className="h-10 w-64 bg-gray-200 animate-pulse rounded-lg mb-12 mx-auto" />
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            <div className="w-full lg:w-1/2">
+              <div className="h-64 bg-gray-200 animate-pulse rounded-2xl" />
+            </div>
+            <div className="w-full lg:w-1/2 space-y-4">
+              {[1, 2, 3].map((n) => (
+                <div
+                  key={n}
+                  className="h-4 bg-gray-200 animate-pulse rounded"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Articles Section Skeleton */}
+      <div className="article">
+        <div className="article-head">
+          <div className="h-8 w-48 bg-gray-200 animate-pulse rounded-lg" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+          {[1, 2, 3, 4].map((n) => (
+            <div key={n} className="bg-white rounded-xl overflow-hidden shadow">
+              <div className="h-48 bg-gray-200 animate-pulse" />
+              <div className="p-4 space-y-3">
+                <div className="h-6 bg-gray-200 animate-pulse rounded" />
+                <div className="h-4 bg-gray-200 animate-pulse rounded w-3/4" />
+                <div className="h-8 bg-gray-200 animate-pulse rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  );
+
+  return isLoading ? (
+    <LoadingSkeleton />
+  ) : (
     <main>
       <ChatModal />
       <div className="bottem-img">
-        <div className="absolute top-4 left-4 z-10">
+        <div className="absolute top-4 left-50 z-10">
           <Weather />
         </div>
         <Swiper
@@ -354,17 +472,12 @@ export default function Index() {
             pagination={true}
             className="mySwiper2"
           >
-            {data.map((item, index) => (
+            {products.map((item, index) => (
               <SwiperSlide key={index}>
                 <div className="flex-box">
                   <div className="flex-box-inner">
                     <div className="flex-box-front">
-                      <Image
-                        src="/img/javascript.png"
-                        alt=""
-                        width={100}
-                        height={100}
-                      />
+                      <Image src={item.image} alt="" width={100} height={100} />
                     </div>
                     <div className="flex-box-back">
                       <Image
@@ -700,10 +813,10 @@ export default function Index() {
             rewind={true}
             slidesPerView={1}
             spaceBetween={24}
-            autoplay={{
-              delay: 3500,
-              disableOnInteraction: false,
-            }}
+            // autoplay={{
+            //   delay: 3500,
+            //   disableOnInteraction: false,
+            // }}
             breakpoints={{
               640: { slidesPerView: 2 },
               768: { slidesPerView: 3 },
@@ -712,55 +825,55 @@ export default function Index() {
             modules={[Navigation, Autoplay]}
             className="articles-slider"
           >
-            {articles.map((item, index) => (
-              <SwiperSlide key={index}>
-                <div className="article-card group hover:shadow-lg transition-all duration-300 rounded-xl overflow-hidden bg-white">
-                  <div className="relative overflow-hidden">
-                    <Image
-                      src="/img/1.png"
-                      alt="عنوان مقاله"
-                      width={400}
-                      height={250}
-                      className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <span className="absolute top-4 right-4 bg-yellow-400 text-white px-3 py-1 rounded-full text-sm">
-                      {item.category}
-                    </span>
-                  </div>
+            {Array.isArray(articles) &&
+              articles.map((item, index) => (
+                <SwiperSlide key={index}>
+                  <div className="article-card group hover:shadow-lg transition-all duration-300 rounded-xl overflow-hidden bg-white">
+                    <div className="relative overflow-hidden">
+                      <Image
+                        src={item.image}
+                        alt="عنوان مقاله"
+                        width={400}
+                        height={250}
+                        className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <span className="absolute top-4 right-4 bg-yellow-400 text-white px-3 py-1 rounded-full text-sm">
+                        {item.category}
+                      </span>
+                    </div>
 
-                  <div className="p-5">
-                    <h3 className="text-xl font-bold mb-3 text-gray-800">
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                      {item.excerpt}
-                    </p>
+                    <div className="p-5">
+                      <h3 className="text-xl font-bold mb-3 text-gray-800">
+                        {item.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                        {item.excerpt}
+                      </p>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span className="flex items-center gap-1">
-                          <FaEye />
-                          140
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <LuClock />5 دقیقه
-                        </span>
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <span className="flex items-center gap-1">
+                            <FaEye />
+                            {item.views || 0}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <LuClock />
+                            {item.readTime || "5 دقیقه"}
+                          </span>
+                        </div>
+
+                        <Link
+                          href={`/pages/articles/details/${item._id}`}
+                          className="text-blue-600 p-2 border border-solid border-yellow-400 hover:text-blue-700 text-sm flex items-center gap-1 group-hover:gap-2 transition-all"
+                        >
+                          مطالعه
+                          <FaArrowLeft />
+                        </Link>
                       </div>
-
-                      <Link
-                        href={`/pages/articles/details/${encodeURIComponent(
-                          item.title.replace(/\s+/g, "-")
-                        )}`}
-                        className="text-blue-600 p-2 border border-solid border-yellow-400 hover:text-blue-700 text-sm flex items-center gap-1 group-hover:gap-2 transition-all"
-                      >
-                        مطالعه
-                        <FaArrowLeft />
-                      </Link>
                     </div>
                   </div>
-                </div>
-              </SwiperSlide>
-            ))}
+                </SwiperSlide>
+              ))}
           </Swiper>
         </div>
       </div>
