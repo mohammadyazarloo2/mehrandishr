@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import Author from "@/app/models/Author";
+import Author from "@/models/Author";
 import { connectMongoDB } from "@/lib/mongodb";
 
 export async function GET(request, { params }) {
