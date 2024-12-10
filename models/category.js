@@ -13,7 +13,14 @@ const categorySchema = new Schema(
     sub: {
       type: String,
     },
-    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Products" }],
+    isActive: {
+      type: Boolean,
+      default: true
+    },
+    products: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "Products" 
+    }],
   },
   { timestamps: true }
 );

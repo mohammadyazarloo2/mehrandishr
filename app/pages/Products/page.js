@@ -3,13 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaChevronLeft, FaFilter, FaSortAmountDown } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Products() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedProducts, setSortedProducts] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(9); // تعداد محصولات در هر صفحه
+  const [productsPerPage] = useState(6);
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = sortedProducts.slice(
@@ -19,22 +20,107 @@ export default function Products() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const router = useRouter();
+  const [activeCategory, setActiveCategory] = useState(null);
+  // ابتدا دسته‌بندی‌های اصلی را جدا می‌کنیم
+  const mainCategories = categories.filter((cat) => cat.parent === "main");
+  const subCategories = categories.filter((cat) => cat.parent !== "main");
+  const [brands, setBrands] = useState([]);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page = 1, categoryId = null) => {
     setLoading(true);
     try {
-      const response = await fetch("/api/products");
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: productsPerPage.toString(),
+      });
+
+      if (categoryId) {
+        const selectedCategory = categories.find(
+          (cat) => cat._id === categoryId
+        );
+
+        if (selectedCategory?.parent === "main") {
+          const subCategories = categories.filter(
+            (cat) => cat.sub === selectedCategory.name
+          );
+          const allCategoryIds = [
+            categoryId,
+            ...subCategories.map((sub) => sub._id),
+          ];
+          params.set("category", allCategoryIds.join(","));
+        } else {
+          params.set("category", categoryId);
+        }
+      }
+      
+
+      // Construct final URL
+      const url = `/api/products?${params.toString()}`;
+
+      const response = await fetch(url);
       const data = await response.json();
-      setProducts(Array.isArray(data) ? data : data.data || []);
+      setProducts(data.data);
+      setTotalPages(data.totalPages);
+      // setTotalPages(Math.ceil(data.data.total / productsPerPage));
+      setCurrentPage(data.currentPage);
     } catch (error) {
       console.log("Error fetching products:", error);
       setProducts([]);
+      setTotalPages(0);
     } finally {
       setLoading(false);
     }
   };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    fetchProducts(newPage, activeCategory);
+    router.push(
+      `/pages/Products?page=${newPage}${
+        activeCategory ? `&category=${activeCategory}` : ""
+      }`
+    );
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("/api/category");
+      const data = await response.json();
+      console.log("Fetched Categories:", data); // برای دیدن داده‌های دریافتی
+      setCategories(Array.isArray(data) ? data : data.data || []);
+    } catch (error) {
+      console.log("Error fetching categories:", error);
+      setCategories([]);
+    }
+  };
+
+  const fetchBrands = async () => {
+    try {
+      const response = await fetch("/api/brands");
+      const data = await response.json();
+      // Ensure we're setting an array
+      setBrands(Array.isArray(data) ? data : data.data || []);
+    } catch (error) {
+      console.error("Error fetching brands:", error);
+      setBrands([]);
+    }
+  };
+
   useEffect(() => {
-    fetchProducts();
+    const init = async () => {
+      await fetchCategories();
+      const urlParams = new URLSearchParams(window.location.search);
+      const pageParam = parseInt(urlParams.get("page")) || 1;
+      const categoryParam = urlParams.get("category");
+      setCurrentPage(pageParam);
+      fetchBrands();
+      await fetchProducts(pageParam, categoryParam);
+    };
+
+    init();
   }, []);
 
   const handleSort = (order) => {
@@ -51,6 +137,40 @@ export default function Products() {
     );
     setSortedProducts(sorted);
   };
+
+  const handleCategoryClick = async (categoryId) => {
+    setActiveCategory(categoryId);
+    setCurrentPage(1);
+    await fetchProducts(1, categoryId);
+    // Update URL with category
+    router.push(`/pages/Products?category=${categoryId}&page=1`, undefined, {
+      shallow: true,
+    });
+  };
+
+  // ابتدا دسته‌بندی‌ها را گروه‌بندی می‌کنیم
+  const groupedCategories = categories.reduce((acc, category) => {
+    if (category.parent === "main") {
+      if (!acc[category._id]) {
+        acc[category._id] = {
+          main: category,
+          subs: [],
+        };
+      }
+    } else {
+      const parentCategory = categories.find((c) => c._id === category.parent);
+      if (parentCategory) {
+        if (!acc[parentCategory._id]) {
+          acc[parentCategory._id] = {
+            main: parentCategory,
+            subs: [],
+          };
+        }
+        acc[parentCategory._id].subs.push(category);
+      }
+    }
+    return acc;
+  }, {});
 
   const LoadingSkeleton = () => (
     <main className="bg-gray-50 min-h-screen">
@@ -187,28 +307,79 @@ export default function Products() {
               <div className="mb-6">
                 <h3 className="font-bold text-lg mb-4">دسته‌بندی</h3>
                 <ul className="space-y-2">
-                  {["شلوار", "مانتو", "پیراهن", "کمربند", "کلاه"].map((cat) => (
-                    <li
-                      key={cat}
-                      className="cursor-pointer hover:text-yellow-400 transition"
-                    >
-                      {cat}
-                    </li>
-                  ))}
+                  {categories
+                    .filter((cat) => cat.parent === "main")
+                    .map((mainCat) => (
+                      <li key={mainCat._id}>
+                        <div
+                          onClick={() => handleCategoryClick(mainCat._id)}
+                          className={`cursor-pointer font-bold mb-2 ${
+                            activeCategory === mainCat._id
+                              ? "text-yellow-400"
+                              : "hover:text-yellow-400"
+                          }`}
+                        >
+                          {mainCat.name}
+                          <span className="text-sm text-gray-500 ml-2">
+                            (
+                            {
+                              categories.filter(
+                                (sub) => sub.sub === mainCat.name
+                              ).length
+                            }
+                            )
+                          </span>
+                        </div>
+                        <ul className="pr-4 space-y-1">
+                          {categories
+                            .filter(
+                              (sub) =>
+                                sub.parent === "sub" && sub.sub === mainCat.name
+                            )
+                            .map((subCat) => (
+                              <li
+                                key={subCat._id}
+                                onClick={() => handleCategoryClick(subCat._id)}
+                                className={`cursor-pointer text-sm ${
+                                  activeCategory === subCat._id
+                                    ? "text-yellow-400"
+                                    : "hover:text-yellow-400"
+                                }`}
+                              >
+                                {subCat.name}
+                              </li>
+                            ))}
+                        </ul>
+                      </li>
+                    ))}
+                  <li
+                    onClick={() => {
+                      setActiveCategory(null);
+                      fetchProducts(1);
+                      router.push("/pages/Products?page=1");
+                    }}
+                    className="cursor-pointer text-gray-500 hover:text-yellow-400 transition mt-4"
+                  >
+                    نمایش همه
+                  </li>
                 </ul>
               </div>
 
               <div>
                 <h3 className="font-bold text-lg mb-4">برندها</h3>
                 <ul className="space-y-2">
-                  {["نایک", "آدیداس", "پوما", "ریبوک"].map((brand) => (
-                    <li
-                      key={brand}
-                      className="cursor-pointer hover:text-yellow-400 transition"
-                    >
-                      {brand}
-                    </li>
-                  ))}
+                  {Array.isArray(brands) &&
+                    brands.map((brand) => (
+                      <li
+                        key={brand._id}
+                        onClick={() => {
+                          fetchProducts(1, null, brand._id);
+                        }}
+                        className="cursor-pointer hover:text-yellow-400 transition"
+                      >
+                        {brand.name}
+                      </li>
+                    ))}
                 </ul>
               </div>
             </div>
@@ -286,21 +457,25 @@ export default function Products() {
             </div>
             <div className="mt-8 flex justify-center">
               <div className="flex gap-2">
-                {Array.from({
-                  length: Math.ceil(sortedProducts.length / productsPerPage),
-                }).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => paginate(index + 1)}
-                    className={`px-4 py-2 rounded-lg ${
-                      currentPage === index + 1
-                        ? "bg-yellow-400 text-white"
-                        : "bg-gray-100 hover:bg-gray-200"
-                    }`}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
+                {totalPages > 0 && (
+                  <div className="mt-8 flex justify-center">
+                    <div className="flex gap-2">
+                      {[...Array(totalPages)].map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handlePageChange(index + 1)}
+                          className={`px-4 py-2 rounded-lg ${
+                            currentPage === index + 1
+                              ? "bg-yellow-400 text-white"
+                              : "bg-gray-100 hover:bg-gray-200"
+                          }`}
+                        >
+                          {index + 1}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -4,43 +4,80 @@ import Features from "@/models/features";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
-    try {
-      const { name, title, description, category, price, discount, productId, barcode, images, features } = await req.json();
-      await connectMongoDB();
+  try {
+    const data = await req.json();
+    console.log("Received Data:", data);
 
-      // ایجاد محصول جدید
-      const product = await Products.create({
-        name,
-        title,
-        description,
-        category,
-        price,
-        discount,
-        productId,
-        barcode,
-        images
-      });
+    await connectMongoDB();
+    const {
+      name,
+      title,
+      description,
+      category,
+      brandId,
+      price,
+      discount,
+      productId,
+      barcode,
+      images,
+      features,
+      chapters
+    } = data;
 
-      // ایجاد ویژگی‌های محصول
-      const featurePromises = features.map(feature => 
+    console.log("Form Data:", {
+      name,
+      title,
+      description,
+      category,
+      brandId, // Check this value
+      price,
+      discount,
+      productId,
+      barcode,
+      images,
+      features,
+      chapters
+    });
+
+    const product = await Products.create({
+      name,
+      title,
+      description,
+      category,
+      brandId, // اطمینان از ارسال brandId
+      price,
+      discount,
+      productId,
+      barcode,
+      images,
+      chapters
+    });
+
+    console.log("Product created:", product);
+
+    if (features && features.length > 0) {
+      const featurePromises = features.map((feature) =>
         Features.create({
           productId: product._id,
           title: feature.key,
-          value: feature.value
+          value: feature.value,
         })
       );
-    
-      const createdFeatures = await Promise.all(featurePromises);
-    
-      // اضافه کردن شناسه‌های ویژگی‌ها به محصول
-      product.features = createdFeatures.map(feature => feature._id);
-      await product.save();
 
-      return NextResponse.json({ message: "محصول با موفقیت ایجاد شد" }, { status: 201 });
-    } catch (error) {
-      return NextResponse.json(
-        { message: "خطا در ایجاد محصول" },
-        { status: 500 }
-      );
+      const createdFeatures = await Promise.all(featurePromises);
+      console.log("Features created:", createdFeatures);
     }
+
+    return NextResponse.json(
+      { message: "محصول با موفقیت ایجاد شد" },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.log("Error in product creation:", error.message);
+    return NextResponse.json(
+      { message: "خطا در ایجاد محصول", error: error.message },
+      { status: 500 }
+    );
+  }
 }
+

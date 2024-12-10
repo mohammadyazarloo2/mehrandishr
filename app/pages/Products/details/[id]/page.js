@@ -10,6 +10,23 @@ export default function Page({ params }) {
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [categoryName, setCategoryName] = useState("");
+
+  const fetchCategoryName = async (categoryId) => {
+    try {
+      const response = await fetch(`/api/category/findcategory`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _id: categoryId }),
+      });
+      const data = await response.json();
+      setCategoryName(data.message.name);
+    } catch (error) {
+      console.log("Error fetching category:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -35,6 +52,12 @@ export default function Page({ params }) {
       fetchProduct();
     }
   }, [params.id]);
+
+  useEffect(() => {
+    if (product?.category) {
+      fetchCategoryName(product.category);
+    }
+  }, [product]);
 
   const LoadingSkeleton = () => (
     <div>
@@ -180,6 +203,10 @@ export default function Page({ params }) {
         <div className="products-info">
           <div className="products-info-title">
             <h1> {product.title} </h1>
+          </div>
+          <div className="products-info-price">
+            <span>دسته‌بندی :</span>
+            <span>{categoryName}</span>
           </div>
           <div className="products-info-price">
             <span>مدرس :</span>
