@@ -28,13 +28,16 @@ export default function Products() {
   const mainCategories = categories.filter((cat) => cat.parent === "main");
   const subCategories = categories.filter((cat) => cat.parent !== "main");
   const [brands, setBrands] = useState([]);
+  const [activeBrand, setActiveBrand] = useState(null);
+  const [sortType, setSortType] = useState("newest");
 
-  const fetchProducts = async (page = 1, categoryId = null) => {
+  const fetchProducts = async (page = 1, categoryId = null, brandId = null) => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
         page: page.toString(),
         limit: productsPerPage.toString(),
+        sort: sortType,
       });
 
       if (categoryId) {
@@ -55,7 +58,9 @@ export default function Products() {
           params.set("category", categoryId);
         }
       }
-      
+      if (brandId) {
+        params.set("brand", brandId);
+      }
 
       // Construct final URL
       const url = `/api/products?${params.toString()}`;
@@ -109,26 +114,65 @@ export default function Products() {
     }
   };
 
+  const handleBrandClick = async (brandId) => {
+    setActiveBrand(brandId);
+    setActiveCategory(null); // Reset category selection
+    setCurrentPage(1);
+    await fetchProducts(1, null, brandId);
+    router.push(`/pages/Products?brand=${brandId}&page=1`, undefined, {
+      shallow: true,
+    });
+  };
+
   useEffect(() => {
     const init = async () => {
       await fetchCategories();
       const urlParams = new URLSearchParams(window.location.search);
       const pageParam = parseInt(urlParams.get("page")) || 1;
       const categoryParam = urlParams.get("category");
+      const brandParam = urlParams.get("brand");
       setCurrentPage(pageParam);
       fetchBrands();
+      await fetchBrands();
       await fetchProducts(pageParam, categoryParam);
     };
 
     init();
   }, []);
 
-  const handleSort = (order) => {
+  const handleSort = async (type) => {
+    setSortType(type);
+    let order = "desc";
+    let sortQuery = "";
+
+    switch (type) {
+      case "cheapest":
+        sortQuery = "price=asc";
+        order = "asc";
+        break;
+      case "expensive":
+        sortQuery = "price=desc";
+        break;
+      case "newest":
+        sortQuery = "createdAt=desc";
+        break;
+      case "mostViewed":
+        sortQuery = "views=desc";
+        break;
+      default:
+        sortQuery = "createdAt=desc";
+    }
+
     setSortOrder(order);
-    const sorted = [...products].sort((a, b) =>
-      order === "asc" ? a.id - b.id : b.id - a.id
-    );
-    setSortedProducts(sorted);
+
+    // Update URL and fetch products with sort
+    const baseUrl = "/pages/Products";
+    const queryParams = new URLSearchParams(window.location.search);
+    queryParams.set("sort", type);
+    queryParams.set("page", "1");
+
+    router.push(`${baseUrl}?${queryParams.toString()}`);
+    await fetchProducts(1, activeCategory, activeBrand, type);
   };
 
   const handlePrice = (order) => {
@@ -140,6 +184,7 @@ export default function Products() {
 
   const handleCategoryClick = async (categoryId) => {
     setActiveCategory(categoryId);
+    setActiveBrand(null);
     setCurrentPage(1);
     await fetchProducts(1, categoryId);
     // Update URL with category
@@ -171,6 +216,18 @@ export default function Products() {
     }
     return acc;
   }, {});
+
+  const FilterSection = ({ title, children }) => (
+    <div className="bg-white rounded-xl shadow-sm p-6 mb-4">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-bold text-gray-800">{title}</h3>
+        <span className="text-yellow-400">
+          <FaFilter size={16} />
+        </span>
+      </div>
+      {children}
+    </div>
+  );
 
   const LoadingSkeleton = () => (
     <main className="bg-gray-50 min-h-screen">
@@ -300,89 +357,223 @@ export default function Products() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="md:hidden mb-4">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-white rounded-lg shadow-sm"
+          >
+            <FaFilter />
+            <span>فیلترها</span>
+          </button>
+        </div>
         <div className="flex items-start gap-8">
           {/* Sidebar */}
-          <aside className="w-64 hidden md:block">
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="mb-6">
-                <h3 className="font-bold text-lg mb-4">دسته‌بندی</h3>
-                <ul className="space-y-2">
-                  {categories
-                    .filter((cat) => cat.parent === "main")
-                    .map((mainCat) => (
-                      <li key={mainCat._id}>
-                        <div
-                          onClick={() => handleCategoryClick(mainCat._id)}
-                          className={`cursor-pointer font-bold mb-2 ${
-                            activeCategory === mainCat._id
-                              ? "text-yellow-400"
-                              : "hover:text-yellow-400"
-                          }`}
-                        >
-                          {mainCat.name}
-                          <span className="text-sm text-gray-500 ml-2">
-                            (
-                            {
-                              categories.filter(
-                                (sub) => sub.sub === mainCat.name
-                              ).length
-                            }
-                            )
-                          </span>
-                        </div>
-                        <ul className="pr-4 space-y-1">
-                          {categories
-                            .filter(
-                              (sub) =>
-                                sub.parent === "sub" && sub.sub === mainCat.name
-                            )
-                            .map((subCat) => (
-                              <li
-                                key={subCat._id}
-                                onClick={() => handleCategoryClick(subCat._id)}
-                                className={`cursor-pointer text-sm ${
-                                  activeCategory === subCat._id
-                                    ? "text-yellow-400"
-                                    : "hover:text-yellow-400"
-                                }`}
-                              >
-                                {subCat.name}
-                              </li>
-                            ))}
-                        </ul>
-                      </li>
-                    ))}
-                  <li
+
+          {showFilters && (
+            <>
+              {/* Backdrop */}
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+                onClick={() => setShowFilters(false)}
+              />
+
+              {/* Mobile Filter Sidebar */}
+              <div className="fixed inset-y-0 right-0 w-[280px] bg-white z-50 md:hidden overflow-y-auto">
+                <div className="p-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-bold">فیلترها</h2>
+                    <button
+                      onClick={() => setShowFilters(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  {/* Categories */}
+                  <FilterSection title="دسته‌بندی محصولات">
+                    <div className="space-y-3">
+                      {categories
+                        .filter((cat) => cat.parent === "main")
+                        .map((mainCat) => (
+                          <div key={mainCat._id} className="space-y-2">
+                            <div
+                              onClick={() => {
+                                handleCategoryClick(mainCat._id);
+                                setShowFilters(false);
+                              }}
+                              className={`flex items-center justify-between cursor-pointer p-2 rounded-lg transition-all ${
+                                activeCategory === mainCat._id
+                                  ? "bg-yellow-50 text-yellow-600"
+                                  : "hover:bg-gray-50"
+                              }`}
+                            >
+                              <span className="font-medium">
+                                {mainCat.name}
+                              </span>
+                              <span className="text-sm px-2 py-1 rounded-full bg-gray-100">
+                                {
+                                  categories.filter(
+                                    (sub) => sub.sub === mainCat.name
+                                  ).length
+                                }
+                              </span>
+                            </div>
+
+                            <div className="pr-4">
+                              {categories
+                                .filter(
+                                  (sub) =>
+                                    sub.parent === "sub" &&
+                                    sub.sub === mainCat.name
+                                )
+                                .map((subCat) => (
+                                  <div
+                                    key={subCat._id}
+                                    onClick={() => {
+                                      handleCategoryClick(subCat._id);
+                                      setShowFilters(false);
+                                    }}
+                                    className={`text-sm p-2 cursor-pointer rounded-lg transition-all ${
+                                      activeCategory === subCat._id
+                                        ? "text-yellow-600 bg-yellow-50"
+                                        : "hover:bg-gray-50"
+                                    }`}
+                                  >
+                                    {subCat.name}
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </FilterSection>
+
+                  {/* Brands */}
+                  <FilterSection title="برندها">
+                    <div className="space-y-2">
+                      {Array.isArray(brands) &&
+                        brands.map((brand) => (
+                          <div
+                            key={brand._id}
+                            onClick={() => {
+                              handleBrandClick(brand._id);
+                              setShowFilters(false);
+                            }}
+                            className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-all ${
+                              activeBrand === brand._id
+                                ? "bg-yellow-50 text-yellow-600"
+                                : "hover:bg-gray-50"
+                            }`}
+                          >
+                            <span>{brand.name}</span>
+                            <span className="text-sm px-2 py-1 rounded-full bg-gray-100">
+                              {brand.productCount || 0}
+                            </span>
+                          </div>
+                        ))}
+                    </div>
+                  </FilterSection>
+
+                  {/* Clear Filters Button */}
+                  <button
                     onClick={() => {
+                      setActiveBrand(null);
                       setActiveCategory(null);
                       fetchProducts(1);
                       router.push("/pages/Products?page=1");
+                      setShowFilters(false);
                     }}
-                    className="cursor-pointer text-gray-500 hover:text-yellow-400 transition mt-4"
+                    className="w-full py-2 px-4 bg-gray-100 hover:bg-yellow-400 hover:text-white rounded-lg transition-all duration-300 mt-4"
                   >
-                    نمایش همه
-                  </li>
-                </ul>
+                    پاک کردن فیلترها
+                  </button>
+                </div>
               </div>
-
-              <div>
-                <h3 className="font-bold text-lg mb-4">برندها</h3>
-                <ul className="space-y-2">
-                  {Array.isArray(brands) &&
-                    brands.map((brand) => (
-                      <li
-                        key={brand._id}
-                        onClick={() => {
-                          fetchProducts(1, null, brand._id);
-                        }}
-                        className="cursor-pointer hover:text-yellow-400 transition"
+            </>
+          )}
+          <aside className="w-72 hidden md:block space-y-6">
+            <FilterSection title="دسته‌بندی محصولات">
+              <div className="space-y-3">
+                {categories
+                  .filter((cat) => cat.parent === "main")
+                  .map((mainCat) => (
+                    <div key={mainCat._id} className="space-y-2">
+                      <div
+                        onClick={() => handleCategoryClick(mainCat._id)}
+                        className={`flex items-center justify-between cursor-pointer p-2 rounded-lg transition-all ${
+                          activeCategory === mainCat._id
+                            ? "bg-yellow-50 text-yellow-600"
+                            : "hover:bg-gray-50"
+                        }`}
                       >
-                        {brand.name}
-                      </li>
-                    ))}
-                </ul>
+                        <span className="font-medium">{mainCat.name}</span>
+                        <span className="text-sm px-2 py-1 rounded-full bg-gray-100">
+                          {
+                            categories.filter((sub) => sub.sub === mainCat.name)
+                              .length
+                          }
+                        </span>
+                      </div>
+
+                      <div className="pr-4">
+                        {categories
+                          .filter(
+                            (sub) =>
+                              sub.parent === "sub" && sub.sub === mainCat.name
+                          )
+                          .map((subCat) => (
+                            <div
+                              key={subCat._id}
+                              onClick={() => handleCategoryClick(subCat._id)}
+                              className={`text-sm p-2 cursor-pointer rounded-lg transition-all ${
+                                activeCategory === subCat._id
+                                  ? "text-yellow-600 bg-yellow-50"
+                                  : "hover:bg-gray-50"
+                              }`}
+                            >
+                              {subCat.name}
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  ))}
               </div>
-            </div>
+            </FilterSection>
+
+            <FilterSection title="برندها">
+              <div className="space-y-2">
+                {Array.isArray(brands) &&
+                  brands.map((brand) => (
+                    <div
+                      key={brand._id}
+                      onClick={() => handleBrandClick(brand._id)}
+                      className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-all ${
+                        activeBrand === brand._id
+                          ? "bg-yellow-50 text-yellow-600"
+                          : "hover:bg-gray-50"
+                      }`}
+                    >
+                      <span>{brand.name}</span>
+                      <span className="text-sm px-2 py-1 rounded-full bg-gray-100">
+                        {brand.productCount || 0}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            </FilterSection>
+
+            <button
+              onClick={() => {
+                setActiveBrand(null);
+                setActiveCategory(null);
+                fetchProducts(1);
+                router.push("/pages/Products?page=1");
+              }}
+              className="w-full py-2 px-4 bg-gray-100 hover:bg-yellow-400 hover:text-white rounded-lg transition-all duration-300"
+            >
+              پاک کردن فیلترها
+            </button>
           </aside>
 
           {/* Main Content */}
@@ -390,19 +581,24 @@ export default function Products() {
             <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex flex-wrap gap-2">
-                  {["ارزان‌ترین", "گران‌ترین", "جدیدترین", "پربازدیدترین"].map(
-                    (filter) => (
-                      <button
-                        key={filter}
-                        onClick={() =>
-                          handlePrice(filter === "ارزان‌ترین" ? "asc" : "desc")
-                        }
-                        className="px-4 py-2 rounded-full bg-gray-100 hover:bg-yellow-400 hover:text-white transition"
-                      >
-                        {filter}
-                      </button>
-                    )
-                  )}
+                  {[
+                    { id: "cheapest", label: "ارزان‌ترین" },
+                    { id: "expensive", label: "گران‌ترین" },
+                    { id: "newest", label: "جدیدترین" },
+                    { id: "mostViewed", label: "پربازدیدترین" },
+                  ].map((sort) => (
+                    <button
+                      key={sort.id}
+                      onClick={() => handleSort(sort.id)}
+                      className={`px-4 py-2 rounded-full transition ${
+                        sortType === sort.id
+                          ? "bg-yellow-400 text-white"
+                          : "bg-gray-100 hover:bg-yellow-400 hover:text-white"
+                      }`}
+                    >
+                      {sort.label}
+                    </button>
+                  ))}
                 </div>
 
                 <select

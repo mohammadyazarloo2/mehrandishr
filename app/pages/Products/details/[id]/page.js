@@ -11,6 +11,14 @@ export default function Page({ params }) {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [categoryName, setCategoryName] = useState("");
+  const [expandedChapter, setExpandedChapter] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [newReview, setNewReview] = useState({
+    name: "",
+    email: "",
+    rating: 0,
+    comment: "",
+  });
 
   const fetchCategoryName = async (categoryId) => {
     try {
@@ -53,11 +61,63 @@ export default function Page({ params }) {
     }
   }, [params.id]);
 
-  useEffect(() => {
-    if (product?.category) {
-      fetchCategoryName(product.category);
+  const fetchReviews = async () => {
+    try {
+      console.log("Fetching reviews for product:", params.id);
+      const response = await fetch(`/api/reviews?productId=${params.id}`);
+      const data = await response.json();
+      console.log("Fetched reviews:", data);
+      setReviews(data.reviews);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
     }
-  }, [product]);
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!newReview.rating) {
+        alert("لطفا امتیاز را انتخاب کنید");
+        return;
+      }
+
+      const response = await fetch("/api/reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...newReview,
+          productId: params.id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "خطا در ثبت نظر");
+      }
+
+      // Clear form and refresh reviews
+      setNewReview({ name: "", email: "", rating: 0, comment: "" });
+      fetchReviews();
+      alert("نظر شما با موفقیت ثبت شد");
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      alert(error.message || "خطا در ثبت نظر");
+    }
+  };
+
+  useEffect(
+    () => {
+      if (product?.category) {
+        fetchCategoryName(product.category);
+      }
+      fetchReviews();
+    },
+    [product],
+    [params.id]
+  );
 
   const LoadingSkeleton = () => (
     <div>
@@ -261,24 +321,125 @@ export default function Page({ params }) {
         <div className="mt-8 bg-white rounded-2xl p-6 shadow-lg">
           {activeTab === "description" && (
             <div className="prose max-w-none">
-              <h3 className="text-2xl font-bold mb-6 text-gray-800">
-                سرفصل‌های دوره
+              <h3 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
+                <span>سرفصل‌های دوره</span>
+                <span className="text-sm font-normal text-gray-500">
+                  ({product?.chapters?.length} جلسه)
+                </span>
               </h3>
+
               <div className="grid gap-4">
-                {[1, 2, 3, 4, 5].map((item) => (
+                {product?.chapters?.map((chapter, index) => (
                   <div
-                    key={item}
-                    className="flex items-center gap-4 p-4 rounded-lg border border-gray-100 hover:border-primary/20 hover:bg-primary/5 transition-all duration-300"
+                    key={index}
+                    className={`bg-white rounded-xl border transition-all duration-300 overflow-hidden
+            ${
+              expandedChapter === index
+                ? "shadow-lg border-yellow-200"
+                : "hover:border-gray-300 border-gray-100"
+            }`}
                   >
-                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold">
-                      {item}
-                    </span>
-                    <div>
-                      <h4 className="font-bold text-gray-800">فصل {item}</h4>
-                      <p className="text-gray-600 text-sm mt-1">
-                        توضیحات مربوط به این فصل از دوره
-                      </p>
+                    {/* Chapter Header */}
+                    <div
+                      onClick={() =>
+                        setExpandedChapter(
+                          expandedChapter === index ? null : index
+                        )
+                      }
+                      className="flex items-center gap-4 p-4 cursor-pointer group"
+                    >
+                      <div className="relative">
+                        <span className="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 font-bold transition-transform group-hover:scale-110">
+                          {chapter.order}
+                        </span>
+                      </div>
+
+                      <div className="flex-1">
+                        <h4 className="font-bold text-gray-800 group-hover:text-yellow-600 transition-colors">
+                          {chapter.title}
+                        </h4>
+                        <p className="text-gray-500 text-sm mt-1">
+                          {chapter.description}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-3 text-gray-400">
+                        <span className="text-sm">
+                          {chapter.duration} دقیقه
+                        </span>
+                        <svg
+                          className={`w-5 h-5 transition-transform duration-300 ${
+                            expandedChapter === index ? "rotate-180" : ""
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
                     </div>
+
+                    {/* Action Buttons */}
+                    {expandedChapter === index && (
+                      <div className="bg-gray-50 p-4 border-t border-gray-100">
+                        <div className="flex gap-3 pr-14">
+                          <button
+                            onClick={() =>
+                              window.open(chapter.videoUrl, "_blank")
+                            }
+                            className="flex items-center gap-2 px-5 py-2.5 bg-yellow-500 text-white rounded-xl hover:bg-yellow-600 transition-colors"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            <span>مشاهده آنلاین</span>
+                          </button>
+
+                          <a
+                            href={chapter.videoUrl}
+                            download
+                            className="flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                              />
+                            </svg>
+                            <span>دانلود ویدیو</span>
+                          </a>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -290,7 +451,7 @@ export default function Page({ params }) {
               {/* فرم ثبت نظر جدید */}
               <div className="bg-gray-50 p-6 rounded-xl">
                 <h3 className="text-xl font-bold mb-6">ثبت نظر جدید</h3>
-                <form className="space-y-4">
+                <form onSubmit={handleReviewSubmit} className="space-y-4">
                   <div className="flex gap-4">
                     <div className="flex-1">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -298,8 +459,13 @@ export default function Page({ params }) {
                       </label>
                       <input
                         type="text"
+                        value={newReview.name}
+                        onChange={(e) =>
+                          setNewReview({ ...newReview, name: e.target.value })
+                        }
                         className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
                         placeholder="نام خود را وارد کنید"
+                        required
                       />
                     </div>
                     <div className="flex-1">
@@ -308,12 +474,17 @@ export default function Page({ params }) {
                       </label>
                       <input
                         type="email"
+                        value={newReview.email}
+                        onChange={(e) =>
+                          setNewReview({ ...newReview, email: e.target.value })
+                        }
                         className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
                         placeholder="ایمیل خود را وارد کنید"
+                        required
                       />
                     </div>
                   </div>
-
+                  {/* Update the rating stars */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       امتیاز شما
@@ -323,25 +494,31 @@ export default function Page({ params }) {
                         <button
                           key={star}
                           type="button"
-                          className="text-2xl text-gray-300 hover:text-yellow-400 transition-colors"
+                          onClick={() =>
+                            setNewReview({ ...newReview, rating: star })
+                          }
+                          className={`text-2xl ${
+                            newReview.rating >= star
+                              ? "text-yellow-400"
+                              : "text-gray-300"
+                          } hover:text-yellow-400 transition-colors`}
                         >
                           ★
                         </button>
                       ))}
                     </div>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      متن نظر
-                    </label>
-                    <textarea
-                      rows="4"
-                      className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
-                      placeholder="نظر خود را بنویسید..."
-                    ></textarea>
-                  </div>
-
+                  {/* Update the comment textarea */}
+                  <textarea
+                    value={newReview.comment}
+                    onChange={(e) =>
+                      setNewReview({ ...newReview, comment: e.target.value })
+                    }
+                    rows="4"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
+                    placeholder="نظر خود را بنویسید..."
+                    required
+                  ></textarea>
                   <button
                     type="submit"
                     className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
@@ -353,34 +530,46 @@ export default function Page({ params }) {
 
               {/* نمایش نظرات قبلی */}
               <div className="space-y-6">
-                {[1, 2, 3].map((review) => (
+                {reviews.map((review) => (
                   <div
-                    key={review}
+                    key={review._id}
                     className="bg-gray-50 p-6 rounded-xl hover:shadow-md transition-all duration-300"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-primary font-bold">کاربر</span>
+                          <span className="text-primary font-bold">
+                            {review.name.charAt(0)}
+                          </span>
                         </div>
                         <div>
                           <h4 className="font-bold text-gray-800">
-                            کاربر {review}
+                            {review.name}
                           </h4>
-                          <p className="text-sm text-gray-500">2 روز پیش</p>
+                          <p className="text-sm text-gray-500">
+                            {new Date(review.createdAt).toLocaleDateString(
+                              "fa-IR"
+                            )}
+                          </p>
                         </div>
                       </div>
                       <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <span key={star} className="text-yellow-400 text-xl">
+                          <span
+                            key={star}
+                            className={
+                              star <= review.rating
+                                ? "text-yellow-400"
+                                : "text-gray-300"
+                            }
+                          >
                             ★
                           </span>
                         ))}
                       </div>
                     </div>
                     <p className="text-gray-600 leading-relaxed">
-                      این دوره عالی بود و من خیلی چیزها یاد گرفتم. مطالب کاملاً
-                      کاربردی و به روز بودند.
+                      {review.comment}
                     </p>
                   </div>
                 ))}

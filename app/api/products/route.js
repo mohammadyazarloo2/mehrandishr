@@ -5,53 +5,59 @@ import { NextResponse } from "next/server";
 import Category from "@/models/category";
 import Brand from "@/models/brand";
 
-export async function GET(request) {
+export async function GET(req) {
   try {
     await connectMongoDB();
-
-    // Get page and limit from URL params
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page")) || 1;
-    const limit = parseInt(searchParams.get("limit")) || 6;
-    const skip = (page - 1) * limit;
-    const categoryParam = searchParams.get("category");
-    const brandId = searchParams.get("brand");
+    const { searchParams } = new URL(req.url);
     
-    let query = {};
-    if (categoryParam) {
-      const categoryIds = categoryParam.split(",");
-      query.category = { $in: categoryIds };
+    const page = parseInt(searchParams.get('page')) || 1;
+    const limit = parseInt(searchParams.get('limit')) || 10;
+    const sort = searchParams.get('sort') || 'newest';
+    
+    let sortQuery = {};
+    switch(sort) {
+      case 'cheapest':
+        sortQuery = { price: 1 };
+        break;
+      case 'expensive':
+        sortQuery = { price: -1 };
+        break;
+      case 'newest':
+        sortQuery = { createdAt: -1 };
+        break;
+      case 'mostViewed':
+        sortQuery = { views: -1 };
+        break;
+      default:
+        sortQuery = { createdAt: -1 };
     }
-    if (brandId) query.brandId = brandId;
+
+    const query = {};
+    if (searchParams.get('category')) {
+      query.category = { $in: searchParams.get('category').split(',') };
+    }
+    if (searchParams.get('brand')) {
+      query.brand = searchParams.get('brand');
+    }
+
+    const skip = (page - 1) * limit;
     
-
-    // Get total count
-    const totalProducts = await Products.countDocuments(query);
-
-    // Get paginated products
-    const products = await Products.find(query)
-      .populate("category")
-      .populate("brandId")
-      .populate({
-        path: "features",
-        select: "title value",
-      })
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 });
+    const [products, total] = await Promise.all([
+      Products.find(query)
+        .sort(sortQuery)
+        .skip(skip)
+        .limit(limit),
+      Products.countDocuments(query)
+    ]);
 
     return NextResponse.json({
-      status: "success",
       data: products,
       currentPage: page,
-      totalPages: Math.ceil(totalProducts / limit),
-      totalProducts,
+      totalPages: Math.ceil(total / limit),
+      total
     });
+    
   } catch (error) {
-    console.log("Error fetching products:", error);
-    return NextResponse.json(
-      { message: "خطا در دریافت محصولات" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
