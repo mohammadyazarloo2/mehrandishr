@@ -1,26 +1,38 @@
-import { NextResponse } from 'next/server';
 import { connectMongoDB } from "@/lib/mongodb";
+import Article from "@/models/article";
+import { NextResponse } from "next/server";
 
 export async function GET(request, { params }) {
   try {
-    const db = await connectToDatabase();
-    const article = await db.collection('articles').findOne({
-      // Adjust the query based on your database structure
-      title: decodeURIComponent(params.id.toString().replace(/-/g, " "))
+    await connectMongoDB();
+    const article = await Article.findById(params.id);
+    
+    return NextResponse.json({
+      success: true,
+      article
     });
-
-    if (!article) {
-      return NextResponse.json(
-        { message: 'Article not found' },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(article);
   } catch (error) {
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { success: false, error: error.message },
       { status: 500 }
     );
   }
+}
+
+export async function PUT(request, { params }) {
+  await connectMongoDB();
+  
+  const body = await request.json();
+  const { id } = params;
+
+  const updatedArticle = await Article.findByIdAndUpdate(
+    id,
+    { $set: body },
+    { new: true, runValidators: true }
+  );
+
+  return NextResponse.json({
+    success: true,
+    article: updatedArticle
+  });
 }

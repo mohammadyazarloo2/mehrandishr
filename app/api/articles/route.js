@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { connectMongoDB } from "@/lib/mongodb";
 import Article from "@/models/article";
+import { getServerSession } from "next-auth";
+import slugify from "slugify";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 // GET all articles
 export async function GET(request) {
@@ -36,11 +39,30 @@ export async function GET(request) {
 // POST new article
 export async function POST(req) {
   try {
-    const articleData = await req.json();
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    }
+
     await connectMongoDB();
-    const article = await Article.create(articleData);
-    return NextResponse.json(article, { status: 201 });
+    const data = await req.json();
+
+    // Generate slug from title
+    const slug = slugify(data.title, { lower: true });
+
+    // Create article with author info
+    const article = await Article.create({
+      ...data,
+      slug,
+      author: {
+        name: session.user.name,
+        avatar: session.user.image || ""
+      }
+    });
+
+    return new Response(JSON.stringify(article), { status: 201 });
+
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create article" }, { status: 500 });
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }
