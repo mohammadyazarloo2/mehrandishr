@@ -8,23 +8,22 @@ import Image from "next/image";
 export default function Page({ params }) {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [author, setAuthor] = useState(null);
 
   useEffect(() => {
     const fetchArticle = async () => {
-      if (!params?.id) {
-        console.error("No ID provided");
-        return;
-      }
-
       try {
         const response = await fetch(`/api/articles/${params.id}`);
         const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to fetch article");
-        }
-
-        setArticle(data);
+    
+        // Get author name from the correct path in article data
+        const authorResponse = await fetch(`/api/author/${data.author.name}`);
+        const authorData = await authorResponse.json();
+    
+        setArticle({
+          ...data,
+          author: authorData
+        });
       } catch (error) {
         console.error("Error fetching article:", error);
       } finally {
@@ -160,7 +159,7 @@ export default function Page({ params }) {
               <div className="flex items-center gap-2">
                 <img
                   // src={article.author.avatar}
-                  src={"img/ast.png"}
+                  src={article.author?.avatar}
                   className="w-8 h-8 md:w-10 md:h-10 rounded-full"
                 />
                 <span>{article.author?.name}</span>

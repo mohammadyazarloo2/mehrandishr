@@ -168,6 +168,9 @@ export default function Sidebar() {
                 </li>
               ))}
             </ul>
+            <Link href={`/pages/authors`}>
+              همه نوسندگان
+            </Link>
           </div>
         </>
       )}
