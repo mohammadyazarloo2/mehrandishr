@@ -39,7 +39,8 @@ export async function PUT(req) {
       {
         bio: data.bio,
         expertise: data.expertise,
-        socialLinks: data.socialLinks
+        socialLinks: data.socialLinks,
+        avatar: data.avatar,
       },
       { new: true, runValidators: true }
     );

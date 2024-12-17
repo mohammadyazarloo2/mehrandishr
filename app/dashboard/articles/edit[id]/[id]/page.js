@@ -10,6 +10,7 @@ import {
   FaTag,
   FaClock,
   FaEye,
+  FaMusic,
 } from "react-icons/fa";
 import Editor from "@/components/Editor";
 
@@ -23,10 +24,12 @@ export default function EditArticle({ params }) {
     image: "",
     category: "",
     readTime: "",
+    audioUrl: "",
     status: "draft",
     views: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [audioPreview, setAudioPreview] = useState(null);
 
   const handleImageUpload = async (event) => {
     if (!event || !event.target || !event.target.files) return;
@@ -85,8 +88,12 @@ export default function EditArticle({ params }) {
       tags: article.tags,
       image: article.image,
       category: article.category,
-      readTime: article.readTime,
       status: article.status,
+      podcast: {
+        url: article.audioUrl,
+        duration: article.readTime,
+        size: article.fileSize
+      },
       author: {
         name: article.author.name,
         avatar: article.author.avatar,
@@ -115,6 +122,61 @@ export default function EditArticle({ params }) {
       </div>
     );
   }
+
+  const handleFileUpload = async (event) => {
+    if (!event || !event.target || !event.target.files) return;
+
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Create preview URL
+    const previewUrl = URL.createObjectURL(file);
+    setAudioPreview(previewUrl);
+
+    // Calculate file size in MB
+    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+
+    // Create audio element to get duration
+    if (file.type.startsWith("audio/")) {
+      const audio = new Audio();
+      audio.src = previewUrl;
+
+      audio.addEventListener("loadedmetadata", () => {
+        const durationMinutes = Math.ceil(audio.duration / 60);
+        setArticle((prev) => ({
+          ...prev,
+          readTime: `${durationMinutes} دقیقه`,
+          fileSize: `${fileSizeMB} MB`,
+          audioUrl: audio.src,
+        }));
+      });
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("/api/upload/podcast", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (data.url) {
+        setArticle((prev) => ({
+          ...prev,
+          audioUrl: data.url,
+        }));
+        // Clean up preview URL after successful upload
+        URL.revokeObjectURL(previewUrl);
+        setAudioPreview(null);
+      }
+    } catch (error) {
+      console.error("Error uploading podcast:", error);
+      URL.revokeObjectURL(previewUrl);
+      setAudioPreview(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-6">
@@ -188,49 +250,36 @@ export default function EditArticle({ params }) {
             {/* Meta Info */}
             <div className="bg-white p-6 rounded-xl shadow-sm space-y-4">
               <div className="flex items-center gap-2 text-gray-600">
-                <FaClock />
-                <input
-                  type="text"
-                  value={article.readTime}
-                  onChange={(e) =>
-                    setArticle({ ...article, readTime: e.target.value })
-                  }
-                  className="flex-1 border-none focus:ring-0"
-                  placeholder="زمان مطالعه"
-                />
+                <label className="flex items-center gap-2 cursor-pointer bg-blue-50 p-3 rounded-lg hover:bg-blue-100 transition-colors">
+                  <input
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <FaMusic className="text-blue-500" />
+                  <span>آپلود پادکست</span>
+                </label>
               </div>
 
-              <div className="flex items-center gap-2 text-gray-600">
-                <FaTag />
-                <input
-                  type="text"
-                  value={article.tags.join(", ")}
-                  onChange={(e) =>
-                    setArticle({
-                      ...article,
-                      tags: e.target.value.split(",").map((tag) => tag.trim()),
-                    })
-                  }
-                  className="flex-1 border-none focus:ring-0"
-                  placeholder="برچسب‌ها (با کاما جدا کنید)"
-                />
-              </div>
-
-              <div className="flex items-center gap-2 text-gray-600">
-                <FaEye />
-                <span>{article.views || 0} بازدید</span>
-              </div>
-
-              <select
-                value={article.status}
-                onChange={(e) =>
-                  setArticle({ ...article, status: e.target.value })
-                }
-                className="w-full p-2 rounded-lg bg-gray-50 border-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="draft">پیش‌نویس</option>
-                <option value="published">منتشر شده</option>
-              </select>
+              {/* Audio Preview */}
+              {(audioPreview || article.audioUrl) && (
+                <div className="space-y-2">
+                  <audio
+                    controls
+                    className="w-full"
+                    src={audioPreview || article.audioUrl}
+                  />
+                  <div className="text-sm text-gray-500 flex gap-4">
+                    {article.readTime && (
+                      <div>مدت زمان: {article.readTime}</div>
+                    )}
+                    {article.fileSize && (
+                      <div>حجم فایل: {article.fileSize}</div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Action Buttons */}
