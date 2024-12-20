@@ -23,27 +23,13 @@ import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa";
 import { LuClock } from "react-icons/lu";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  togglePlay,
-  setCurrentTime,
-  setDuration,
-  nextTrack,
-  prevTrack,
-  setVolume,
-  toggleMute,
-  setRepeatMode,
-  toggleShuffle,
-  setIsPlaying,
-  setLoading,
-  setCurrentPodcast, // Add this import
-} from "../redux/audioSlice";
-import { podcasts } from "../data/podcasts";
 import { AudioController } from "../utils/AudioController";
 import { usePathname } from "next/navigation";
 import ChatModal from "../components/ChatModal";
 
 import { Autoplay, EffectCoverflow, Navigation } from "swiper/modules";
 import Weather from "../components/Weather";
+import HomeAudioPlayer from "../components/HomeAudioPlayer";
 
 const courses = [
   {
@@ -126,26 +112,18 @@ export default function Index() {
   };
   const [isReady, setIsReady] = useState(false);
   // const [currentPodcast, setCurrentPodcast] = useState(0);
-  const [currentPodcastIndex, setCurrentPodcastIndex] = useState(0);
+ 
 
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
-  const audioRef = useRef(null);
-  const {
-    currentPodcast,
-    isPlaying,
-    currentTime,
-    duration,
-    volume,
-    isMuted,
-    repeatMode,
-  } = useSelector((state) => state.audio);
+  
   const [viewCount, setViewCount] = useState(0);
   const [products, setProducts] = useState([]);
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [queue, setQueue] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -183,102 +161,7 @@ export default function Index() {
     recordPageView();
   }, []);
 
-  useEffect(() => {
-    if (currentPodcast?.audioSrc) {
-      AudioController.initialize(currentPodcast.audioSrc, dispatch);
-    }
-
-    return () => {
-      AudioController.cleanup();
-    };
-  }, [currentPodcast]);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      setIsReady(true);
-    }
-  }, []);
-  useEffect(() => {
-    console.log("Current Podcast:", currentPodcast);
-    console.log("Audio URL:", currentPodcast?.audioSrc);
-  }, [currentPodcast]);
-
-  const handleAudioEnd = () => {
-    if (currentPodcast < podcasts.length - 1) {
-      handleNext();
-    } else {
-      AudioController.stop(dispatch);
-    }
-  };
-
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      AudioController.pause(dispatch);
-    } else {
-      AudioController.play(dispatch);
-    }
-  };
-
-  const handleSeek = (e) => {
-    const rect = e.target.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percentage = x / rect.width;
-    const time = percentage * duration;
-    AudioController.seek(time, dispatch);
-  };
-  // const handleSeek = (value) => {
-  //   AudioController.seek(value, dispatch);
-  // };
-
-  const handleVolumeChange = (e) => {
-    const value = parseFloat(e.target.value);
-    dispatch(setVolume(value));
-    AudioController.setVolume(value);
-  };
-
-  const handlePlaybackRateChange = (rate) => {
-    AudioController.setPlaybackRate(rate);
-  };
-
-  const handleMuteToggle = () => {
-    if (audioRef.current.muted) {
-      AudioController.unmute();
-    } else {
-      AudioController.mute();
-    }
-  };
-
-  const handleNext = () => {
-    dispatch(nextTrack());
-    const nextPodcast = podcasts[currentPodcastIndex + 1];
-    if (nextPodcast) {
-      AudioController.changeTrack(nextPodcast.audioSrc, dispatch);
-    }
-  };
-
-  const handlePrevious = () => {
-    dispatch(prevTrack());
-    const prevPodcast = podcasts[currentPodcastIndex - 1];
-    if (prevPodcast) {
-      AudioController.changeTrack(prevPodcast.audioSrc, dispatch);
-    }
-  };
-
-  const handleTimeUpdate = (e) => {
-    const currentTime = e.target.currentTime;
-    // dispatch(setCurrentTime(currentTime));
-    AudioController.playPrevious(setCurrentTime(currentTime), dispatch);
-  };
-
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
-
-  const handleRepeatClick = () => {
-    dispatch(setRepeatMode());
-  };
+  
 
   useEffect(() => {
     const images = document.querySelectorAll(".course-image");
@@ -650,148 +533,7 @@ export default function Index() {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="course-padcast-head text-center mb-16">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent inline-block transform hover:scale-105 transition-all duration-300">
-              پادکست‌های برنامه‌نویسی
-            </h2>
-          </div>
-
-          <div className="course-padcast-body flex flex-col lg:flex-row items-center gap-12">
-            <div className="course-padcast-content transform hover:-translate-y-2 transition-all duration-500">
-              <div className="backdrop-blur-lg bg-white/80 p-8 rounded-3xl shadow-2xl hover:shadow-purple-200/50">
-                <p className="leading-relaxed text-gray-700 text-lg">
-                  در این بخش سوالات پرتکرار و رایج برنامه نویسی همراه با معرفی
-                  زبان‌ها، اطلاعاتی در اختیار کاربران قرار می‌گیرد تا با دیدی
-                  روشن‌تر مسیر خود را در دنیای برنامه‌نویسی پیدا کنند
-                </p>
-              </div>
-            </div>
-
-            <div className="course-padcast-player flex-1">
-              <div className="player bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-xl transform hover:scale-105 transition-all duration-500">
-                <audio
-                  ref={audioRef}
-                  src={currentPodcast?.audioSrc}
-                  onTimeUpdate={() =>
-                    AudioController.handleTimeUpdate(audioRef.current, dispatch)
-                  }
-                  onLoadedMetadata={() =>
-                    AudioController.handleLoadMetadata(
-                      audioRef.current,
-                      dispatch
-                    )
-                  }
-                />
-
-                <div className="player-img relative mb-8 group perspective">
-                  <div className="relative transform transition-all duration-700 group-hover:rotate-6 preserve-3d">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
-                    <Image
-                      src={currentPodcast?.image}
-                      width={200}
-                      height={200}
-                      alt={currentPodcast?.title}
-                    />
-                  </div>
-                </div>
-
-                <div className="podcast-info mb-6 text-center">
-                  <h3 className="text-xl font-bold">{currentPodcast?.title}</h3>
-                  <p className="text-gray-600">{currentPodcast?.description}</p>
-                  <span className="text-sm">{currentPodcast?.duration}</span>
-                </div>
-
-                <div className="space-y-6">
-                  <div
-                    className="h-2 bg-gray-200 rounded-full overflow-hidden cursor-pointer"
-                    onClick={handleSeek}
-                  >
-                    <div
-                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transform origin-left hover:scale-x-105 transition-transform"
-                      style={{ width: `${(currentTime / duration) * 100}%` }}
-                    ></div>
-                  </div>
-
-                  <div className="player-actions flex flex-col gap-4">
-                    <div className="flex justify-center items-center gap-8">
-                      {/* <button
-                        onClick={handleShuffleClick}
-                        className={`text-3xl ${
-                          isShuffleOn ? "text-purple-600" : "text-gray-700"
-                        } hover:text-purple-600 transform hover:scale-110 transition-all`}
-                      >
-                        <CiShuffle />
-                      </button> */}
-                      <button
-                        onClick={handlePrevious}
-                        className="text-4xl text-gray-700 hover:text-purple-600 transform hover:scale-110 transition-all"
-                      >
-                        <IoPlaySkipBackCircle />
-                      </button>
-                      <button
-                        onClick={handlePlayPause}
-                        className="text-5xl text-gray-700 hover:text-purple-600 transform hover:scale-110 transition-all"
-                      >
-                        {isPlaying ? <CiPause1 /> : <CiPlay1 />}
-                      </button>
-                      <button
-                        onClick={handleNext}
-                        className="text-4xl text-gray-700 hover:text-purple-600 transform hover:scale-110 transition-all"
-                      >
-                        <BsFillSkipEndCircleFill />
-                      </button>
-                      <button
-                        onClick={handleRepeatClick}
-                        className={`text-3xl ${
-                          repeatMode !== "off"
-                            ? "text-purple-600"
-                            : "text-gray-700"
-                        } hover:text-purple-600 transform hover:scale-110 transition-all relative`}
-                      >
-                        <FaRepeat />
-                        {repeatMode === "one" && (
-                          <span className="absolute -top-2 -right-2 text-xs">
-                            1
-                          </span>
-                        )}
-                      </button>
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={handleMuteToggle}
-                          className="text-xl text-gray-700 hover:text-purple-600"
-                        >
-                          {isMuted || volume === 0 ? (
-                            <FaVolumeMute />
-                          ) : (
-                            <FaVolumeUp />
-                          )}
-                        </button>
-                        <input
-                          type="range"
-                          min="0"
-                          max="1"
-                          step="0.1"
-                          value={isMuted ? 0 : volume}
-                          onChange={handleVolumeChange}
-                          className="w-20 h-1 bg-gray-200 rounded-full accent-purple-500"
-                        />
-                      </div>
-                      <div className="flex text-sm text-gray-600 font-medium gap-2">
-                        <span>{formatTime(currentTime)}</span>
-                        <span>/</span>
-                        <span>{formatTime(duration)}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <HomeAudioPlayer />
       </div>
       <div className="article bg-gradient-to-b from-gray-50 to-white">
         <div className="article-head flex justify-between items-center mb-8">

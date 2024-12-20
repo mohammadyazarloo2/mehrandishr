@@ -4,6 +4,8 @@ import dynamic from "next/dynamic";
 import { FaImage, FaSave, FaTimes } from "react-icons/fa";
 import { useRef } from "react";
 import Image from 'next/image';
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Editor = dynamic(() => import("@/components/Editor"), { ssr: false });
 
@@ -40,6 +42,31 @@ export default function NewArticle() {
   const audioRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [imagePreview, setImagePreview] = useState(null);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuthorization = async () => {
+      if (status === "unauthenticated") {
+        router.push("/pages/Signin");
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/author/check");
+        const data = await response.json();
+        
+        if (!data.isAuthor) {
+          router.push("/");
+        }
+      } catch (error) {
+        console.error("Error checking author status:", error);
+        router.push("/");
+      }
+    };
+
+    checkAuthorization();
+  }, [status, router]);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];

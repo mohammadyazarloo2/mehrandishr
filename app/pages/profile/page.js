@@ -18,6 +18,7 @@ import {
 } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -44,16 +45,23 @@ export default function Page() {
       linkedin: "",
       github: "",
     },
-    avatar:"",
+    avatar: "",
   });
 
   const [isAuthor, setIsAuthor] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   // Instead of directly using session
-  const { data: session, update: sessionUpdate } = useSession();
+  const { data: session, status, update: sessionUpdate } = useSession();
   const userName = session?.user?.name;
   const userEmail = session?.user?.email;
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/pages/Signin");
+    }
+  }, [status, router]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -111,7 +119,6 @@ export default function Page() {
       setUserData({
         name: userData.name || "",
         email: userData.email || "",
-        
       });
 
       const authorCheckResponse = await fetch("/api/author/check");

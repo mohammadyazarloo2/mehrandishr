@@ -1,24 +1,35 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { podcasts } from '../data/podcasts';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  currentPodcast: podcasts[0],
+  currentPodcast: {
+    title: "",
+    description: "",
+    audioUrl: "",
+    duration: 0,
+    category: null,
+    categories: [],
+    tags: [],
+    listens: 0,
+    createdAt: null,
+    updatedAt: null,
+  },
   isPlaying: false,
   currentTime: 0,
   duration: 0,
   volume: 1,
   isMuted: false,
-  repeatMode: 'off', // off, one, all
+  repeatMode: "off",
   isShuffleOn: false,
-  queue: [...podcasts],
+  queue: [],
   loading: false,
 };
 
 const audioSlice = createSlice({
-  name: 'audio',
+  name: "audio",
   initialState,
   reducers: {
     setCurrentPodcast: (state, action) => {
+      console.log("Setting podcast:", action.payload);
       state.currentPodcast = action.payload;
     },
     togglePlay: (state) => {
@@ -31,7 +42,7 @@ const audioSlice = createSlice({
       state.currentTime = action.payload;
     },
     setDuration: (state, action) => {
-      state.duration = action.payload;
+      state.duration = action.payload || state.currentPodcast.duration;
     },
     setVolume: (state, action) => {
       state.volume = action.payload;
@@ -43,35 +54,49 @@ const audioSlice = createSlice({
       state.isMuted = !state.isMuted;
     },
     setRepeatMode: (state) => {
-      const modes = ['off', 'one', 'all'];
+      const modes = ["off", "one", "all"];
       const currentIndex = modes.indexOf(state.repeatMode);
       state.repeatMode = modes[(currentIndex + 1) % modes.length];
     },
     toggleShuffle: (state) => {
       state.isShuffleOn = !state.isShuffleOn;
       if (state.isShuffleOn) {
-        state.queue = [...podcasts].sort(() => Math.random() - 0.5);
+        state.queue = [...state.queue].sort(() => Math.random() - 0.5);
       } else {
-        state.queue = [...podcasts];
+        // Reset queue to original order
+        fetch("/api/podcasts")
+          .then((res) => res.json())
+          .then((podcasts) => (state.queue = podcasts));
       }
     },
     nextTrack: (state) => {
-      const currentIndex = state.queue.findIndex(p => p.id === state.currentPodcast.id);
-      const nextIndex = state.isShuffleOn 
-        ? Math.floor(Math.random() * state.queue.length)
-        : (currentIndex + 1) % state.queue.length;
-      state.currentPodcast = state.queue[nextIndex];
+      const currentIndex = state.queue.findIndex(
+        (p) => p._id === state.currentPodcast._id
+      );
+      // اگر آخرین پادکست بود، به اولین پادکست برمی‌گردیم
+      if (currentIndex === state.queue.length - 1) {
+        state.currentPodcast = state.queue[0];
+      } else {
+        state.currentPodcast = state.queue[currentIndex + 1];
+      }
     },
     prevTrack: (state) => {
-      const currentIndex = state.queue.findIndex(p => p.id === state.currentPodcast.id);
-      const prevIndex = currentIndex === 0 ? state.queue.length - 1 : currentIndex - 1;
-      state.currentPodcast = state.queue[prevIndex];
+      const currentIndex = state.queue.findIndex(
+        (p) => p._id === state.currentPodcast._id
+      );
+      // اگر اولین پادکست بود، به آخرین پادکست می‌رویم
+      if (currentIndex === 0) {
+        state.currentPodcast = state.queue[state.queue.length - 1];
+      } else {
+        state.currentPodcast = state.queue[currentIndex - 1];
+      }
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
-  }
+  },
 });
+
 export const {
   setCurrentPodcast,
   togglePlay,
@@ -84,6 +109,7 @@ export const {
   toggleShuffle,
   nextTrack,
   prevTrack,
-  setLoading
+  setLoading,
 } = audioSlice.actions;
+
 export default audioSlice.reducer;

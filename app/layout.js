@@ -9,7 +9,11 @@ import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import Providers from "./components/Providers";
 import Footer from "./components/Footer";
-import AudioPlayer from "./components/AudioPlayer";
+import dynamic from "next/dynamic";
+
+const AudioPlayer = dynamic(() => import("./components/AudioPlayer"), {
+  ssr: false,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,16 +38,16 @@ export default function RootLayout({ children }) {
           <AuthProvider>
             <Header />
             {/* <ClientLayout> */}
-              <Suspense fallback={<Loading />}>
-                {/* <DelayedSupense ms={2000}>{children}</DelayedSupense> */}
-                {children}
-                <div className="fixed bottom-0 left-0 right-0 z-50">
-                  <AudioPlayer />
-                </div>
-              </Suspense>
+            <Suspense fallback={<Loading />}>
+              {/* <DelayedSupense ms={2000}>{children}</DelayedSupense> */}
+              {children}
+            </Suspense>
             {/* </ClientLayout> */}
             <Footer />
           </AuthProvider>
+          <div className="fixed bottom-0 left-0 right-0 z-50">
+            <AudioPlayer />
+          </div>
         </Providers>
       </body>
     </html>

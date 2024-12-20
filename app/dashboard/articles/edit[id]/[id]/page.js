@@ -13,6 +13,7 @@ import {
   FaMusic,
 } from "react-icons/fa";
 import Editor from "@/components/Editor";
+import { useSession } from "next-auth/react";
 
 export default function EditArticle({ params }) {
   const router = useRouter();
@@ -30,6 +31,30 @@ export default function EditArticle({ params }) {
   });
   const [loading, setLoading] = useState(true);
   const [audioPreview, setAudioPreview] = useState(null);
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    const checkAuthorization = async () => {
+      if (status === "unauthenticated") {
+        router.push("/auth/signin");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/article/${params.id}/check-author`);
+        const data = await response.json();
+
+        if (!data.isAuthor) {
+          router.push("/dashboard");
+        }
+      } catch (error) {
+        console.error("Error checking authorization:", error);
+        router.push("/dashboard");
+      }
+    };
+
+    checkAuthorization();
+  }, [status, router, params.id]);
 
   const handleImageUpload = async (event) => {
     if (!event || !event.target || !event.target.files) return;
@@ -92,7 +117,7 @@ export default function EditArticle({ params }) {
       podcast: {
         url: article.audioUrl,
         duration: article.readTime,
-        size: article.fileSize
+        size: article.fileSize,
       },
       author: {
         name: article.author.name,
@@ -183,6 +208,7 @@ export default function EditArticle({ params }) {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8 bg-white p-4 rounded-xl shadow-sm">
+          <h1 className="text-2xl font-bold text-gray-800">ویرایش مقاله</h1>
           <button
             onClick={() => router.back()}
             className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
@@ -190,7 +216,6 @@ export default function EditArticle({ params }) {
             <FaArrowRight />
             <span>بازگشت</span>
           </button>
-          <h1 className="text-2xl font-bold text-gray-800">ویرایش مقاله</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
