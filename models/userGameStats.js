@@ -48,3 +48,6 @@ const userGameStatsSchema = new mongoose.Schema({
     type: Date
   }
 }, { timestamps: true });
+const UserGameStats = mongoose.models.UserGameStats || mongoose.model('UserGameStats', userGameStatsSchema);
+
+export default UserGameStats;

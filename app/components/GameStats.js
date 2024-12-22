@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { HiSpeakerWave,TbArrowBackUp } from "react-icons/hi2";
 
 export default function GameStats() {
   const [stats, setStats] = useState({
