@@ -36,6 +36,7 @@ export default function AudioPlayer() {
   } = useSelector((state) => state.audio);
   const audioRef = useRef(null);
   const [showPlaylist, setShowPlaylist] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchPodcasts = async () => {
@@ -112,12 +113,15 @@ export default function AudioPlayer() {
   };
 
   const handleSeek = (e) => {
-    if (isLoading || !duration) return;
-    const rect = e.target.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percentage = x / rect.width;
-    const seekTime = percentage * duration;
-    AudioController.seek(seekTime, dispatch);
+    const progressBar = e.target.getBoundingClientRect();
+    const clickPosition = e.clientX - progressBar.left;
+    const clickPercentage = clickPosition / progressBar.width;
+    const seekTime = duration * clickPercentage;
+
+    if (seekTime >= 0 && seekTime <= duration) {
+      AudioController.seek(seekTime, dispatch);
+      dispatch(setCurrentTime(seekTime));
+    }
   };
 
   const handleVolumeChange = (e) => {
@@ -135,7 +139,7 @@ export default function AudioPlayer() {
 
   const handleNext = () => {
     if (loading) return;
-
+    setLoading(true);
     const currentIndex = podcasts.findIndex(
       (p) => p._id === currentPodcast?._id
     );
@@ -152,10 +156,12 @@ export default function AudioPlayer() {
     dispatch(setCurrentPodcast(nextPodcast));
     AudioController.initialize(nextPodcast.audioUrl, dispatch);
     AudioController.play(dispatch);
+    setLoading(false);
   };
 
   const handlePrevious = () => {
     if (loading) return;
+    setLoading(true);
 
     const currentIndex = podcasts.findIndex(
       (p) => p._id === currentPodcast?._id
@@ -173,6 +179,7 @@ export default function AudioPlayer() {
     dispatch(setCurrentPodcast(prevPodcast));
     AudioController.initialize(prevPodcast.audioUrl, dispatch);
     AudioController.play(dispatch);
+    setLoading(false);
   };
 
   const formatTime = (time) => {
@@ -183,43 +190,42 @@ export default function AudioPlayer() {
   };
 
   return (
-    <div className="fixed bottom-4 left-4 bg-white/90 backdrop-blur-lg rounded-full shadow-lg p-2 flex items-center gap-2 group transition-all duration-300 hover:w-[80%] w-16">
+    <div className="fixed bottom-0 md:bottom-4 left-0 md:left-4 right-0 md:right-auto bg-white/90 backdrop-blur-lg rounded-none md:rounded-full shadow-lg p-2 md:p-3 flex items-center gap-2 group transition-all duration-300 md:hover:w-[80%] w-full md:w-16">
       {/* Main Player Section */}
-      <div className="flex items-center gap-4 min-w-[300px]">
+      <div className="flex items-center gap-2 md:gap-4 min-w-[200px] md:min-w-[300px]">
         <div className="relative group-hover:rotate-6 transition-all duration-500">
           {currentPodcast?.image && (
             <Image
               src={currentPodcast.image}
               alt={currentPodcast.title}
-              width={50}
-              height={50}
+              width={40}
+              height={40}
               className="rounded-full shadow-lg hover:shadow-xl transition-all"
             />
           )}
         </div>
 
         <div className="hidden group-hover:block">
-          <h3 className="font-bold text-gray-800">{currentPodcast?.title}</h3>
-          <p className="text-sm text-gray-600">{currentPodcast?.artist}</p>
+          <h3 className="font-bold text-sm md:text-base text-gray-800 truncate">
+            {currentPodcast?.title}
+          </h3>
+          <p className="text-xs md:text-sm text-gray-600 truncate">
+            {currentPodcast?.artist}
+          </p>
         </div>
       </div>
 
       {/* Controls Section */}
-      <div className="hidden group-hover:flex flex-1 justify-between items-center px-6">
-        <div className="flex items-center gap-4">
+      <div className="flex md:hidden group-hover:flex flex-1 justify-between items-center px-2 md:px-6">
+        <div className="flex items-center gap-2 md:gap-4">
           <button
             onClick={() => dispatch(toggleShuffle())}
-            className={`${
-              isShuffleOn ? "text-purple-600" : "text-gray-600"
-            } hover:scale-110 transition-all`}
+            className={`${isShuffleOn ? "text-purple-600" : "text-gray-600"}`}
           >
-            <CiShuffle size={20} />
+            <CiShuffle className="w-4 h-4 md:w-5 md:h-5" />
           </button>
-          <button
-            onClick={handlePrevious}
-            className="hover:scale-110 transition-all"
-          >
-            <IoPlaySkipBackCircle size={24} />
+          <button onClick={handlePrevious}>
+            <IoPlaySkipBackCircle className="w-5 h-5 md:w-6 md:h-6" />
           </button>
           <button
             onClick={() =>
@@ -227,78 +233,76 @@ export default function AudioPlayer() {
                 ? AudioController.pause(dispatch)
                 : AudioController.play(dispatch)
             }
-            className="bg-purple-600 p-3 rounded-full hover:bg-purple-700 transition-all"
+            className="bg-purple-600 p-2 md:p-3 rounded-full"
           >
             {isPlaying ? (
-              <CiPause1 size={24} className="text-white" />
+              <CiPause1 className="w-5 h-5 md:w-6 md:h-6 text-white" />
             ) : (
-              <CiPlay1 size={24} className="text-white" />
+              <CiPlay1 className="w-5 h-5 md:w-6 md:h-6 text-white" />
             )}
           </button>
-          <button
-            onClick={handleNext}
-            className="hover:scale-110 transition-all"
-          >
-            <BsFillSkipEndCircleFill size={24} />
+          <button onClick={handleNext}>
+            <BsFillSkipEndCircleFill className="w-5 h-5 md:w-6 md:h-6" />
           </button>
-          <button
-            onClick={() => dispatch(setRepeatMode())}
-            className={`${
-              repeatMode !== "off" ? "text-purple-600" : "text-gray-600"
-            } hover:scale-110 transition-all`}
-          >
-            <FaRepeat size={20} />
+          <button onClick={() => dispatch(setRepeatMode())}>
+            <FaRepeat className="w-4 h-4 md:w-5 md:h-5" />
           </button>
         </div>
 
         {/* Progress Bar */}
-        <div className="flex-1 mx-6">
-          <div className="flex justify-between text-xs text-gray-600 mb-1">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
-          <div
-            className="h-1 bg-gray-200 rounded-full cursor-pointer"
-            onClick={handleSeek}
-          >
+        <div className="hidden md:flex flex-1 mx-4 md:mx-6">
+          <div className="w-full">
+            <div className="flex justify-between text-xs text-gray-600 mb-1">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
             <div
-              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
-              style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
-            />
+              className="h-1 bg-gray-200 rounded-full cursor-pointer relative"
+              onClick={handleSeek}
+            >
+              <div
+                className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
+              />
+            </div>
           </div>
         </div>
 
         {/* Volume Control */}
-        <div className="flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2">
           <button onClick={handleMuteToggle}>
-            {isMuted ? <FaVolumeMute size={20} /> : <FaVolumeUp size={20} />}
+            {isMuted ? (
+              <FaVolumeMute className="w-4 h-4" />
+            ) : (
+              <FaVolumeUp className="w-4 h-4" />
+            )}
           </button>
           <input
             type="range"
+            className="w-16 md:w-20"
             min="0"
             max="1"
             step="0.1"
             value={isMuted ? 0 : volume}
             onChange={handleVolumeChange}
-            className="w-20 accent-purple-600"
           />
         </div>
 
-        {/* Playlist Toggle Button */}
+        {/* Playlist Toggle */}
         <button
           onClick={() => setShowPlaylist(!showPlaylist)}
-          className="ml-4 p-2 hover:bg-gray-100 rounded-full transition-all"
+          className="hidden md:block ml-2 md:ml-4"
         >
-          <FaList size={20} className="text-gray-600" />
+          <FaList className="w-4 h-4 md:w-5 md:h-5 text-gray-600" />
         </button>
       </div>
 
       {/* Playlist Drawer */}
       {showPlaylist && (
-        <div className="absolute bottom-full left-0 mb-4 w-80 max-h-96 overflow-y-auto bg-white rounded-2xl shadow-xl p-4">
-          <h3 className="font-bold text-lg mb-4">Playlist</h3>
+        <div className="absolute bottom-full left-0 mb-4 w-72 md:w-80 max-h-80 md:max-h-96 overflow-y-auto bg-white rounded-2xl shadow-xl p-4">
+          <h3 className="font-bold text-base md:text-lg mb-4">پلی‌لیست</h3>
           <div className="space-y-2">
-            {podcasts.map((podcast, index) => (
+            {podcasts.map((podcast) => (
               <div
                 key={podcast._id}
                 onClick={() => {
@@ -306,12 +310,7 @@ export default function AudioPlayer() {
                   AudioController.initialize(podcast.audioUrl, dispatch);
                   AudioController.play(dispatch);
                 }}
-                className={`flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer
-                            ${
-                              currentPodcast?._id === podcast._id
-                                ? "bg-purple-50"
-                                : ""
-                            }`}
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
               >
                 <Image
                   src={podcast.image}
@@ -320,9 +319,13 @@ export default function AudioPlayer() {
                   height={40}
                   className="rounded-lg"
                 />
-                <div>
-                  <p className="font-medium">{podcast.title}</p>
-                  <p className="text-sm text-gray-600">{podcast.artist}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">
+                    {podcast.title}
+                  </p>
+                  <p className="text-xs text-gray-600 truncate">
+                    {podcast.artist}
+                  </p>
                 </div>
               </div>
             ))}

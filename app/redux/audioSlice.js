@@ -94,6 +94,9 @@ const audioSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    incrementListens: (state) => {
+      state.currentPodcast.listens += 1;
+    },
   },
 });
 
@@ -110,6 +113,6 @@ export const {
   nextTrack,
   prevTrack,
   setLoading,
+  incrementListens,
 } = audioSlice.actions;
-
 export default audioSlice.reducer;

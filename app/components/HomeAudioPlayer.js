@@ -100,22 +100,37 @@ export default function HomeAudioPlayer() {
       AudioController.stop(dispatch);
     }
   };
-
   const handlePlayPause = async () => {
     if (loading || !currentPodcast?.audioUrl) return;
     if (isPlaying) {
       AudioController.pause(dispatch);
     } else {
       await AudioController.play(dispatch);
+      // افزایش تعداد پخش
+      dispatch(incrementListens());
+
+      // ارسال به سرور
+      fetch(`/api/podcasts/${currentPodcast._id}/listen`, {
+        method: "POST",
+      });
     }
   };
+  // const handlePlayPause = async () => {
+  //   if (loading || !currentPodcast?.audioUrl) return;
+  //   if (isPlaying) {
+  //     AudioController.pause(dispatch);
+  //   } else {
+  //     await AudioController.play(dispatch);
+  //   }
+  // };
 
   const handleSeek = (e) => {
-    if (loading || !duration) return;
-    const rect = e.target.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percentage = x / rect.width;
+    const progressBar = e.currentTarget;
+    const bounds = progressBar.getBoundingClientRect();
+    const x = e.clientX - bounds.left;
+    const percentage = x / bounds.width;
     const seekTime = percentage * duration;
+
     AudioController.seek(seekTime, dispatch);
   };
   // const handleSeek = (value) => {
@@ -222,22 +237,22 @@ export default function HomeAudioPlayer() {
 
   return (
     <div className="container mx-auto px-4 relative z-10">
-      <div className="course-padcast-head text-center mb-16">
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent inline-block transform hover:scale-105 transition-all duration-300">
+      <div className="course-padcast-head text-center mb-8 md:mb-16">
+        <h2 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent inline-block transform hover:scale-105 transition-all duration-300">
           پادکست‌های برنامه‌نویسی
         </h2>
       </div>
 
-      <div className="course-padcast-body flex flex-col lg:flex-row items-center gap-12">
+      <div className="course-padcast-body flex flex-col lg:flex-row items-center gap-6 md:gap-12">
         <div className="course-padcast-content transform hover:-translate-y-2 transition-all duration-500 w-full lg:w-1/3">
-          <div className="backdrop-blur-lg bg-white/80 p-8 rounded-3xl shadow-2xl hover:shadow-purple-200/50">
-            <p className="leading-relaxed text-gray-700 text-lg">
+          <div className="backdrop-blur-lg bg-white/80 p-4 md:p-8 rounded-3xl shadow-2xl hover:shadow-purple-200/50">
+            <p className="leading-relaxed text-gray-700 text-base md:text-lg">
               در این بخش سوالات پرتکرار و رایج برنامه نویسی همراه با معرفی
               زبان‌ها، اطلاعاتی در اختیار کاربران قرار می‌گیرد
             </p>
             <button
               onClick={() => setShowModal(true)}
-              className="mt-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+              className="mt-4 md:mt-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300"
             >
               مشاهده همه پادکست‌ها
             </button>
@@ -245,8 +260,8 @@ export default function HomeAudioPlayer() {
         </div>
 
         <div className="course-padcast-player flex-1">
-          <div className="player bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-xl transform hover:scale-105 transition-all duration-500">
-            <div className="player-img relative mb-8 group perspective">
+          <div className="player bg-white/90 backdrop-blur-xl rounded-3xl p-4 md:p-8 shadow-xl transform hover:scale-105 transition-all duration-500">
+            <div className="player-img relative mb-4 md:mb-8 group perspective">
               <div className="relative transform transition-all duration-700 group-hover:rotate-6 preserve-3d">
                 <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
                 {currentPodcast?.image && (
@@ -255,32 +270,32 @@ export default function HomeAudioPlayer() {
                     width={300}
                     height={300}
                     alt={currentPodcast.title}
-                    className="rounded-2xl shadow-xl"
+                    className="rounded-2xl shadow-xl w-full h-auto"
                   />
                 )}
               </div>
             </div>
 
-            <div className="podcast-info mb-8 text-center">
-              <h3 className="text-2xl font-bold mb-2">
+            <div className="podcast-info mb-4 md:mb-8 text-center">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">
                 {currentPodcast?.title}
               </h3>
-              <p className="text-gray-600 mb-2">
+              <p className="text-gray-600 text-sm md:text-base mb-2">
                 {currentPodcast?.description}
               </p>
-              <span className="text-sm bg-purple-100 text-purple-600 px-3 py-1 rounded-full">
+              <span className="text-xs md:text-sm bg-purple-100 text-purple-600 px-2 md:px-3 py-1 rounded-full">
                 {formatTime(duration)}
               </span>
             </div>
 
-            <div className="space-y-6">
-              <div className="progress-bar relative">
+            <div className="space-y-4 md:space-y-6">
+              <div className="progress-bar relative px-2">
                 <div
                   className="h-2 bg-gray-200 rounded-full overflow-hidden cursor-pointer"
                   onClick={handleSeek}
                 >
                   <div
-                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transform origin-left transition-all"
+                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
                     style={{ width: `${(currentTime / duration) * 100}%` }}
                   />
                 </div>
@@ -290,21 +305,21 @@ export default function HomeAudioPlayer() {
                 </div>
               </div>
 
-              <div className="controls flex flex-col gap-6">
-                <div className="flex justify-center items-center gap-8">
+              <div className="controls flex flex-col gap-4 md:gap-6">
+                <div className="flex justify-center items-center gap-4 md:gap-8">
                   <button
                     onClick={() => dispatch(toggleShuffle())}
                     className={`transform hover:scale-110 transition-all ${
                       isShuffleOn ? "text-purple-600" : "text-gray-600"
                     }`}
                   >
-                    <CiShuffle size={24} />
+                    <CiShuffle className="w-5 h-5 md:w-6 md:h-6" />
                   </button>
                   <button
                     onClick={handlePrevious}
                     className="transform hover:scale-110 transition-all text-gray-600"
                   >
-                    <IoPlaySkipBackCircle size={32} />
+                    <IoPlaySkipBackCircle className="w-6 h-6 md:w-8 md:h-8" />
                   </button>
                   <button
                     onClick={() =>
@@ -312,19 +327,19 @@ export default function HomeAudioPlayer() {
                         ? AudioController.pause(dispatch)
                         : AudioController.play(dispatch)
                     }
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 rounded-full transform hover:scale-110 transition-all"
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 md:p-4 rounded-full transform hover:scale-110 transition-all"
                   >
                     {isPlaying ? (
-                      <CiPause1 size={36} className="text-white" />
+                      <CiPause1 className="w-6 h-6 md:w-8 md:h-8 text-white" />
                     ) : (
-                      <CiPlay1 size={36} className="text-white" />
+                      <CiPlay1 className="w-6 h-6 md:w-8 md:h-8 text-white" />
                     )}
                   </button>
                   <button
                     onClick={handleNext}
                     className="transform hover:scale-110 transition-all text-gray-600"
                   >
-                    <BsFillSkipEndCircleFill size={32} />
+                    <BsFillSkipEndCircleFill className="w-6 h-6 md:w-8 md:h-8" />
                   </button>
                   <button
                     onClick={handleRepeatClick}
@@ -332,26 +347,26 @@ export default function HomeAudioPlayer() {
                       repeatMode !== "off" ? "text-purple-600" : "text-gray-600"
                     }`}
                   >
-                    <FaRepeat size={24} />
+                    <FaRepeat className="w-5 h-5 md:w-6 md:h-6" />
                   </button>
                 </div>
 
-                <div className="volume-control flex items-center gap-4 justify-center">
+                <div className="volume-control flex items-center gap-2 md:gap-4 justify-center">
                   <button onClick={handleMuteToggle} className="text-gray-600">
                     {isMuted ? (
-                      <FaVolumeMute size={20} />
+                      <FaVolumeMute className="w-4 h-4 md:w-5 md:h-5" />
                     ) : (
-                      <FaVolumeUp size={20} />
+                      <FaVolumeUp className="w-4 h-4 md:w-5 md:h-5" />
                     )}
                   </button>
                   <input
                     type="range"
+                    className="w-24 md:w-32 accent-purple-600"
                     min="0"
                     max="1"
                     step="0.1"
                     value={isMuted ? 0 : volume}
                     onChange={handleVolumeChange}
-                    className="w-32 accent-purple-600"
                   />
                 </div>
               </div>
@@ -359,23 +374,22 @@ export default function HomeAudioPlayer() {
           </div>
         </div>
       </div>
-
       {/* Modal for Podcast List */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-4 md:p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold">لیست پادکست‌ها</h3>
+              <h3 className="text-xl md:text-2xl font-bold">لیست پادکست‌ها</h3>
               <button
                 onClick={() => setShowModal(false)}
                 className="text-gray-500 hover:text-gray-700"
               >
-                <FaTimes size={24} />
+                <FaTimes className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             </div>
 
             <div className="grid gap-4">
-              {podcasts.map((podcast) => (
+              {podcasts?.map((podcast) => (
                 <div
                   key={podcast._id}
                   onClick={() => {

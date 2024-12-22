@@ -7,96 +7,96 @@ import toast from "react-hot-toast";
 import sounds from "../data/games/sounds";
 
 const levelConfig = {
-  1: { 
-    required: 10, 
-    type: 'letter', 
-    description: 'تمرین با حروف - مرحله مقدماتی',
-    wordLength: 1
+  1: {
+    required: 10,
+    type: "letter",
+    description: "تمرین با حروف - مرحله مقدماتی",
+    wordLength: 1,
   },
-  2: { 
-    required: 12, 
-    type: 'word', 
-    description: 'کلمات دو حرفی',
-    wordLength: 2
+  2: {
+    required: 12,
+    type: "word",
+    description: "کلمات دو حرفی",
+    wordLength: 2,
   },
-  3: { 
-    required: 15, 
-    type: 'word', 
-    description: 'کلمات سه حرفی',
-    wordLength: 3
+  3: {
+    required: 15,
+    type: "word",
+    description: "کلمات سه حرفی",
+    wordLength: 3,
   },
-  4: { 
-    required: 18, 
-    type: 'word', 
-    description: 'کلمات چهار حرفی',
-    wordLength: 4
+  4: {
+    required: 18,
+    type: "word",
+    description: "کلمات چهار حرفی",
+    wordLength: 4,
   },
-  5: { 
-    required: 20, 
-    type: 'word', 
-    description: 'کلمات پنج حرفی',
-    wordLength: 5
+  5: {
+    required: 20,
+    type: "word",
+    description: "کلمات پنج حرفی",
+    wordLength: 5,
   },
-  6: { 
-    required: 22, 
-    type: 'word', 
-    description: 'کلمات شش حرفی',
-    wordLength: 6
+  6: {
+    required: 22,
+    type: "word",
+    description: "کلمات شش حرفی",
+    wordLength: 6,
   },
-  7: { 
-    required: 25, 
-    type: 'word', 
-    description: 'کلمات هفت حرفی',
-    wordLength: 7
+  7: {
+    required: 25,
+    type: "word",
+    description: "کلمات هفت حرفی",
+    wordLength: 7,
   },
-  8: { 
-    required: 28, 
-    type: 'word', 
-    description: 'کلمات هشت حرفی',
-    wordLength: 8
+  8: {
+    required: 28,
+    type: "word",
+    description: "کلمات هشت حرفی",
+    wordLength: 8,
   },
-  9: { 
-    required: 30, 
-    type: 'word', 
-    description: 'کلمات نه حرفی',
-    wordLength: 9
+  9: {
+    required: 30,
+    type: "word",
+    description: "کلمات نه حرفی",
+    wordLength: 9,
   },
-  10: { 
-    required: 32, 
-    type: 'word', 
-    description: 'کلمات ده حرفی',
-    wordLength: 10
+  10: {
+    required: 32,
+    type: "word",
+    description: "کلمات ده حرفی",
+    wordLength: 10,
   },
-  11: { 
-    required: 35, 
-    type: 'word', 
-    description: 'کلمات یازده حرفی',
-    wordLength: 11
+  11: {
+    required: 35,
+    type: "word",
+    description: "کلمات یازده حرفی",
+    wordLength: 11,
   },
-  12: { 
-    required: 38, 
-    type: 'word', 
-    description: 'کلمات دوازده حرفی',
-    wordLength: 12
+  12: {
+    required: 38,
+    type: "word",
+    description: "کلمات دوازده حرفی",
+    wordLength: 12,
   },
-  13: { 
-    required: 40, 
-    type: 'word', 
-    description: 'کلمات سیزده حرفی',
-    wordLength: 13
+  13: {
+    required: 40,
+    type: "word",
+    description: "کلمات سیزده حرفی",
+    wordLength: 13,
   },
-  14: { 
-    required: 42, 
-    type: 'word', 
-    description: 'کلمات چهارده حرفی',
-    wordLength: 14
+  14: {
+    required: 42,
+    type: "word",
+    description: "کلمات چهارده حرفی",
+    wordLength: 14,
   },
-  15: { 
-    required: 45, 
-    type: 'word', 
-    description: 'کلمات پانزده حرفی',
-    wordLength: 15
-  }
+  15: {
+    required: 45,
+    type: "word",
+    description: "کلمات پانزده حرفی",
+    wordLength: 15,
+  },
 };
 
 export default function KeyboardGame({ onClose, back }) {
@@ -248,11 +248,13 @@ export default function KeyboardGame({ onClose, back }) {
     if (gameState.isPlaying) {
       window.speechSynthesis.cancel();
     }
-  
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
-    utterance.onstart = () => setGameState(prev => ({ ...prev, isPlaying: true }));
-    utterance.onend = () => setGameState(prev => ({ ...prev, isPlaying: false }));
+    utterance.onstart = () =>
+      setGameState((prev) => ({ ...prev, isPlaying: true }));
+    utterance.onend = () =>
+      setGameState((prev) => ({ ...prev, isPlaying: false }));
     window.speechSynthesis.speak(utterance);
   };
 
@@ -295,15 +297,25 @@ export default function KeyboardGame({ onClose, back }) {
         </div>
 
         {/* Word Display */}
-        <div className="h-[25%] bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center justify-center my-2">
+        <div className="h-[25%] mt-5 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center justify-center my-2">
           {gameState.level === 1 ? (
-            <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 animate-pulse">
-              {currentWord}
-            </span>
+            <div className="flex items-center gap-8">
+              <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
+                {currentWord}
+              </span>
+              <span className="text-7xl font-black text-white/80">
+                {userInput || "_"}
+              </span>
+            </div>
           ) : (
             <div className="flex flex-col items-center gap-4">
-              <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
-                {currentWord?.name}
+              <div className="flex items-center gap-8">
+                <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
+                  {currentWord?.name}
+                </div>
+                <div className="text-4xl font-bold text-white/80">
+                  {userInput || "_".repeat(currentWord?.name?.length)}
+                </div>
               </div>
               {currentWord?.image && (
                 <div className="relative w-32 h-32">
@@ -328,14 +340,14 @@ export default function KeyboardGame({ onClose, back }) {
         </div>
 
         {/* User Input */}
-        <div className="h-[10%] bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center justify-center">
+        {/* <div className="h-[10%] bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center justify-center">
           <p className="text-xl text-white/80">
             ورودی شما:{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-indigo-500">
               {userInput}
             </span>
           </p>
-        </div>
+        </div> */}
 
         {/* Keyboard */}
         <div className="h-[35%] bg-white/5 backdrop-blur-md rounded-2xl p-3 border border-white/10 flex flex-col justify-center gap-1">

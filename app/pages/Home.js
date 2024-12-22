@@ -112,13 +112,12 @@ export default function Index() {
   };
   const [isReady, setIsReady] = useState(false);
   // const [currentPodcast, setCurrentPodcast] = useState(0);
- 
 
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
-  
+
   const [viewCount, setViewCount] = useState(0);
   const [products, setProducts] = useState([]);
   const [articles, setArticles] = useState([]);
@@ -160,8 +159,6 @@ export default function Index() {
 
     recordPageView();
   }, []);
-
-  
 
   useEffect(() => {
     const images = document.querySelectorAll(".course-image");
@@ -332,74 +329,67 @@ export default function Index() {
           </div>
         </div>
 
-        <div className="products">
+        <div className="products-section">
           <Swiper
-            dir="rtl"
-            grabCursor={true}
-            rewind={true}
-            slidesPerView={1}
+            slidesPerView={4}
+            spaceBetween={30}
             breakpoints={{
-              640: {
-                slidesPerView: 2,
-                spaceBetween: 20,
-              },
-              768: {
-                slidesPerView: 4,
-                spaceBetween: 40,
-              },
-              1024: {
-                slidesPerView: 4,
-                spaceBetween: 50,
-              },
+              320: { slidesPerView: 1 },
+              640: { slidesPerView: 2 },
+              768: { slidesPerView: 3 },
+              1024: { slidesPerView: 4 },
             }}
-            pagination={true}
-            className="mySwiper2"
           >
             {products.map((item, index) => (
               <SwiperSlide key={index}>
-                <div className="flex-box">
-                  <div className="flex-box-inner">
-                    <div className="flex-box-front">
-                      <Image src={item.image} alt="" width={100} height={100} />
-                    </div>
-                    <div className="flex-box-back">
+                <div className="group relative overflow-hidden rounded-[40px] transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-amber-500/20">
+                  <div className="flex h-[400px] transform flex-col transition-all duration-700">
+                    {/* Front Card */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-amber-50/95 via-white/90 to-amber-100/80 backdrop-blur-md">
                       <Image
-                        alt=""
-                        className="flex-box-back-img"
-                        src="/img/ada38506e144d7940c4a5fea1358cbfa.jpg"
-                        width={100}
-                        height={100}
+                        src={item?.images?.[0] || "/img/default-product.jpg"}
+                        alt={item.title}
+                        width={200}
+                        height={200}
+                        className="transform transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
+                        priority
                       />
-                      <span className="flex-box-back-overlay"></span>
-                      <div className="flex-box-back-body">
-                        <span className="flex-box-back-body-title">
-                          {" "}
-                          {item.title}{" "}
-                        </span>
-                        <span className="flex-box-back-body-master">
-                          مدرس : محمد یازرلو
-                        </span>
-                        <span className="flex-box-back-body-price">
-                          {item.price}
-                        </span>
-                        <button className="flex-box-back-body-button">
-                          ادامه مطلب
-                        </button>
-                      </div>
+                    </div>
+
+                    {/* Back Card */}
+                    <div className="absolute inset-0 z-20 flex translate-y-full flex-col items-center justify-center bg-gradient-to-br from-amber-500/95 via-yellow-500/95 to-orange-400/95 p-8 text-white backdrop-blur-xl transition-all duration-700 group-hover:translate-y-0">
                       <div
-                        className="addbasket"
+                        className="absolute -top-12 right-6 z-10 rounded-3xl bg-white/20 p-3 hover:bg-white/30 cursor-pointer"
                         onClick={() =>
                           dispatch(
                             addToCart({
                               title: item.title,
                               price: item.price,
-                              image: "/img/javascript.png",
+                              image:
+                                item?.images?.[0] || "/img/default-product.jpg",
                             })
                           )
                         }
                       >
-                        <SlBasket />
+                        <SlBasket className="h-5 w-5" />
                       </div>
+
+                      <h3 className="mb-3 text-2xl font-bold">{item.title}</h3>
+                      <p className="mb-5 text-white/90">مدرس: محمد یازرلو</p>
+
+                      <div className="mb-8 flex items-center gap-2">
+                        <span className="text-3xl font-black">
+                          {item.price.toLocaleString()}
+                        </span>
+                        <span className="text-sm text-white/80">تومان</span>
+                      </div>
+
+                      <Link
+                        href={`/pages/Products/details/${item._id}`}
+                        className="w-full rounded-3xl bg-white/20 px-8 py-4 font-medium backdrop-blur-xl transition-all duration-500 hover:bg-white/30 hover:scale-105"
+                      >
+                        مشاهده دوره
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -410,11 +400,11 @@ export default function Index() {
       </div>
 
       <div className="about-home relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-yellow-50">
+        {/* <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-yellow-50">
           <div className="absolute top-0 left-0 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
           <div className="absolute top-0 right-0 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
           <div className="absolute bottom-0 left-50 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
-        </div>
+        </div> */}
         <div className="about-home-head mb-4">
           <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
             درباره ما
