@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RiCloseLargeFill } from "react-icons/ri";
 import { FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -34,11 +34,10 @@ import { TbHtml } from "react-icons/tb";
 import { MdOutlineCss } from "react-icons/md";
 import { AiOutlineJavaScript } from "react-icons/ai";
 import { TbBrandPhp } from "react-icons/tb";
-import IcdlExam from "./exams/IcdlExam";
 import { MdRemoveShoppingCart } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { decraceQuantity,removeFromCart,addToCart } from "../redux/cartSlice";
-
+import { decraceQuantity, removeFromCart, addToCart } from "../redux/cartSlice";
+import ExamsCategory from "./exams/ExamsCategory";
 
 export default function Header() {
   const [show, setShow] = useState(false);
@@ -55,9 +54,13 @@ export default function Header() {
 
   const { data: session, status } = useSession();
   // const { cart, addToCart, removeFromCart, decreaseQuantity } = useCart();
-  const cart=useSelector(state=>state.cart.items)
+  const cart = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
+  const [showExamModal, setShowExamModal] = useState(false);
 
+  const openExamModal = () => {
+    setShowExamModal(!showExamModal);
+  };
   function showBasket() {
     if (basket === true) {
       setBasket(false);
@@ -269,91 +272,16 @@ export default function Header() {
                 <SiAmazongames onClick={() => openGames()} />
               </div>
               <div className="azmoon">
-                <PiExam onClick={() => openAzmoonModal()} />
+                <PiExam onClick={() => openExamModal()} />
               </div>
 
-              <div
-                className={`azmoon-modal ${azmoonModal === true ? "show" : ""}`}
-              >
-                <div className="azmoon-body">
-                  <div
-                    className="azmoon-modal-close"
-                    onClick={() => openAzmoonModal()}
-                  >
-                    <IoClose />
+              {showExamModal && (
+                <div className="modal-overlay">
+                  <div className="modal-content">
+                    <ExamsCategory onClose={openExamModal} isOpen={showExamModal} />
                   </div>
-                  {azmoon === "icdl" ? (
-                    <div className="icdl">
-                      {" "}
-                      <IcdlExam back={() => chooseAzmoon("")} />{" "}
-                    </div>
-                  ) : (
-                    <div className="azmoon-modal-content">
-                      <div className="azmoon-modal-title">
-                        <span>آزمون آنلاین</span>
-                      </div>
-                      <div className="azmoon-modal-items">
-                        <div
-                          className="azmoon-modal-item"
-                          onClick={() => chooseAzmoon("icdl")}
-                        >
-                          <div className="azmoon-modal-item-title">
-                            <FaComputer />
-                          </div>
-                          <div className="azmoon-modal-item-content">
-                            <div className="azmoon-modal-item-content-item">
-                              <span>آزمون icdl</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="azmoon-modal-item">
-                          <div className="azmoon-modal-item-title">
-                            <TbHtml />
-                          </div>
-                          <div className="azmoon-modal-item-content">
-                            <div className="azmoon-modal-item-content-item">
-                              <span>آزمون HTML</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="azmoon-modal-item">
-                          <div className="azmoon-modal-item-title">
-                            <MdOutlineCss />
-                          </div>
-                          <div className="azmoon-modal-item-content">
-                            <div className="azmoon-modal-item-content-item">
-                              <span>آزمون CSS</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="azmoon-modal-item">
-                          <div className="azmoon-modal-item-title">
-                            <AiOutlineJavaScript />
-                          </div>
-                          <div className="azmoon-modal-item-content">
-                            <div className="azmoon-modal-item-content-item">
-                              <span>آزمون javascript</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="azmoon-modal-item">
-                          <div className="azmoon-modal-item-title">
-                            <TbBrandPhp />
-                          </div>
-                          <div className="azmoon-modal-item-content">
-                            <div className="azmoon-modal-item-content-item">
-                              <span>آزمون PHP</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
-              </div>
+              )}
 
               <div className="profile">
                 {status === "authenticated" && (
@@ -517,38 +445,42 @@ export default function Header() {
               <div className="cart-item-head-title">سبد خرید</div>
               <IoClose onClick={() => showBasket()} />
             </div>
-            { cart.length >0 ? cart.map((product) => (
-              <>
-                <div className="cart-item">
-                  <div className="cart-item-title">{product.title}</div>
-                  <div className="cart-item-action">
+            {cart.length > 0 ? (
+              cart.map((product) => (
+                <>
+                  <div className="cart-item">
+                    <div className="cart-item-title">{product.title}</div>
+                    <div className="cart-item-action">
+                      <button
+                        className="cart-item-minus"
+                        onClick={() => dispatch(decraceQuantity(product.title))}
+                      >
+                        -
+                      </button>
+                      <span>
+                        {cart.find((item) => item.title === product.title)
+                          ?.quantity || 0}
+                      </span>
+                      <button
+                        className="cart-item-pluse"
+                        onClick={() => dispatch(addToCart(product))}
+                      >
+                        +
+                      </button>
+                    </div>
                     <button
-                      className="cart-item-minus"
-                      onClick={() => dispatch(decraceQuantity(product.title))}
+                      className="cart-item-remove"
+                      onClick={() => dispatch(removeFromCart(product.title))}
                     >
-                      -
-                    </button>
-                    <span>
-                      {cart.find((item) => item.title === product.title)
-                        ?.quantity || 0}
-                    </span>
-                    <button
-                      className="cart-item-pluse"
-                      onClick={() => dispatch(addToCart(product))}
-                    >
-                      +
+                      <MdRemoveShoppingCart />
                     </button>
                   </div>
-                  <button
-                    className="cart-item-remove"
-                    onClick={() => dispatch(removeFromCart(product.title))}
-                  >
-                    <MdRemoveShoppingCart />
-                  </button>
-                </div>
-              </>
-            )) : (
-              <h2 className=" rounded-md p-4 mb-4 text-yellow-800 border-t-4 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:bg-gray-800 dark:border-yellow-800">سبد خرید شما خالی می باشد</h2>
+                </>
+              ))
+            ) : (
+              <h2 className=" rounded-md p-4 mb-4 text-yellow-800 border-t-4 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:bg-gray-800 dark:border-yellow-800">
+                سبد خرید شما خالی می باشد
+              </h2>
             )}
           </div>
         </div>

@@ -12,13 +12,24 @@ const userSchema = new Schema(
     },
     admin: {
       type: Boolean,
-      default: false
+      default: false,
     },
     password: {
       type: String,
       required: true,
     },
+    progress: [
+      {
+        category: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "ExamCategory",
+        },
+        level: String,
+        highestScore: Number,
+      },
+    ],
   },
+
   { timestamps: true }
 );
 
