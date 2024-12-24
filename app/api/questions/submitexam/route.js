@@ -33,7 +33,7 @@ export async function POST(request) {
 
     // Save result
     await ExamResult.create({
-      category,
+      category: category,
       level,
       score,
       totalQuestions,
@@ -46,7 +46,8 @@ export async function POST(request) {
       score,
       totalQuestions,
       correctAnswers,
-      wrongAnswers
+      wrongAnswers,
+      category // Return category ID in response
     });
 
   } catch (error) {

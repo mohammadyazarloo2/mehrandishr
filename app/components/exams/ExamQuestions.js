@@ -40,28 +40,18 @@ export default function ExamQuestions({ category, level, onBack }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          category, 
+          category,  // Add category here
           level, 
           answers 
         })
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit exam');
-      }
-
+  
       const result = await response.json();
-      
-      // Set exam result with all required fields
       setExamResult({
-        score: result.score || 0,
-        totalQuestions: result.totalQuestions || questions.length,
-        correctAnswers: result.correctAnswers || 0,
-        wrongAnswers: result.wrongAnswers || 0
+        ...result,
+        category // Add category to exam result
       });
-
       setShowResult(true);
-
     } catch (error) {
       console.error("Error submitting exam:", error);
     }

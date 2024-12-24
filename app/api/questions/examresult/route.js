@@ -7,12 +7,17 @@ export async function GET(request) {
     await connectMongoDB();
     
     const results = await ExamResult.find()
-      .populate('category', 'name')
+      .populate({
+        path: 'category',
+        model: 'ExamCategory',
+        select: 'name'
+      })
       .sort({ createdAt: -1 })
-      .select('score level totalQuestions correctAnswers wrongAnswers createdAt');
+      .select('score level totalQuestions correctAnswers wrongAnswers createdAt category');
 
     return NextResponse.json(results);
   } catch (error) {
+    console.error('Error details:', error);
     return NextResponse.json(
       { error: 'خطا در دریافت نتایج آزمون‌ها' },
       { status: 500 }
