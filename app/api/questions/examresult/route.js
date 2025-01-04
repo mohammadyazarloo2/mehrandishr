@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server';
 import { connectMongoDB } from "@/lib/mongodb";
 import ExamResult from "@/models/ExamResult";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 export async function GET(request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: 'لطفا وارد شوید' }, { status: 401 });
+    }
+
     await connectMongoDB();
     
-    const results = await ExamResult.find()
+    const results = await ExamResult.find({ userId: session.user.id })
       .populate({
         path: 'category',
         model: 'ExamCategory',

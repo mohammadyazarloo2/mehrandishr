@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef } from "react";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { SlBasket } from "react-icons/sl";
@@ -123,6 +124,17 @@ export default function Index() {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [queue, setQueue] = useState([]);
+  const [sliders, setSliders] = useState([]);
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    const fetchSliders = async () => {
+      const res = await fetch("/api/slider");
+      const data = await res.json();
+      setSliders(data);
+    };
+    fetchSliders();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -282,7 +294,7 @@ export default function Index() {
     <LoadingSkeleton />
   ) : (
     <main>
-      <ChatModal />
+      {status === "authenticated" && <ChatModal />}
       <div className="bottem-img">
         <div className="absolute top-4 left-50 z-10">
           <Weather />
@@ -303,15 +315,23 @@ export default function Index() {
           onAutoplayTimeLeft={onAutoplayTimeLeft}
           className="mySwiper"
         >
-          <SwiperSlide>
-            <Image src={"/img/1.jpg"} width={50} height={50} alt="img" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <Image src={"/img/2.jpg"} width={50} height={50} alt="img" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <Image src={"/img/1.jpg"} width={50} height={50} alt="img" />
-          </SwiperSlide>
+          {sliders.map((slider) => (
+            <SwiperSlide key={slider._id}>
+              <Link href={slider.link}>
+                <Image
+                  src={slider.image}
+                  width={1200}
+                  height={400}
+                  alt={slider.title}
+                  className="w-full h-auto"
+                />
+                <div className="slider-content">
+                  <h2>{slider.title}</h2>
+                  <p>{slider.description}</p>
+                </div>
+              </Link>
+            </SwiperSlide>
+          ))}
           <div className="autoplay-progress" slot="container-end">
             <svg viewBox="0 0 48 48" ref={progressCircle}>
               <circle cx="24" cy="24" r="20"></circle>

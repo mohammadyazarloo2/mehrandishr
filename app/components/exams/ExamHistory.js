@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaCalendar, FaChevronDown } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 
 export default function ExamHistory({ initialCategoryId }) {
   const [examResults, setExamResults] = useState([]);
@@ -8,40 +9,41 @@ export default function ExamHistory({ initialCategoryId }) {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [userCategories, setUserCategories] = useState([]);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/questions/examresult');
+        const response = await fetch("/api/questions/examresult");
         const results = await response.json();
-        console.log('Results:', results); // برای دیباگ
-  
+        console.log("Results:", results); // برای دیباگ
+
         // گروه‌بندی نتایج بر اساس دسته‌بندی
         const categories = results.reduce((acc, result) => {
           const categoryId = result.category._id;
-          if (!acc.find(cat => cat._id === categoryId)) {
+          if (!acc.find((cat) => cat._id === categoryId)) {
             acc.push({
               _id: categoryId,
-              name: result.category.name
+              name: result.category.name,
             });
           }
           return acc;
         }, []);
-  
+
         setUserCategories(categories);
         setExamResults(results);
         setLoading(false);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
         setLoading(false);
       }
     };
-  
-    fetchData();
-  }, []);
+    if (session) {
+      fetchData();
+    }
+  }, [session]);
 
-  console.log(userCategories)
-
+  console.log(userCategories);
 
   if (loading) {
     return (

@@ -2,9 +2,15 @@ import { NextResponse } from 'next/server';
 import { connectMongoDB } from "@/lib/mongodb";
 import Question from "@/models/Question";
 import ExamResult from "@/models/ExamResult";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function POST(request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: 'لطفا وارد شوید' }, { status: 401 });
+    }
     await connectMongoDB();
     const { category, level, answers } = await request.json();
 
@@ -33,6 +39,7 @@ export async function POST(request) {
 
     // Save result
     await ExamResult.create({
+      userId: session.user.id,
       category: category,
       level,
       score,
