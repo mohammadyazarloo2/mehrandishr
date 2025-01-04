@@ -40,7 +40,7 @@ export default function ExamQuestions({ category, level, onBack }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          category,  // Add category here
+          category,
           level, 
           answers 
         })
@@ -49,7 +49,7 @@ export default function ExamQuestions({ category, level, onBack }) {
       const result = await response.json();
       setExamResult({
         ...result,
-        category // Add category to exam result
+        category
       });
       setShowResult(true);
     } catch (error) {
@@ -58,32 +58,40 @@ export default function ExamQuestions({ category, level, onBack }) {
   };
 
   if (loading) {
-    return <div className="loading-spinner" />;
-  }
-
-  if (showResult && examResult) {
     return (
-      <ExamResult
-        result={examResult}
-        onRetry={() => {
-          setShowResult(false);
-          setCurrentQuestion(0);
-          setAnswers({});
-        }}
-        onBack={onBack}
-      />
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className="container mx-auto max-w-4xl p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-6">
+          <div className="flex items-center justify-between mb-6">
+            <button
+              onClick={onBack}
+              className="flex items-center text-blue-500 hover:text-blue-700"
+            >
+              <IoArrowBack className="mr-2" />
+              بازگشت
+            </button>
+          </div>
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="relative">
+              <div className="w-24 h-24 rounded-full border-t-4 border-b-4 border-blue-500 animate-[spin_1.5s_linear_infinite]" />
+              <div className="w-16 h-16 rounded-full border-t-4 border-b-4 border-indigo-500 animate-[spin_2s_linear_infinite] absolute top-4 left-4" />
+              <div className="w-8 h-8 rounded-full border-t-4 border-b-4 border-purple-500 animate-[spin_1s_linear_infinite] absolute top-8 left-8" />
+            </div>
+            <div className="mt-8 space-y-2 text-center">
+              <h3 className="text-xl font-bold text-blue-700">لطفا صبر کنید</h3>
+              <p className="text-indigo-600 animate-pulse">در حال آماده‌سازی سوالات آزمون...</p>
+            </div>
+            <div className="mt-4 flex space-x-2">
+              <div className="w-3 h-3 rounded-full bg-blue-500 animate-bounce delay-100" />
+              <div className="w-3 h-3 rounded-full bg-indigo-500 animate-bounce delay-200" />
+              <div className="w-3 h-3 rounded-full bg-purple-500 animate-bounce delay-300" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
-  if (showResult) {
+  if (showResult && examResult) {
     return (
       <ExamResult
         result={examResult}

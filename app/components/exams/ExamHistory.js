@@ -16,9 +16,6 @@ export default function ExamHistory({ initialCategoryId }) {
       try {
         const response = await fetch("/api/questions/examresult");
         const results = await response.json();
-        console.log("Results:", results); // برای دیباگ
-
-        // گروه‌بندی نتایج بر اساس دسته‌بندی
         const categories = results.reduce((acc, result) => {
           const categoryId = result.category._id;
           if (!acc.find((cat) => cat._id === categoryId)) {
@@ -43,15 +40,31 @@ export default function ExamHistory({ initialCategoryId }) {
     }
   }, [session]);
 
-  console.log(userCategories);
-
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className="container mx-auto p-4 max-w-4xl">
+        <div className="bg-white rounded-2xl shadow-xl p-6">
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="relative">
+              <div className="w-24 h-24 rounded-full border-t-4 border-b-4 border-blue-500 animate-[spin_1.5s_linear_infinite]" />
+              <div className="w-16 h-16 rounded-full border-t-4 border-b-4 border-indigo-500 animate-[spin_2s_linear_infinite] absolute top-4 left-4" />
+              <div className="w-8 h-8 rounded-full border-t-4 border-b-4 border-purple-500 animate-[spin_1s_linear_infinite] absolute top-8 left-8" />
+            </div>
+            <div className="mt-8 space-y-2 text-center">
+              <h3 className="text-xl font-bold text-blue-700">لطفا صبر کنید</h3>
+              <p className="text-indigo-600 animate-pulse">در حال بارگذاری تاریخچه آزمون‌ها...</p>
+            </div>
+            <div className="mt-4 flex space-x-2">
+              <div className="w-3 h-3 rounded-full bg-blue-500 animate-bounce delay-100" />
+              <div className="w-3 h-3 rounded-full bg-indigo-500 animate-bounce delay-200" />
+              <div className="w-3 h-3 rounded-full bg-purple-500 animate-bounce delay-300" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
+
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
