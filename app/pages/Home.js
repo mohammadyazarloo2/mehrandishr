@@ -317,7 +317,7 @@ export default function Index() {
         >
           {sliders.map((slider) => (
             <SwiperSlide key={slider._id}>
-              <Link href={slider.link}>
+              <Link href={slider.link} className="w-full h-full">
                 <Image
                   src={slider.image}
                   width={1200}
