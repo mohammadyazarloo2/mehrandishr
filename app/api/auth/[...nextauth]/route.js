@@ -4,6 +4,7 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
   providers: [
@@ -11,28 +12,40 @@ export const authOptions = {
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
+      authorization: {
+        params: {
+          prompt: "select_account",
+          access_type: "offline",
+          response_type: "code"
+        }
+      },
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {},
       async authorize(credentials) {
         try {
           await connectMongoDB();
-          const { type, email, phone, password, verificationCode } = credentials;
+          const { type, email, phone, password, verificationCode } =
+            credentials;
           let user;
 
-          console.log('Found user:', {
+          console.log("Found user:", {
             found: !!user,
-            hasCode: user?.verificationCode === verificationCode
+            hasCode: user?.verificationCode === verificationCode,
           });
-      
+
           switch (type) {
-            case 'email':
+            case "email":
               // Find user with matching email and verification code
-              user = await User.findOne({ 
+              user = await User.findOne({
                 email,
-                verificationCode: verificationCode
+                verificationCode: verificationCode,
               });
-              
+
               if (user) {
                 // Update user status after successful verification
                 user.emailVerified = true;
@@ -42,26 +55,45 @@ export const authOptions = {
                 return user;
               }
               break;
-      
-              case 'password':
-                user = await User.findOne({ 
-                  $or: [{ email }, { name: email }] 
-                });
-                
-                if (user && await bcrypt.compare(password, user.password)) {
-                  return user;
-                }
-                break;
+
+            case "password":
+              user = await User.findOne({
+                $or: [{ email }, { name: email }],
+              });
+
+              if (user && (await bcrypt.compare(password, user.password))) {
+                return user;
+              }
+              break;
           }
           return null;
         } catch (error) {
-          console.log('Auth Error:', error);
+          console.log("Auth Error:", error);
           return null;
         }
-      }
+      },
     }),
   ],
   callbacks: {
+    async signIn({ user, account, profile }) {
+      try {
+        await connectMongoDB();
+        // Check if user exists
+        const existingUser = await User.findOne({ email: user.email });
+        if (!existingUser) {
+          // Create new user if doesn't exist
+          await User.create({
+            name: user.name,
+            email: user.email,
+            image: user.image,
+          });
+        }
+        return true;
+      } catch (error) {
+        console.log("SignIn Error:", error);
+        return false;
+      }
+    },
     async session({ session, token }) {
       if (session?.user) {
         session.user.id = token.sub;
@@ -82,9 +114,13 @@ export const authOptions = {
   session: {
     strategy: "jwt",
   },
+  async redirect({ url, baseUrl }) {
+    return url.startsWith(baseUrl) ? url : baseUrl + '/'
+  },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/",
+    signIn: '/pages/Signin',
+    error: '/pages/Signin'
   },
 };
 

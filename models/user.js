@@ -19,6 +19,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    image: String,
     verificationCode: String,
     verificationExpires: Date,
     emailVerified: {
@@ -28,6 +29,12 @@ const userSchema = new Schema(
     phoneVerified: {
       type: Boolean,
       default: false,
+    },
+    googleId: String,
+    githubId: String,
+    provider: {
+      type: String,
+      default: "credentials",
     },
     progress: [
       {

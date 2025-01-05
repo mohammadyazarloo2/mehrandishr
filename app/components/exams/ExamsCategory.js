@@ -4,19 +4,21 @@ import { FaGraduationCap, FaHistory } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import ExamQuestions from "./ExamQuestions";
 import ExamHistory from "./ExamHistory";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const LoadingAnimation = () => (
   <div className="flex flex-col items-center justify-center min-h-[300px] w-full">
     <div className="relative">
       <motion.div
         className="w-24 h-24 border-4 border-blue-200 rounded-full"
-        animate={{ 
+        animate={{
           rotate: 360,
-          scale: [1, 1.1, 1]
+          scale: [1, 1.1, 1],
         }}
-        transition={{ 
+        transition={{
           rotate: { duration: 2, repeat: Infinity, ease: "linear" },
-          scale: { duration: 1, repeat: Infinity }
+          scale: { duration: 1, repeat: Infinity },
         }}
       />
       <motion.div
@@ -24,7 +26,7 @@ const LoadingAnimation = () => (
         animate={{ rotate: -360 }}
         transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
       />
-      <motion.div 
+      <motion.div
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 1, repeat: Infinity }}
@@ -32,7 +34,7 @@ const LoadingAnimation = () => (
         <FaGraduationCap className="text-3xl text-blue-500" />
       </motion.div>
     </div>
-    <motion.p 
+    <motion.p
       className="mt-6 text-lg font-medium text-blue-500"
       animate={{ opacity: [0.6, 1, 0.6] }}
       transition={{ duration: 1.5, repeat: Infinity }}
@@ -51,6 +53,7 @@ export default function ExamsCategory({ isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState("categories");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubCategoriesLoading, setIsSubCategoriesLoading] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -193,6 +196,28 @@ export default function ExamsCategory({ isOpen, onClose }) {
             exit={{ opacity: 0, scale: 0.95 }}
             className="fixed inset-0 z-50 overflow-y-auto"
           >
+            {!session && (
+              <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[2px] flex items-center justify-center rounded-xl">
+                <div className="text-center p-4">
+                  <p className="text-gray-800 font-semibold mb-3">
+                    برای شرکت در آزمون وارد شوید
+                  </p>
+                  <Link
+                    href="/pages/Signin"
+                    className="inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    ورود به حساب
+                  </Link>
+                  <button
+                    onClick={onClose}
+                    className="rounded-full p-2 hover:bg-gray-100 transition-colors"
+                  >
+                    بستن
+                  </button>
+                </div>
+              </div>
+            )}
+
             {examStarted ? (
               <ExamQuestions
                 {...examConfig}

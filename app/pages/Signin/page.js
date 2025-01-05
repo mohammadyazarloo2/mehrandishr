@@ -14,6 +14,7 @@ import {
   FaBook,
   FaCertificate,
 } from "react-icons/fa";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 export default function Signin() {
   const [activeTab, setActiveTab] = useState("password");
@@ -35,6 +36,14 @@ export default function Signin() {
     "",
     "",
   ]);
+
+  const handleGithubLogin = () => {
+    signIn("github", { callbackUrl: "/dashboard" });
+  };
+
+  const handleGoogleLogin = () => {
+    signIn("google", { callbackUrl: "/dashboard" });
+  };
 
   const { data: session, status } = useSession();
   if (status === "authenticated") {
@@ -275,6 +284,25 @@ export default function Signin() {
             <p className="text-gray-600 mt-2">
               به پنل کاربری مهراندیش وارد شوید
             </p>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                type="button"
+                onClick={handleGithubLogin}
+                className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                <FaGithub className="text-xl" />
+                <span>گیت‌هاب</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                <FaGoogle className="text-xl text-red-500" />
+                <span>گوگل</span>
+              </button>
+            </div>
           </div>
 
           {/* Login Tabs */}
