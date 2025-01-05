@@ -3,7 +3,8 @@ import { configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer } from 'redux-persist'
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage'
 import cartReducer from './cartSlice'
-import audioReducer from '../redux/audioSlice';
+import audioReducer from './audioSlice'
+import settingsReducer from './settingsSlice'
 import thunk from 'redux-thunk'
 
 const createNoopStorage = () => {
@@ -35,6 +36,7 @@ export const store = configureStore({
   reducer: {
     cart: persistedReducer,
     audio: audioReducer,
+    settings: settingsReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

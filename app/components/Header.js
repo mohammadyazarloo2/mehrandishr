@@ -190,12 +190,17 @@ export default function Header() {
                   </>
                 )}
                 <li className="nav-item">
-                  <Link href="" className="nav-link">
+                  <Link href="/pages/articles" className="nav-link">
+                    مقالات
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link href="/pages/contact" className="nav-link">
                     تماس با ما{" "}
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link href="" className="nav-link">
+                  <Link href="/pages/about" className="nav-link">
                     درباره ما
                   </Link>
                 </li>
@@ -273,7 +278,10 @@ export default function Header() {
               {showExamModal && (
                 <div className="modal-overlay">
                   <div className="modal-content">
-                    <ExamsCategory onClose={openExamModal} isOpen={showExamModal} />
+                    <ExamsCategory
+                      onClose={openExamModal}
+                      isOpen={showExamModal}
+                    />
                   </div>
                 </div>
               )}

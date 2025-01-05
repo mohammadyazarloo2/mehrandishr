@@ -20,6 +20,61 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+const ProfileSkeleton = () => {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Section */}
+        <div className="bg-white rounded-2xl shadow-sm p-8 mb-8">
+          <div className="flex items-center gap-6">
+            <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse"></div>
+            <div className="space-y-3">
+              <div className="h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-4 w-72 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Sidebar */}
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <div className="h-5 w-32 bg-gray-200 rounded mb-4 animate-pulse"></div>
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="h-4 bg-gray-200 rounded animate-pulse"
+                  ></div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <div className="h-6 w-48 bg-gray-200 rounded mb-6 animate-pulse"></div>
+              <div className="space-y-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-lg bg-gray-200 animate-pulse"></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-3 w-2/3 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Page() {
   const [activeTab, setActiveTab] = useState("profile");
   const [userData, setUserData] = useState({
@@ -65,11 +120,13 @@ export default function Page() {
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true);
       await fetchData();
       if (isAuthor && authorData.slug) {
         await fetchRecentArticles();
         await fetchAuthorStats();
       }
+      setLoading(false);
     };
     loadData();
   }, [isAuthor, authorData.slug]);
@@ -183,11 +240,7 @@ export default function Page() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   const tabs = [
