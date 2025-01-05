@@ -4,12 +4,24 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
+      authorization: {
+        params: {
+          prompt: "select_account",
+          access_type: "offline",
+          response_type: "code"
+        }
+      },
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -101,6 +113,9 @@ export const authOptions = {
   },
   session: {
     strategy: "jwt",
+  },
+  async redirect({ url, baseUrl }) {
+    return url.startsWith(baseUrl) ? url : baseUrl + '/'
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
