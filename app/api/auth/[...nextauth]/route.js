@@ -10,36 +10,55 @@ export const authOptions = {
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
-      account: "mohammadyazarloo2",
     }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {},
       async authorize(credentials) {
-        const { name, password } = credentials;
-
         try {
           await connectMongoDB();
-          const user = await User.findOne({ name });
-          // if (!user.email) {
-          //   return null;
-          // }
-          // if(user.admin === true) {
-          //   return null
-          // }
+          const { type, email, phone, password, verificationCode } = credentials;
+          let user;
 
-          const passwordMatch = await bcrypt.compare(password, user.password);
-
-          if (!passwordMatch) {
-            return null;
+          console.log('Found user:', {
+            found: !!user,
+            hasCode: user?.verificationCode === verificationCode
+          });
+      
+          switch (type) {
+            case 'email':
+              // Find user with matching email and verification code
+              user = await User.findOne({ 
+                email,
+                verificationCode: verificationCode
+              });
+              
+              if (user) {
+                // Update user status after successful verification
+                user.emailVerified = true;
+                user.verificationCode = undefined;
+                user.verificationExpires = undefined;
+                await user.save();
+                return user;
+              }
+              break;
+      
+              case 'password':
+                user = await User.findOne({ 
+                  $or: [{ email }, { name: email }] 
+                });
+                
+                if (user && await bcrypt.compare(password, user.password)) {
+                  return user;
+                }
+                break;
           }
-          console.log("ok");
-
-          return user;
+          return null;
         } catch (error) {
-          console.log(error);
+          console.log('Auth Error:', error);
+          return null;
         }
-      },
+      }
     }),
   ],
   callbacks: {
@@ -50,12 +69,12 @@ export const authOptions = {
       }
       return session;
     },
-    async jwt({ token, user, session, trigger  }) {
+    async jwt({ token, user, session, trigger }) {
       if (user) {
         token.id = user.id;
       }
       if (trigger === "update") {
-        return { ...token, name: session }
+        return { ...token, name: session };
       }
       return token;
     },

@@ -187,11 +187,6 @@ export default function Header() {
                         صفحه ورود
                       </Link>
                     </li>
-                    <li className="nav-item">
-                      <Link href="/pages/Signup" className="nav-link">
-                        صفحه عضویت
-                      </Link>
-                    </li>
                   </>
                 )}
                 <li className="nav-item">
@@ -367,12 +362,6 @@ export default function Header() {
                       <Link href="/pages/Signin">
                         <PiSignIn />
                         ورود
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/pages/Signup">
-                        <SiGnuprivacyguard />
-                        عضویت
                       </Link>
                     </li>
                   </>

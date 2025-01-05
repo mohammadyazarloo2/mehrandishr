@@ -6,6 +6,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    phone: String,
     email: {
       type: String,
       required: true,
@@ -17,6 +18,16 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
+    },
+    verificationCode: String,
+    verificationExpires: Date,
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    phoneVerified: {
+      type: Boolean,
+      default: false,
     },
     progress: [
       {
