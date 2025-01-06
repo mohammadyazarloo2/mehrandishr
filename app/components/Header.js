@@ -38,6 +38,7 @@ import { MdRemoveShoppingCart } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { decraceQuantity, removeFromCart, addToCart } from "../redux/cartSlice";
 import ExamsCategory from "./exams/ExamsCategory";
+import { fetchSettings } from "../redux/settingsSlice";
 
 export default function Header() {
   const [show, setShow] = useState(false);
@@ -57,6 +58,11 @@ export default function Header() {
   const cart = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
   const [showExamModal, setShowExamModal] = useState(false);
+  const settings = useSelector((state) => state.settings.data);
+
+  useEffect(() => {
+    dispatch(fetchSettings());
+  }, [dispatch]);
 
   const openExamModal = () => {
     setShowExamModal(!showExamModal);
@@ -146,7 +152,7 @@ export default function Header() {
                   width={100}
                   height={100}
                   alt={"logo"}
-                  src="/img/icon/logo.png"
+                  src={settings?.general?.logo?.light}
                 />
               </div>
               <ul>
@@ -155,25 +161,108 @@ export default function Header() {
                     صفحه اصلی
                   </Link>
                 </li>
-                <li className="nav-item">
-                  <Link href="" className="nav-link">
-                    دوره ها<i className="bi bi-chevron-down"></i>
+
+                <li className="relative group nav-item">
+                  <Link href="" className="nav-link flex items-center gap-1">
+                    <span className="flex items-center gap-2">
+                      <FaComputer className="text-xl text-blue-500" />
+                      دوره ها
+                    </span>
+                    <i className="bi bi-chevron-down transition duration-300 group-hover:rotate-180"></i>
                   </Link>
-                  <ul>
-                    <li>
-                      <Link href="">دوره html</Link>
-                    </li>
-                    <li>
-                      <Link href="">دوره css</Link>
-                    </li>
-                    <li>
-                      <Link href="">دوره javascript</Link>
-                    </li>
-                    <li>
-                      <Link href="">دوره html</Link>
-                    </li>
-                  </ul>
+
+                  <div className="absolute top-full right-0 w-[1000px] bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50 border border-gray-100">
+                    <div className="grid grid-cols-12 gap-6 p-8">
+                      {/* منوی اصلی */}
+                      <div className="col-span-3 border-l border-gray-100">
+                        <h3 className="font-bold text-lg mb-4 text-gray-800">
+                          دسته‌بندی دوره‌ها
+                        </h3>
+                        <ul className="space-y-1">
+                          <li className="group/item relative">
+                            <Link
+                              href="/courses/frontend"
+                              className="flex items-center gap-2 p-3 rounded-lg hover:bg-blue-50 transition-all"
+                            >
+                              <TbHtml className="text-xl text-blue-500" />
+                              <span>برنامه‌نویسی فرانت‌اند</span>
+                            </Link>
+                          </li>
+                          <li className="group/item relative">
+                            <Link
+                              href="/courses/backend"
+                              className="flex items-center gap-2 p-3 rounded-lg hover:bg-purple-50 transition-all"
+                            >
+                              <TbBrandPhp className="text-xl text-purple-500" />
+                              <span>برنامه‌نویسی بک‌اند</span>
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* دوره‌های محبوب */}
+                      <div className="col-span-6">
+                        <h3 className="font-bold text-lg mb-4 text-gray-800">
+                          دوره‌های پرطرفدار
+                        </h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          <Link
+                            href="/course/react"
+                            className="group/course block p-4 rounded-xl hover:bg-gray-50 transition-all"
+                          >
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                                <AiOutlineJavaScript className="text-2xl" />
+                              </div>
+                              <div>
+                                <h4 className="font-bold text-gray-800 group-hover/course:text-blue-600 transition-colors">
+                                  دوره جامع React
+                                </h4>
+                                <p className="text-sm text-gray-500">
+                                  ۴۵ ساعت آموزش
+                                </p>
+                              </div>
+                            </div>
+                          </Link>
+
+                          <Link
+                            href="/course/nodejs"
+                            className="group/course block p-4 rounded-xl hover:bg-gray-50 transition-all"
+                          >
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
+                                <TbBrandPhp className="text-2xl" />
+                              </div>
+                              <div>
+                                <h4 className="font-bold text-gray-800 group-hover/course:text-green-600 transition-colors">
+                                  دوره Node.js
+                                </h4>
+                                <p className="text-sm text-gray-500">
+                                  ۳۵ ساعت آموزش
+                                </p>
+                              </div>
+                            </div>
+                          </Link>
+                        </div>
+                      </div>
+
+                      {/* بخش ویژه */}
+                      <div className="col-span-3">
+                        <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-6 rounded-xl text-white">
+                          <h3 className="font-bold text-lg mb-3">تخفیف ویژه</h3>
+                          <p className="text-sm mb-4 text-blue-100">
+                            با خرید اشتراک ویژه، به تمام دوره‌ها دسترسی پیدا
+                            کنید!
+                          </p>
+                          <button className="bg-white text-blue-600 px-4 py-2 rounded-lg font-bold hover:bg-blue-50 transition-colors">
+                            خرید اشتراک
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </li>
+
                 {status === "authenticated" ? (
                   <li className="nav-item">
                     <Link href="/pages/profile" className="nav-link">
@@ -375,13 +464,13 @@ export default function Header() {
                   </>
                 )}
                 <li>
-                  <Link href="/">
+                  <Link href="/pages/contact">
                     <MdContactPhone />
                     تماس با ما
                   </Link>
                 </li>
                 <li>
-                  <Link href="/">
+                  <Link href="/pages/about">
                     <FcAbout />
                     درباره ما
                   </Link>
