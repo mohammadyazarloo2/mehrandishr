@@ -6,8 +6,15 @@ import { BsSearch } from "react-icons/bs";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useState, useEffect } from "react";
 import { RiCloseLargeFill } from "react-icons/ri";
-import { FaInstagram } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import {
+  FaBook,
+  FaEnvelope,
+  FaHome,
+  FaInfo,
+  FaInstagram,
+  FaLock,
+} from "react-icons/fa";
+import { FaPerson, FaPersonRifle, FaXTwitter } from "react-icons/fa6";
 import { FaLinkedin } from "react-icons/fa6";
 import { SiTelegram } from "react-icons/si";
 import { GrProjects } from "react-icons/gr";
@@ -59,6 +66,7 @@ export default function Header() {
   const dispatch = useDispatch();
   const [showExamModal, setShowExamModal] = useState(false);
   const settings = useSelector((state) => state.settings.data);
+  const [isCoursesOpen, setIsCoursesOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchSettings());
@@ -156,16 +164,20 @@ export default function Header() {
                 />
               </div>
               <ul>
-                <li className="nav-item">
-                  <Link href="/" className="nav-link">
-                    صفحه اصلی
+                <li className="relative group nav-item">
+                  <Link href="/" className="nav-link flex items-center gap-1">
+                    <span className="flex items-center gap-2">
+                      <FaHome className="text-xl text-gray-800" />
+                      صفحه اصلی
+                    </span>
+                    <i className="bi bi-chevron-down transition duration-300 group-hover:rotate-180"></i>
                   </Link>
                 </li>
 
                 <li className="relative group nav-item">
                   <Link href="" className="nav-link flex items-center gap-1">
                     <span className="flex items-center gap-2">
-                      <FaComputer className="text-xl text-blue-500" />
+                      <FaComputer className="text-xl text-gray-800" />
                       دوره ها
                     </span>
                     <i className="bi bi-chevron-down transition duration-300 group-hover:rotate-180"></i>
@@ -264,32 +276,52 @@ export default function Header() {
                 </li>
 
                 {status === "authenticated" ? (
-                  <li className="nav-item">
-                    <Link href="/pages/profile" className="nav-link">
+                  <li className="relative group nav-item">
+                    <Link
+                      href="/pages/profile"
+                      className="nav-link flex items-center gap-1"
+                    >
+                      <FaPerson className="text-xl text-gray-800" />
                       پروفایل
                     </Link>
                   </li>
                 ) : (
                   <>
-                    <li className="nav-item">
-                      <Link href="/pages/Signin" className="nav-link">
+                    <li className="relative group nav-item">
+                      <Link
+                        href="/pages/Signin"
+                        className="nav-link flex items-center gap-1"
+                      >
+                        <FaLock className="text-xl text-gray-800" />
                         صفحه ورود
                       </Link>
                     </li>
                   </>
                 )}
-                <li className="nav-item">
-                  <Link href="/pages/articles" className="nav-link">
+                <li className="relative group nav-item">
+                  <Link
+                    href="/pages/articles"
+                    className="nav-link flex items-center gap-1"
+                  >
+                    <FaBook className="text-xl text-gray-800" />
                     مقالات
                   </Link>
                 </li>
-                <li className="nav-item">
-                  <Link href="/pages/contact" className="nav-link">
+                <li className="relative group nav-item">
+                  <Link
+                    href="/pages/contact"
+                    className="nav-link flex items-center gap-1"
+                  >
+                    <FaEnvelope className="text-xl text-gray-800" />
                     تماس با ما{" "}
                   </Link>
                 </li>
-                <li className="nav-item">
-                  <Link href="/pages/about" className="nav-link">
+                <li className="relative group nav-item">
+                  <Link
+                    href="/pages/about"
+                    className="nav-link flex items-center gap-1"
+                  >
+                    <FaInfo className="text-xl text-gray-800" />
                     درباره ما
                   </Link>
                 </li>
@@ -406,90 +438,198 @@ export default function Header() {
             </div>
           </div>
 
-          <div className={show === true ? "open menu-mobile" : "menu-mobile"}>
-            <div className="clossidemob">
-              <RiCloseLargeFill onClick={openMenu} />
-            </div>
-            <div className="menu-head">
-              <div className="menu-head-img">
+          <div
+            className={`fixed inset-y-0 right-0 w-80 bg-white/90 backdrop-blur-lg transform transition-transform duration-300 ease-out shadow-2xl z-50 ${
+              show ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            {/* Close Button */}
+            <button
+              onClick={openMenu}
+              className="absolute top-4 left-4 p-2 text-gray-500 hover:text-red-500 transition-colors"
+            >
+              <RiCloseLargeFill className="text-2xl" />
+            </button>
+
+            {/* Header Section */}
+            <div className="p-6 border-b border-gray-100">
+              <div className="w-20 h-20 mx-auto mb-4 relative">
                 <Image
                   alt="logo"
-                  width={100}
-                  height={100}
                   src="/img/favicon.png"
-                  className="img-fluid"
+                  layout="fill"
+                  objectFit="contain"
+                  className="rounded-full"
                 />
               </div>
-              {status === "authenticated" ? (
-                <div className="menu-head-user">
-                  <h4> {session.user.name} </h4>
-                  {status === "authenticated" && (
-                    <div className="mega-pro" onClick={() => signOut()}>
-                      <FaSignOutAlt />
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="menu-head-user">
-                  <h4>کاربر </h4>
-                </div>
-              )}
-              <div className="menu-head-dropdown">
-                <i className="bi bi-chevron-down"></i>
+
+              <div className="text-center">
+                {status === "authenticated" ? (
+                  <div className="space-y-2">
+                    <h4 className="font-bold text-gray-800">
+                      {session.user.name}
+                    </h4>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                      کاربر فعال
+                    </span>
+                  </div>
+                ) : (
+                  <h4 className="font-medium text-gray-600">کاربر مهمان</h4>
+                )}
               </div>
             </div>
-            <div className="menu-body">
-              <ul>
+
+            {/* Menu Items */}
+            <nav className="py-4">
+              <ul className="space-y-1">
                 <li>
-                  <Link href={"/"}>
-                    <FaHouseLaptop />
-                    صفحه اصلی
+                  <Link
+                    href="/"
+                    className="flex items-center gap-3 px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                  >
+                    <FaHouseLaptop className="text-xl text-gray-400 group-hover:text-blue-500" />
+                    <span>صفحه اصلی</span>
                   </Link>
                 </li>
+
+                <li className="border-b border-gray-100">
+                  <button
+                    onClick={() => setIsCoursesOpen(!isCoursesOpen)}
+                    className="w-full flex items-center justify-between px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <FaComputer className="text-xl text-gray-400 group-hover:text-blue-500" />
+                      <span>دوره‌ها</span>
+                    </div>
+                    <svg
+                      className={`w-4 h-4 transition-transform duration-200 transform ${
+                        isCoursesOpen ? "rotate-180" : "rotate-0"
+                      }`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  <div
+                    className={`bg-gray-50 overflow-hidden transition-all duration-300 ${
+                      isCoursesOpen ? "max-h-96" : "max-h-0"
+                    }`}
+                  >
+                    <div className="py-2">
+                      <Link
+                        href="/courses/frontend"
+                        className="flex items-center gap-3 px-8 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                      >
+                        <TbHtml className="text-xl text-gray-400 group-hover:text-blue-500" />
+                        <span>برنامه‌نویسی فرانت‌اند</span>
+                      </Link>
+
+                      <Link
+                        href="/courses/backend"
+                        className="flex items-center gap-3 px-8 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                      >
+                        <TbBrandPhp className="text-xl text-gray-400 group-hover:text-blue-500" />
+                        <span>برنامه‌نویسی بک‌اند</span>
+                      </Link>
+
+                      <Link
+                        href="/course/react"
+                        className="flex items-center gap-3 px-8 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                      >
+                        <AiOutlineJavaScript className="text-xl text-gray-400 group-hover:text-blue-500" />
+                        <span>دوره جامع React</span>
+                      </Link>
+
+                      <Link
+                        href="/course/nodejs"
+                        className="flex items-center gap-3 px-8 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                      >
+                        <TbBrandPhp className="text-xl text-gray-400 group-hover:text-blue-500" />
+                        <span>دوره Node.js</span>
+                      </Link>
+                    </div>
+                  </div>
+                </li>
+
                 {status === "authenticated" ? (
                   <li>
-                    <Link href="/pages/profile">
-                      <ImProfile />
-                      پروفایل
+                    <Link
+                      href="/pages/profile"
+                      className="flex items-center gap-3 px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                    >
+                      <ImProfile className="text-xl text-gray-400 group-hover:text-blue-500" />
+                      <span>پروفایل</span>
                     </Link>
                   </li>
                 ) : (
-                  <>
-                    <li>
-                      <Link href="/pages/Signin">
-                        <PiSignIn />
-                        ورود
-                      </Link>
-                    </li>
-                  </>
-                )}
-                <li>
-                  <Link href="/pages/contact">
-                    <MdContactPhone />
-                    تماس با ما
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pages/about">
-                    <FcAbout />
-                    درباره ما
-                  </Link>
-                </li>
-                {status === "authenticated" && (
                   <li>
-                    <Link href="/pages/Signup" onClick={() => signOut()}>
-                      <i className="bi bi-house"></i>خروج
+                    <Link
+                      href="/pages/Signin"
+                      className="flex items-center gap-3 px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                    >
+                      <PiSignIn className="text-xl text-gray-400 group-hover:text-blue-500" />
+                      <span>ورود</span>
                     </Link>
                   </li>
                 )}
+
+                <li>
+                  <Link
+                    href="/pages/contact"
+                    className="flex items-center gap-3 px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                  >
+                    <MdContactPhone className="text-xl text-gray-400 group-hover:text-blue-500" />
+                    <span>تماس با ما</span>
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    href="/pages/about"
+                    className="flex items-center gap-3 px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                  >
+                    <FcAbout className="text-xl text-gray-400 group-hover:text-blue-500" />
+                    <span>درباره ما</span>
+                  </Link>
+                </li>
               </ul>
-            </div>
-            <div className="menu-footer">
-              <div className="menu-footer-icons">
-                <FaXTwitter />
-                <FaInstagram />
-                <FaLinkedin />
-                <SiTelegram />
+            </nav>
+
+            {/* Footer */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-100">
+              <div className="flex justify-center gap-4">
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-blue-500 transition-colors"
+                >
+                  <FaXTwitter className="text-xl" />
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-pink-500 transition-colors"
+                >
+                  <FaInstagram className="text-xl" />
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-blue-700 transition-colors"
+                >
+                  <FaLinkedin className="text-xl" />
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                >
+                  <SiTelegram className="text-xl" />
+                </a>
               </div>
             </div>
           </div>
