@@ -15,65 +15,6 @@ export default function AboutPage() {
     dispatch(fetchSettings());
   }, [dispatch]);
 
-  const testimonials = [
-    {
-      name: "علی محمدی",
-      role: "کارآموز دوره React",
-      image: "/images/testimonials/1.jpg",
-      content:
-        "تجربه فوق‌العاده‌ای بود. آموزش‌های کاربردی و پروژه‌محور واقعاً به پیشرفت من کمک کرد.",
-    },
-    {
-      name: "سارا احمدی",
-      role: "کارآموز دوره Node.js",
-      image: "/images/testimonials/2.jpg",
-      content:
-        "پشتیبانی عالی و محتوای آموزشی به‌روز، مهراندیش رو از بقیه متمایز می‌کنه.",
-    },
-    {
-      name: "محمد کریمی",
-      role: "کارآموز دوره Python",
-      image: "/images/testimonials/3.jpg",
-      content: "فضای یادگیری دوستانه و حرفه‌ای. واقعاً از انتخابم راضی‌ام.",
-    },
-  ];
-
-  const galleryImages = [
-    { url: "/workspace/1.jpg", title: "فضای کار اشتراکی" },
-    { url: "/workspace/1.jpg", title: "اتاق جلسات" },
-    { url: "/workspace/1.jpg", title: "کلاس آموزشی" },
-    { url: "/workspace/1.jpg", title: "لابی" },
-    { url: "/workspace/1.jpg", title: "کافه‌تریا" },
-    { url: "/workspace/1.jpg", title: "فضای استراحت" },
-  ];
-
-  const videoTestimonials = [
-    {
-      id: 1,
-      name: "مهدی رضایی",
-      role: "دانشجوی دوره Full Stack",
-      thumbnail: "/workspace/1.jpg",
-      videoUrl: "/workspace/1.mp4",
-      duration: "2:30",
-    },
-    {
-      id: 2,
-      name: "زهرا محمدی",
-      role: "فارغ‌التحصیل دوره UI/UX",
-      thumbnail: "/workspace/1.jpg",
-      videoUrl: "/workspace/1.mp4",
-      duration: "1:45",
-    },
-    {
-      id: 3,
-      name: "امیر حسینی",
-      role: "دانشجوی دوره هوش مصنوعی",
-      thumbnail: "/workspace/1.jpg",
-      videoUrl: "/workspace/1.mp4",
-      duration: "3:15",
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white">
       {/* Hero Section */}
@@ -87,8 +28,7 @@ export default function AboutPage() {
             {settings?.about?.hero?.title || "درباره مهراندیش"}
           </h1>
           <p className="text-gray-600 text-lg">
-            ما در مهراندیش با هدف ارتقای سطح دانش و مهارت‌های برنامه‌نویسی، یک
-            پلتفرم جامع آموزشی ایجاد کرده‌ایم.
+            {settings?.about?.hero?.subtitle}
           </p>
         </div>
       </motion.div>
@@ -104,7 +44,7 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative h-[400px] group">
               <Image
-                src="/images/vision.jpg"
+                src={settings?.about?.logo?.light}
                 alt="چشم انداز مهراندیش"
                 fill
                 className="object-cover rounded-2xl shadow-lg transition-transform duration-500 group-hover:scale-105"
@@ -113,19 +53,13 @@ export default function AboutPage() {
             </div>
             <div>
               <h2 className="text-3xl font-bold text-gray-800 mb-6">
-                چشم‌انداز ما
+                {settings?.about?.vision?.title}
               </h2>
               <p className="text-gray-600 leading-relaxed mb-8">
-                ما می‌خواهیم با ارائه آموزش‌های با کیفیت و کاربردی، مسیر یادگیری
-                برنامه‌نویسی را برای همه علاقه‌مندان هموار کنیم.
+                {settings?.about?.vision?.content}
               </p>
               <ul className="space-y-4">
-                {[
-                  "آموزش‌های کاربردی و به‌روز",
-                  "پشتیبانی مستمر از دانشجویان",
-                  "ارائه گواهینامه‌های معتبر",
-                  "برگزاری دوره‌های تخصصی",
-                ].map((item, index) => (
+                {settings?.about?.features.map((item, index) => (
                   <motion.li
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
@@ -155,7 +89,7 @@ export default function AboutPage() {
             تیم ما
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((member, index) => (
+            {settings?.about?.team.map((member, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -165,16 +99,16 @@ export default function AboutPage() {
               >
                 <div className="relative w-32 h-32 mx-auto mb-6">
                   <Image
-                    src={`/images/team-${member}.jpg`}
-                    alt={`عضو تیم ${member}`}
+                    src={member.image}
+                    alt={member.name}
                     fill
                     className="object-cover rounded-full ring-4 ring-yellow-100"
                   />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">
-                  نام عضو تیم
+                  {member.name}
                 </h3>
-                <p className="text-gray-600 text-center">سمت سازمانی</p>
+                <p className="text-gray-600 text-center"> {member.role} </p>
                 <div className="flex justify-center gap-4 mt-4">
                   {/* Social Media Icons */}
                 </div>
@@ -193,10 +127,11 @@ export default function AboutPage() {
       >
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-gray-800 text-center mb-12">
-            نظرات کارآموزان
+            {settings?.testimonials?.title}
           </h2>
+          <p>{settings?.testimonials?.subtitle}</p>
           <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
+            {settings?.testimonials?.items.map((testimonial, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -248,7 +183,7 @@ export default function AboutPage() {
             گالری تصاویر محیط کار
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {galleryImages.map((image, index) => (
+            {settings?.about?.gallery.map((image, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -258,15 +193,15 @@ export default function AboutPage() {
                 onClick={() => setSelectedImage(image)}
               >
                 <Image
-                  src={image.url}
-                  alt={image.title}
+                  src={image.image}
+                  alt={image.alt}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <h3 className="text-white font-medium text-lg">
-                      {image.title}
+                      {image.alt}
                     </h3>
                   </div>
                 </div>
@@ -285,12 +220,7 @@ export default function AboutPage() {
       >
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { icon: FiUser, count: "۱۰۰۰+", label: "کارآموز" },
-              { icon: FiStar, count: "۵۰+", label: "دوره آموزشی" },
-              { icon: FiImage, count: "۲۰+", label: "مدرس مجرب" },
-              { icon: FiUser, count: "۹۵٪", label: "رضایت کارآموزان" },
-            ].map((stat, index) => (
+            {settings?.about?.stats.map((stat, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -346,7 +276,7 @@ export default function AboutPage() {
           </p>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {videoTestimonials.map((video) => (
+            {settings?.videoTestimonials.map((video) => (
               <motion.div
                 key={video.id}
                 initial={{ opacity: 0, y: 20 }}

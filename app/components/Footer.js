@@ -1,17 +1,28 @@
+'use client'
 import Link from 'next/link'
 import Image from 'next/image'
 import { FaInstagram, FaTelegram, FaTwitter, FaLinkedin } from 'react-icons/fa'
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchSettings } from '../redux/settingsSlice';
 
 export default function Footer() {
+  const dispatch = useDispatch();
+  const settings = useSelector((state) => state.settings.data);
+
+  useEffect(() => {
+      dispatch(fetchSettings());
+    }, [dispatch]);
+
   return (
     <footer className="bg-zinc-950 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* ستون اول - لوگو و توضیحات */}
           <div className="space-y-4">
-            <Image src="/img/icon/logo.png" width={120} height={40} alt="Logo" className="mb-4" />
+            <Image src={settings?.general?.logo?.light} width={120} height={40} alt="Logo" className="mb-4" />
             <p className="text-sm leading-relaxed">
-              آکادمی ما با ارائه آموزش‌های تخصصی و کاربردی، مسیر یادگیری شما را هموار می‌کند.
+              {settings?.general?.description}
             </p>
             <div className="flex space-x-4 rtl:space-x-reverse">
               <Link href="#" className="hover:text-yellow-400 transition-colors">

@@ -1,9 +1,11 @@
 "use client";
-import { useState } from "react";
+import { fetchSettings } from "../../redux/settingsSlice";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { toast, Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import { FiSend, FiMapPin, FiPhone, FiMail } from "react-icons/fi";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function ContactPage() {
   const { data: session } = useSession();
@@ -14,6 +16,13 @@ export default function ContactPage() {
     message: "",
   });
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const settings = useSelector((state) => state.settings.data);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => {
+    dispatch(fetchSettings()).finally(() => setPageLoading(false));
+  }, [dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,23 +58,51 @@ export default function ContactPage() {
     }
   };
 
-  const contactInfo = [
-    {
-      icon: <FiMapPin className="w-6 h-6" />,
-      title: "آدرس",
-      content: "تهران، خیابان ولیعصر",
-    },
-    {
-      icon: <FiPhone className="w-6 h-6" />,
-      title: "تلفن تماس",
-      content: "021-12345678",
-    },
-    {
-      icon: <FiMail className="w-6 h-6" />,
-      title: "ایمیل",
-      content: "info@mehrandish.ir",
-    },
-  ];
+  if (pageLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-12">
+        <div className="max-w-4xl mx-auto px-4">
+          {/* Hero Section Skeleton */}
+          <div className="text-center mb-12">
+            <div className="h-10 bg-gray-200 rounded-lg w-3/4 mx-auto mb-4 animate-pulse" />
+            <div className="h-6 bg-gray-200 rounded-lg w-1/2 mx-auto animate-pulse" />
+          </div>
+
+          {/* Info Cards Skeleton */}
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="bg-white p-6 rounded-xl animate-pulse">
+                <div className="w-12 h-12 bg-gray-200 rounded-full mx-auto mb-4" />
+                <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto mb-3" />
+                <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto" />
+              </div>
+            ))}
+          </div>
+
+          {/* Form Skeleton */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[1, 2].map((item) => (
+                  <div key={item}>
+                    <div className="h-4 bg-gray-200 rounded w-1/4 mb-2 animate-pulse" />
+                    <div className="h-12 bg-gray-200 rounded-lg animate-pulse" />
+                  </div>
+                ))}
+              </div>
+              {[1, 2].map((item) => (
+                <div key={item}>
+                  <div className="h-4 bg-gray-200 rounded w-1/4 mb-2 animate-pulse" />
+                  <div className="h-12 bg-gray-200 rounded-lg animate-pulse" />
+                </div>
+              ))}
+              <div className="h-14 bg-gray-200 rounded-xl animate-pulse" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -108,14 +145,17 @@ export default function ContactPage() {
           transition={{ delay: 0.2 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">تماس با ما</h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+            {" "}
+            {settings?.contact?.hero?.title}{" "}
+          </h1>
           <p className="text-gray-600 text-lg">
-            ما مشتاقانه منتظر شنیدن نظرات و پیشنهادات شما هستیم
+            {settings?.contact?.hero?.subtitle}
           </p>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8 mb-12">
-          {contactInfo.map((item, index) => (
+          {settings?.contact?.info.map((item, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
@@ -143,7 +183,7 @@ export default function ContactPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <motion.div whileHover={{ scale: 1.01 }}>
                   <label className="block text-gray-700 mb-2 font-medium">
-                    نام و نام خانوادگی
+                    {settings?.contact?.form?.nameLabel}
                   </label>
                   <input
                     type="text"
@@ -158,7 +198,7 @@ export default function ContactPage() {
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.01 }}>
                   <label className="block text-gray-700 mb-2 font-medium">
-                    ایمیل
+                    {settings?.contact?.form?.emailLabel}
                   </label>
                   <input
                     type="email"
@@ -176,7 +216,7 @@ export default function ContactPage() {
 
             <motion.div whileHover={{ scale: 1.01 }}>
               <label className="block text-gray-700 mb-2 font-medium">
-                موضوع
+                {settings?.contact?.form?.subjectLabel}
               </label>
               <input
                 type="text"
@@ -192,7 +232,7 @@ export default function ContactPage() {
 
             <motion.div whileHover={{ scale: 1.01 }}>
               <label className="block text-gray-700 mb-2 font-medium">
-                پیام
+                {settings?.contact?.form?.messageLabel}
               </label>
               <textarea
                 rows="6"
@@ -220,7 +260,7 @@ export default function ContactPage() {
                 "در حال ارسال..."
               ) : (
                 <>
-                  <span>ارسال پیام</span>
+                  <span> {settings?.contact?.form?.submitButton}</span>
                   <FiSend className="w-5 h-5" />
                 </>
               )}

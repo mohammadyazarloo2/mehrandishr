@@ -510,37 +510,7 @@ export default function Index() {
       <div className="course-padcast relative overflow-hidden py-20">
         {/* Animated Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 to-amber-100">
-          <div className="liquid-blobs">
-            <div
-              className="liquid-blob absolute right-0"
-              style={{
-                background: "rgba(250, 204, 21, 0.3)",
-                width: "400px",
-                height: "400px",
-                animation: "floatingBlobOne 30s linear infinite",
-              }}
-            ></div>
-
-            <div
-              className="liquid-blob absolute right-0"
-              style={{
-                background: "rgba(252, 211, 77, 0.3)",
-                width: "350px",
-                height: "350px",
-                animation: "floatingBlobTwo 25s linear infinite",
-              }}
-            ></div>
-
-            <div
-              className="liquid-blob absolute right-0"
-              style={{
-                background: "rgba(251, 191, 36, 0.3)",
-                width: "300px",
-                height: "300px",
-                animation: "floatingBlobThree 35s linear infinite",
-              }}
-            ></div>
-          </div>
+          
         </div>
 
         <HomeAudioPlayer />
