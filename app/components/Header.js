@@ -67,6 +67,16 @@ export default function Header() {
   const [showExamModal, setShowExamModal] = useState(false);
   const settings = useSelector((state) => state.settings.data);
   const [isCoursesOpen, setIsCoursesOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const res = await fetch("/api/category");
+      const data = await res.json();
+      setCategories(data);
+    };
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     dispatch(fetchSettings());
@@ -191,24 +201,21 @@ export default function Header() {
                           دسته‌بندی دوره‌ها
                         </h3>
                         <ul className="space-y-1">
-                          <li className="group/item relative">
-                            <Link
-                              href="/courses/frontend"
-                              className="flex items-center gap-2 p-3 rounded-lg hover:bg-blue-50 transition-all"
-                            >
-                              <TbHtml className="text-xl text-blue-500" />
-                              <span>برنامه‌نویسی فرانت‌اند</span>
-                            </Link>
-                          </li>
-                          <li className="group/item relative">
-                            <Link
-                              href="/courses/backend"
-                              className="flex items-center gap-2 p-3 rounded-lg hover:bg-purple-50 transition-all"
-                            >
-                              <TbBrandPhp className="text-xl text-purple-500" />
-                              <span>برنامه‌نویسی بک‌اند</span>
-                            </Link>
-                          </li>
+                          {categories.map(
+                            (category) =>
+                              category.parent === "main" &&
+                              category.isActive && (
+                                <li key={category._id} className="group/item">
+                                  <Link
+                                    href={`/courses/${category.sub}`}
+                                    className="flex items-center gap-2 p-3 rounded-lg hover:bg-blue-50 transition-all"
+                                  >
+                                    {/* {getCategoryIcon(category.sub)} */}
+                                    <span>{category.name}</span>
+                                  </Link>
+                                </li>
+                              )
+                          )}
                         </ul>
                       </div>
 
@@ -524,37 +531,20 @@ export default function Header() {
                     }`}
                   >
                     <div className="py-2">
-                      <Link
-                        href="/courses/frontend"
-                        className="flex items-center gap-3 px-8 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all group"
-                      >
-                        <TbHtml className="text-xl text-gray-400 group-hover:text-blue-500" />
-                        <span>برنامه‌نویسی فرانت‌اند</span>
-                      </Link>
-
-                      <Link
-                        href="/courses/backend"
-                        className="flex items-center gap-3 px-8 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all group"
-                      >
-                        <TbBrandPhp className="text-xl text-gray-400 group-hover:text-blue-500" />
-                        <span>برنامه‌نویسی بک‌اند</span>
-                      </Link>
-
-                      <Link
-                        href="/course/react"
-                        className="flex items-center gap-3 px-8 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all group"
-                      >
-                        <AiOutlineJavaScript className="text-xl text-gray-400 group-hover:text-blue-500" />
-                        <span>دوره جامع React</span>
-                      </Link>
-
-                      <Link
-                        href="/course/nodejs"
-                        className="flex items-center gap-3 px-8 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all group"
-                      >
-                        <TbBrandPhp className="text-xl text-gray-400 group-hover:text-blue-500" />
-                        <span>دوره Node.js</span>
-                      </Link>
+                      {categories.map(
+                        (category) =>
+                          category.parent === "main" &&
+                          category.isActive && (
+                            <Link
+                              key={category._id}
+                              href={`/courses/${category.sub}`}
+                              className="flex items-center gap-3 px-8 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                            >
+                              {/* {getCategoryIcon(category.sub)} */}
+                              <span>{category.name}</span>
+                            </Link>
+                          )
+                      )}
                     </div>
                   </div>
                 </li>
@@ -640,25 +630,34 @@ export default function Header() {
             {/* <Image width={100} height={100} alt="" /> */}
           </div>
           <div className="nav2-tex">
-            <div className="input-group">
-              <input
-                className="nav2-search"
-                type="search"
-                placeholder="جستجو ..."
-              />
-              <BsSearch />
+            <div className="relative group w-[70%]">
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-xl rounded-full px-6 py-3 shadow-lg shadow-amber-500/10 transition-all duration-300 hover:shadow-amber-500/20 hover:bg-white/20">
+                <input
+                  className="bg-transparent outline-none w-full text-gray-800 focus:border-none focus:ring-0 focus:placeholder:text-amber-500 transition-colors"
+                  type="search"
+                  placeholder="جستجوی دوره، مقاله، مدرس ..."
+                />
+                <BsSearch className="h-5 w-5 text-gray-600 group-hover:text-amber-500 group-hover:rotate-12 transition-all duration-500" />
+              </div>
+              <div className="absolute -inset-1 -z-10 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-rose-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-700" />
+              <div className="absolute -inset-1 -z-10 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-full blur-xl transition-all duration-500 group-hover:blur-3xl" />
             </div>
           </div>
           <button
-            className="btn btn-green nav2-amir"
+            className="relative group overflow-hidden btn btn-green nav2-amir"
             onClick={openProject}
             type="button"
           >
-            <div className="nav-amit-content">
-              درخواست پروژه
-              <GrProjects />
+            <div className="nav-amit-content relative z-10 flex items-center gap-2 px-6 py-3">
+              <span className="font-medium">درخواست پروژه</span>
+              <GrProjects className="w-5 h-5 transition-transform group-hover:rotate-12" />
             </div>
-            <span className="nav2-amir-overlay"></span>
+
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+
+            <div className="absolute -inset-1 bg-gradient-to-r from-amber-500/20 to-orange-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-all duration-700 scale-150" />
           </button>
           <div className={openp === true ? "open requests" : "requests"}>
             <ProjectRequest onClose={() => openProject()} />

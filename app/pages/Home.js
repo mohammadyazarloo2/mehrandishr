@@ -108,10 +108,16 @@ const courses = [
 export default function Index() {
   const progressCircle = useRef(null);
   const progressContent = useRef(null);
+
+  const [progress, setProgress] = useState(0);
+  const radius = 20;
+  const circumference = radius * 2 * Math.PI;
+
   const onAutoplayTimeLeft = (s, time, progress) => {
-    progressCircle.current.style.setProperty("--progress", 1 - progress);
-    progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
+    setProgress(progress * 100);
   };
+
+  const progressOffset = circumference - (progress / 100) * circumference;
   const [isReady, setIsReady] = useState(false);
   // const [currentPodcast, setCurrentPodcast] = useState(0);
 
@@ -302,60 +308,92 @@ export default function Index() {
   ) : (
     <main>
       {status === "authenticated" && <ChatModal />}
-      <div className="bottem-img">
-        <div className="absolute top-4 left-50 z-10">
+      <div className="bottem-img relative overflow-hidden rounded-3xl">
+        <div className="absolute top-4 left-8 z-10">
           <Weather />
         </div>
+
         <Swiper
           dir="rtl"
           spaceBetween={30}
           centeredSlides={true}
           autoplay={{
-            delay: 2500,
+            delay: 3000,
             disableOnInteraction: false,
           }}
           pagination={{
             clickable: true,
+            dynamicBullets: true,
           }}
-          navigation={true}
+          navigation={{
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          }}
           modules={[Autoplay]}
           onAutoplayTimeLeft={onAutoplayTimeLeft}
-          className="mySwiper"
+          className="h-[500px] group"
         >
           {sliders.map((slider) => (
-            <SwiperSlide key={slider._id}>
-              <Link href={slider.link} className="w-full h-full">
+            <SwiperSlide key={slider._id} className="relative">
+              <Link href={slider.link} className="block w-full h-full">
                 <Image
                   src={slider.image}
                   width={1200}
-                  height={400}
+                  height={500}
                   alt={slider.title}
-                  className="w-full h-auto"
+                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
                 />
-                <div className="slider-content">
-                  <h2>{slider.title}</h2>
-                  <p>{slider.description}</p>
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+                <div className="absolute bottom-0 right-0 left-0 p-8 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                  <h2 className="text-3xl font-bold text-white mb-4">
+                    {slider.title}
+                  </h2>
+                  <p className="text-white/90 line-clamp-2">
+                    {slider.description}
+                  </p>
                 </div>
               </Link>
             </SwiperSlide>
           ))}
-          <div className="autoplay-progress" slot="container-end">
-            <svg viewBox="0 0 48 48" ref={progressCircle}>
-              <circle cx="24" cy="24" r="20"></circle>
+
+          <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full">
+            <svg
+              viewBox="0 0 48 48"
+              ref={progressCircle}
+              className="w-4 h-4 rotate-90"
+            >
+              <circle
+                cx="24"
+                cy="24"
+                r="20"
+                className="stroke-white/20 fill-none stroke-[4]"
+              />
+              <circle
+                cx="24"
+                cy="24"
+                r="20"
+                className="stroke-white fill-none stroke-[4]"
+                strokeDasharray={circumference}
+                strokeDashoffset={progressOffset}
+              />
             </svg>
-            <span ref={progressContent}></span>
+            <span ref={progressContent} className="text-white text-sm" />
           </div>
+          <div className="swiper-button-prev !w-12 !h-12 !bg-white/10 !backdrop-blur-md !rounded-full !text-white hover:!bg-white/20 transition-colors after:!text-lg"></div>
+          <div className="swiper-button-next !w-12 !h-12 !bg-white/10 !backdrop-blur-md !rounded-full !text-white hover:!bg-white/20 transition-colors after:!text-lg"></div>
         </Swiper>
       </div>
 
       <div className="bottom">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold">جدیدترین‌ها</h2>
+          <h2 className="text-2xl font-bold text-gray-800">جدیدترین‌ها</h2>
           <Link
             href="/pages/Products"
-            className="px-4 py-2 text-amber-600 hover:text-amber-700 transition-colors"
+            className="px-4 py-2 text-amber-600 hover:text-amber-700 transition-colors duration-300"
           >
-            بیشتر
+            مشاهده همه
           </Link>
         </div>
 
@@ -380,13 +418,13 @@ export default function Index() {
                       alt={product.title}
                       width={200}
                       height={200}
-                      className="transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
+                      className="transition-transform duration-700 group-hover:scale-110 group-hover:rotate-2"
                       priority
                     />
                   </div>
 
                   {/* Back Card */}
-                  <div className="absolute inset-0 z-20 translate-y-full group-hover:translate-y-0 transition-all duration-700 bg-gradient-to-br from-amber-500/95 via-yellow-500/95 to-orange-400/95 backdrop-blur-xl p-8 flex flex-col items-center justify-center text-white">
+                  <div className="absolute inset-0 z-20 translate-y-full group-hover:translate-y-0 transition-transform duration-700 bg-gradient-to-br from-amber-500/95 via-yellow-500/95 to-orange-400/95 backdrop-blur-xl p-8 flex flex-col items-center justify-center text-white">
                     <button
                       onClick={() =>
                         dispatch(
@@ -399,12 +437,15 @@ export default function Index() {
                           })
                         )
                       }
-                      className="absolute -top-12 right-6 z-10 rounded-3xl bg-white/20 p-3 hover:bg-white/30 transition-colors"
+                      className="absolute -top-12 right-6 z-10 rounded-3xl bg-white/20 p-3 hover:bg-white/30 transition-colors duration-300 hover:scale-110"
+                      aria-label="Add to Cart"
                     >
                       <SlBasket className="h-5 w-5" />
                     </button>
 
-                    <h3 className="text-2xl font-bold mb-3">{product.title}</h3>
+                    <h3 className="text-2xl font-bold mb-3 line-clamp-2">
+                      {product.title}
+                    </h3>
                     <p className="text-white/90 mb-5">مدرس: محمد یازرلو</p>
 
                     <div className="flex items-center gap-2 mb-8">
@@ -416,7 +457,7 @@ export default function Index() {
 
                     <Link
                       href={`/pages/Products/details/${product._id}`}
-                      className="w-full text-center rounded-3xl bg-white/20 px-8 py-4 font-medium backdrop-blur-xl transition-all duration-500 hover:bg-white/30 hover:scale-105"
+                      className="w-full text-center rounded-3xl bg-white/20 px-8 py-4 font-medium backdrop-blur-xl transition-all duration-300 hover:bg-white/30 hover:scale-105 active:scale-95"
                     >
                       مشاهده دوره
                     </Link>
