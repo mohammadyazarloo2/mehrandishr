@@ -25,11 +25,6 @@ const DelayedSupense = ({ children, ms = 1000 }) => {
   return children;
 };
 
-export const metadata = {
-  title: "آموزشگاه مهراندیش",
-  description: "آموزش صفر تا صد برنامه نویسی",
-};
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
@@ -44,10 +39,11 @@ export default function RootLayout({ children }) {
             </Suspense>
             {/* </ClientLayout> */}
             <Footer />
+
+            <div className="fixed bottom-0 left-0 right-0 z-50">
+              <AudioPlayer />
+            </div>
           </AuthProvider>
-          <div className="fixed bottom-0 left-0 right-0 z-50">
-            <AudioPlayer />
-          </div>
         </Providers>
       </body>
     </html>

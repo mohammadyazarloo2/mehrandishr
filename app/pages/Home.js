@@ -31,6 +31,7 @@ import ChatModal from "../components/ChatModal";
 import { Autoplay, EffectCoverflow, Navigation } from "swiper/modules";
 import Weather from "../components/Weather";
 import HomeAudioPlayer from "../components/HomeAudioPlayer";
+import { fetchSettings } from "../redux/settingsSlice";
 
 const courses = [
   {
@@ -126,6 +127,12 @@ export default function Index() {
   const [queue, setQueue] = useState([]);
   const [sliders, setSliders] = useState([]);
   const { data: session, status } = useSession();
+
+  const settings = useSelector((state) => state.settings.data);
+
+  useEffect(() => {
+    dispatch(fetchSettings());
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchSliders = async () => {
@@ -342,11 +349,14 @@ export default function Index() {
       </div>
 
       <div className="bottom">
-        <div className="bottom-head">
-          <span className="bottom-head-title">جدیدترین ها</span>
-          <div className="bottom-head-more">
-            <Link href="/pages/Products">بیشتر</Link>
-          </div>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-bold">جدیدترین‌ها</h2>
+          <Link
+            href="/pages/Products"
+            className="px-4 py-2 text-amber-600 hover:text-amber-700 transition-colors"
+          >
+            بیشتر
+          </Link>
         </div>
 
         <div className="products-section">
@@ -360,57 +370,56 @@ export default function Index() {
               1024: { slidesPerView: 4 },
             }}
           >
-            {products.map((item, index) => (
-              <SwiperSlide key={index}>
-                <div className="group relative overflow-hidden rounded-[40px] transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-amber-500/20">
-                  <div className="flex h-[400px] transform flex-col transition-all duration-700">
-                    {/* Front Card */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-amber-50/95 via-white/90 to-amber-100/80 backdrop-blur-md">
-                      <Image
-                        src={item?.images?.[0] || "/img/default-product.jpg"}
-                        alt={item.title}
-                        width={200}
-                        height={200}
-                        className="transform transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
-                        priority
-                      />
+            {products.map((product) => (
+              <SwiperSlide key={product._id}>
+                <div className="group relative h-[400px] rounded-[40px] overflow-hidden transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-amber-500/20">
+                  {/* Front Card */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-50/95 via-white/90 to-amber-100/80 backdrop-blur-md flex items-center justify-center">
+                    <Image
+                      src={product?.images?.[0] || "/img/default-product.jpg"}
+                      alt={product.title}
+                      width={200}
+                      height={200}
+                      className="transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
+                      priority
+                    />
+                  </div>
+
+                  {/* Back Card */}
+                  <div className="absolute inset-0 z-20 translate-y-full group-hover:translate-y-0 transition-all duration-700 bg-gradient-to-br from-amber-500/95 via-yellow-500/95 to-orange-400/95 backdrop-blur-xl p-8 flex flex-col items-center justify-center text-white">
+                    <button
+                      onClick={() =>
+                        dispatch(
+                          addToCart({
+                            title: product.title,
+                            price: product.price,
+                            image:
+                              product?.images?.[0] ||
+                              "/img/default-product.jpg",
+                          })
+                        )
+                      }
+                      className="absolute -top-12 right-6 z-10 rounded-3xl bg-white/20 p-3 hover:bg-white/30 transition-colors"
+                    >
+                      <SlBasket className="h-5 w-5" />
+                    </button>
+
+                    <h3 className="text-2xl font-bold mb-3">{product.title}</h3>
+                    <p className="text-white/90 mb-5">مدرس: محمد یازرلو</p>
+
+                    <div className="flex items-center gap-2 mb-8">
+                      <span className="text-3xl font-black">
+                        {product.price.toLocaleString()}
+                      </span>
+                      <span className="text-sm text-white/80">تومان</span>
                     </div>
 
-                    {/* Back Card */}
-                    <div className="absolute inset-0 z-20 flex translate-y-full flex-col items-center justify-center bg-gradient-to-br from-amber-500/95 via-yellow-500/95 to-orange-400/95 p-8 text-white backdrop-blur-xl transition-all duration-700 group-hover:translate-y-0">
-                      <div
-                        className="absolute -top-12 right-6 z-10 rounded-3xl bg-white/20 p-3 hover:bg-white/30 cursor-pointer"
-                        onClick={() =>
-                          dispatch(
-                            addToCart({
-                              title: item.title,
-                              price: item.price,
-                              image:
-                                item?.images?.[0] || "/img/default-product.jpg",
-                            })
-                          )
-                        }
-                      >
-                        <SlBasket className="h-5 w-5" />
-                      </div>
-
-                      <h3 className="mb-3 text-2xl font-bold">{item.title}</h3>
-                      <p className="mb-5 text-white/90">مدرس: محمد یازرلو</p>
-
-                      <div className="mb-8 flex items-center gap-2">
-                        <span className="text-3xl font-black">
-                          {item.price.toLocaleString()}
-                        </span>
-                        <span className="text-sm text-white/80">تومان</span>
-                      </div>
-
-                      <Link
-                        href={`/pages/Products/details/${item._id}`}
-                        className="w-full rounded-3xl bg-white/20 px-8 py-4 font-medium backdrop-blur-xl transition-all duration-500 hover:bg-white/30 hover:scale-105"
-                      >
-                        مشاهده دوره
-                      </Link>
-                    </div>
+                    <Link
+                      href={`/pages/Products/details/${product._id}`}
+                      className="w-full text-center rounded-3xl bg-white/20 px-8 py-4 font-medium backdrop-blur-xl transition-all duration-500 hover:bg-white/30 hover:scale-105"
+                    >
+                      مشاهده دوره
+                    </Link>
                   </div>
                 </div>
               </SwiperSlide>
@@ -427,10 +436,9 @@ export default function Index() {
         </div> */}
         <div className="about-home-head mb-4">
           <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
-            درباره ما
+            {settings?.about?.hero?.title}
             <span className="text-sm text-gray-600 mr-4">
-              <FaEye className="inline ml-1" />
-              {viewCount} بازدید
+              {settings?.about?.hero?.subTitle}
             </span>
           </h2>
         </div>
@@ -438,14 +446,7 @@ export default function Index() {
           <div className="about-me-content transform hover:-translate-y-2 transition-all duration-500">
             <div className="backdrop-blur-lg bg-white/80 p-8 rounded-3xl shadow-2xl hover:shadow-yellow-200/50">
               <p className="leading-relaxed text-gray-700 text-lg">
-                در آموزشگاه مهراندیش راختر و اسان تر یادبگیرید با توجه به
-                نیازهای روز دنیا افراد نیازمند یادگیری زبان های برنامه نویسی مبی
-                باشد در آموزشگاه مهر اندیش با توجه به تکنولوژی های روز دنیا و به
-                صورت اصولی آموزش ببنید تا همیشه در عرصه رقابت ماندگار و پر قدرت
-                بمانید در اینجا ما دادن تمرینات متفاوت مهارت و تجربه خود را به
-                شما انتقال داده تا بتوانید دانش و مهارت برنامه نویسی رو کسب
-                بکنید برنامه نویسی مختص رده سنی خاصی نمی باشد و شما می توانید
-                کودکان خود را با این دنیای پر رمز و راز اشنا کنید
+                {settings?.about?.content?.history?.content}
               </p>
             </div>
           </div>
@@ -509,9 +510,7 @@ export default function Index() {
       </div>
       <div className="course-padcast relative overflow-hidden py-20">
         {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 to-amber-100">
-          
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 to-amber-100"></div>
 
         <HomeAudioPlayer />
       </div>
