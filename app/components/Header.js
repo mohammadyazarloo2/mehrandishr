@@ -644,11 +644,11 @@ export default function Header() {
             </div>
           </div>
           <button
-            className="relative group overflow-hidden btn btn-green nav2-amir"
+            className="relative group overflow-hidden btn btn-green"
             onClick={openProject}
             type="button"
           >
-            <div className="nav-amit-content relative z-10 flex items-center gap-2 px-6 py-3">
+            <div className="nav-amit-content relative z-10 flex items-center gap-2 px-4 py-2">
               <span className="font-medium">درخواست پروژه</span>
               <GrProjects className="w-5 h-5 transition-transform group-hover:rotate-12" />
             </div>
