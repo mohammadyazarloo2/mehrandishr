@@ -68,6 +68,35 @@ export default function Header() {
   const settings = useSelector((state) => state.settings.data);
   const [isCoursesOpen, setIsCoursesOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState({
+    products: [],
+    articles: [],
+  });
+  const [products, setProducts] = useState([]);
+  const [articles, setArticles] = useState([]);
+
+  const handleSearch = async (value) => {
+    setSearchTerm(value);
+    if (value.length < 2) {
+      setSearchResults({ products: [], articles: [] });
+      return;
+    }
+
+    const res = await fetch(`/api/search?q=${value}`);
+    const data = await res.json();
+    setSearchResults(data);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch("/api/search");
+      const data = await res.json();
+      setProducts(data.products);
+      setArticles(data.articles);
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -636,11 +665,56 @@ export default function Header() {
                   className="bg-transparent outline-none w-full text-gray-800 focus:border-none focus:ring-0 focus:placeholder:text-amber-500 transition-colors"
                   type="search"
                   placeholder="جستجوی دوره، مقاله، مدرس ..."
+                  value={searchTerm}
+                  onChange={(e) => handleSearch(e.target.value)}
                 />
                 <BsSearch className="h-5 w-5 text-gray-600 group-hover:text-amber-500 group-hover:rotate-12 transition-all duration-500" />
               </div>
-              <div className="absolute -inset-1 -z-10 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-rose-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-700" />
-              <div className="absolute -inset-1 -z-10 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-full blur-xl transition-all duration-500 group-hover:blur-3xl" />
+
+              {searchResults.products.length > 0 ||
+              searchResults.articles.length > 0 ? (
+                <div className="absolute top-full right-0 w-full mt-2 p-4 bg-white rounded-2xl shadow-xl z-50">
+                  {searchResults.products.length > 0 && (
+                    <div className="mb-4">
+                      <h3 className="text-sm font-medium text-gray-500 mb-2">
+                        دوره‌ها
+                      </h3>
+                      {searchResults.products.map((product) => (
+                        <Link
+                          key={product._id}
+                          href={`/products/${product._id}`}
+                          className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg"
+                        >
+                          <Image
+                            src={product.image}
+                            width={40}
+                            height={40}
+                            className="rounded"
+                          />
+                          <span>{product.title}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+
+                  {searchResults.articles.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500 mb-2">
+                        مقالات
+                      </h3>
+                      {searchResults.articles.map((article) => (
+                        <Link
+                          key={article._id}
+                          href={`/articles/${article._id}`}
+                          className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg"
+                        >
+                          <span>{article.title}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : null}
             </div>
           </div>
           <button
@@ -648,7 +722,7 @@ export default function Header() {
             onClick={openProject}
             type="button"
           >
-            <div className="nav-amit-content relative z-10 flex items-center gap-2 px-4 py-2">
+            <div className="nav-amit-content relative z-10 flex items-center gap-2 px-6 py-3">
               <span className="font-medium">درخواست پروژه</span>
               <GrProjects className="w-5 h-5 transition-transform group-hover:rotate-12" />
             </div>
