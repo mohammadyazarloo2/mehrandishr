@@ -228,7 +228,7 @@ export default function AboutPage() {
                 transition={{ delay: 1.1 + index * 0.1 }}
                 className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-center"
               >
-                <stat.icon className="w-10 h-10 mx-auto mb-4 text-yellow-500" />
+                {/* <stat.icon className="w-10 h-10 mx-auto mb-4 text-yellow-500" /> */}
                 <div className="text-3xl font-bold text-gray-800 mb-2">
                   {stat.count}
                 </div>

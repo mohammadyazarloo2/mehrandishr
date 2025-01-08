@@ -64,8 +64,8 @@ export default function Footer() {
 
           {/* ستون چهارم - خبرنامه */}
           <div>
-            <h3 className="text-lg font-bold mb-4 text-white">عضویت در خبرنامه</h3>
-            <p className="text-sm mb-4">برای اطلاع از آخرین دوره‌ها و تخفیف‌ها، در خبرنامه ما عضو شوید.</p>
+            <h3 className="text-lg font-bold mb-4 text-white"> {settings?.features?.newsletter?.title} </h3>
+            <p className="text-sm mb-4"> {settings?.features?.newsletter?.subtitle}  </p>
             <form className="space-y-2">
               <input 
                 type="email" 

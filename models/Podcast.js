@@ -27,7 +27,11 @@ const podcastSchema = new mongoose.Schema({
   listens: {
     type: Number,
     default: 0
-  }
+  },
+  views: {
+    type: Number,
+    default: 0,
+  },
 }, {
   timestamps: true
 });

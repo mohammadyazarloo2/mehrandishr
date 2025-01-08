@@ -68,10 +68,54 @@ const settingSchema = new mongoose.Schema(
         enabled: Boolean,
         commentsEnabled: Boolean,
         postsPerPage: Number,
+        title: String,
+        subtitle: String,
+        authorPage: {
+          title: String,
+          subtitle: String,
+        },
       },
       newsletter: {
         enabled: Boolean,
         provider: String,
+        title: String,
+        subtitle: String,
+      },
+      products: {
+        enabled: Boolean,
+        page: {
+          title: String,
+          description: String,
+        },
+      },
+      podcast: {
+        enabled: Boolean,
+        title: String,
+        description: String,
+        itemsPerPage: Number,
+        commentsEnabled: Boolean,
+      },
+      courses: {
+        enabled: Boolean,
+        title: String,
+        description: String,
+        itemsPerPage: Number,
+        commentsEnabled: Boolean,
+      },
+      auth: {
+        signin: {
+          title: String, // "آموزشگاه مهراندیش"
+          subtitle: String, // "همراه شما در مسیر یادگیری و پیشرفت حرفه‌ای"
+          welcomeTitle: String, // "خوش آمدید"
+          welcomeSubtitle: String, // "به پنل کاربری مهراندیش وارد شوید"
+          features: [
+            {
+              icon: String,
+              title: String,
+              desc: String,
+            },
+          ],
+        },
       },
     },
     about: {

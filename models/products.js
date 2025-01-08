@@ -21,7 +21,7 @@ const productsSchema = new Schema(
     },
     brandId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Brand",
+      ref: "brands",
       required: true,
     },
     price: {
@@ -76,6 +76,10 @@ const productsSchema = new Schema(
         ref: "Features",
       },
     ],
+    views: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

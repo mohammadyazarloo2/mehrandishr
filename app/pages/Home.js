@@ -410,7 +410,7 @@ export default function Index() {
           >
             {products.map((product) => (
               <SwiperSlide key={product._id}>
-                <div className="group relative h-[400px] rounded-[40px] overflow-hidden transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-amber-500/20">
+                <div className="group relative h-[400px] w-full rounded-[40px] overflow-hidden transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-amber-500/20">
                   {/* Front Card */}
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-50/95 via-white/90 to-amber-100/80 backdrop-blur-md flex items-center justify-center">
                     <Image
@@ -517,7 +517,7 @@ export default function Index() {
         </div>
         <div className="course-learning">
           <div className="course-learning-head">
-            <h2>دورهای آموزشی</h2>
+            <h2> {settings?.features?.courses?.title} </h2>
           </div>
           <div className="course-learning-body">
             <div className="scroll-container">

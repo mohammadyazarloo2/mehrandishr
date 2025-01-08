@@ -15,6 +15,10 @@ const BrandSchema = new mongoose.Schema(
       type: String,
       default: () => new Date().toLocaleDateString("fa-IR"),
     },
+    views: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

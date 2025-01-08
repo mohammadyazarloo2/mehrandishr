@@ -25,6 +25,7 @@ import { CiPause1 } from "react-icons/ci";
 import { BsFillSkipEndCircleFill } from "react-icons/bs";
 import { FaRepeat } from "react-icons/fa6";
 import { FaVolumeMute, FaVolumeUp, FaTimes } from "react-icons/fa";
+import { fetchSettings } from "../redux/settingsSlice";
 
 export default function HomeAudioPlayer() {
   const [loading, setLoading] = useState(true);
@@ -43,6 +44,11 @@ export default function HomeAudioPlayer() {
   } = useSelector((state) => state.audio);
   const [showModal, setShowModal] = useState(false);
   const [podcasts, setPodcasts] = useState(null);
+  const settings = useSelector((state) => state.settings.data);
+
+  useEffect(() => {
+    dispatch(fetchSettings());
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchPodcasts = async () => {
@@ -239,7 +245,7 @@ export default function HomeAudioPlayer() {
     <div className="container mx-auto px-4 relative z-10">
       <div className="course-padcast-head text-center mb-8 md:mb-16">
         <h2 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent inline-block transform hover:scale-105 transition-all duration-300">
-          پادکست‌های برنامه‌نویسی
+          {settings?.features?.podcast?.title}
         </h2>
       </div>
 
@@ -247,8 +253,7 @@ export default function HomeAudioPlayer() {
         <div className="course-padcast-content transform hover:-translate-y-2 transition-all duration-500 w-full lg:w-1/3">
           <div className="backdrop-blur-lg bg-white/80 p-4 md:p-8 rounded-3xl shadow-2xl hover:shadow-purple-200/50">
             <p className="leading-relaxed text-gray-700 text-base md:text-lg">
-              در این بخش سوالات پرتکرار و رایج برنامه نویسی همراه با معرفی
-              زبان‌ها، اطلاعاتی در اختیار کاربران قرار می‌گیرد
+              {settings?.features?.podcast?.description}
             </p>
             <button
               onClick={() => setShowModal(true)}
