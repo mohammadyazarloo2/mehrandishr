@@ -632,12 +632,28 @@ export default function Products() {
                       {product.title}
                     </h2>
                     <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
-                      {product.description}
+                      {product.description.includes("<") ? (
+                        <div
+                          className="prose prose-lg rtl max-w-none"
+                          dangerouslySetInnerHTML={{
+                            __html: product.description,
+                          }}
+                        />
+                      ) : (
+                        <div className="prose prose-lg rtl">
+                          {product.description}
+                        </div>
+                      )}
                     </p>
 
                     <div className="flex justify-between items-center text-sm text-gray-500 mb-6 border-t border-gray-100 pt-4">
                       <span className="flex items-center bg-gray-50 px-3 py-1 rounded-full">
-                        قیمت: {product.price.toLocaleString()} تومان
+                        قیمت:{" "}
+                        {new Intl.NumberFormat("fa-IR", {
+                          style: "decimal",
+                          maximumFractionDigits: 0,
+                        }).format(product.price)}{" "}
+                        تومان
                       </span>
                     </div>
 

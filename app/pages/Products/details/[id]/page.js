@@ -274,7 +274,14 @@ export default function Page({ params }) {
           </div>
           <div className="products-info-price">
             <span>قیمت :</span>
-            <span> {product.price.toLocaleString()} تومان </span>
+            <span>
+              {" "}
+              {new Intl.NumberFormat("fa-IR", {
+                style: "decimal",
+                maximumFractionDigits: 0,
+              }).format(product.price)}{" "}
+              تومان{" "}
+            </span>
           </div>
           <div className="products-info-description">
             <span>توضیحات :</span>

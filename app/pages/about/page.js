@@ -5,6 +5,7 @@ import { fetchSettings } from "../../redux/settingsSlice";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { FiStar, FiUser, FiImage } from "react-icons/fi";
+import { NextSeo } from "next-seo";
 
 export default function AboutPage() {
   const dispatch = useDispatch();
@@ -16,6 +17,26 @@ export default function AboutPage() {
   }, [dispatch]);
 
   return (
+    <>
+    <NextSeo
+        title={settings?.about?.hero?.title}
+        description={settings?.about?.hero?.subtitle}
+        canonical="https://ramian.netlify.app/pages/about"
+        openGraph={{
+          url: "https://ramian.netlify.app/pages/about",
+          title: settings?.about?.hero?.title,
+          description: settings?.about?.hero?.subtitle,
+          images: [
+            {
+              url: settings?.about?.logo?.light,
+              width: 800,
+              height: 600,
+              alt: 'مهراندیش',
+            },
+          ],
+        }}
+      />
+
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white">
       {/* Hero Section */}
       <motion.div
@@ -329,5 +350,6 @@ export default function AboutPage() {
         </div>
       </motion.section>
     </div>
+    </>
   );
 }

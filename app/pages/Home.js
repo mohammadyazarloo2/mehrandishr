@@ -33,78 +33,6 @@ import Weather from "../components/Weather";
 import HomeAudioPlayer from "../components/HomeAudioPlayer";
 import { fetchSettings } from "../redux/settingsSlice";
 
-const courses = [
-  {
-    id: 1,
-    logo: "/img/lan/ICDL.png",
-  },
-  {
-    id: 2,
-    logo: "/img/lan/html.png",
-  },
-  {
-    id: 3,
-    logo: "/img/lan/css.png",
-  },
-  {
-    id: 4,
-    logo: "/img/lan/bootstrap.png",
-  },
-  {
-    id: 5,
-    logo: "/img/lan/tailwind.webp",
-  },
-  {
-    id: 6,
-    logo: "/img/lan/javascript.webp",
-  },
-  {
-    id: 7,
-    logo: "/img/lan/nodejs.png",
-  },
-  {
-    id: 8,
-    logo: "/img/lan/mongodb.png",
-  },
-  {
-    id: 9,
-    logo: "/img/lan/reactjs.png",
-  },
-  {
-    id: 10,
-    logo: "/img/lan/nextjs.png",
-  },
-  {
-    id: 11,
-    logo: "/img/lan/mysql.webp",
-  },
-  {
-    id: 12,
-    logo: "/img/lan/php.png",
-  },
-  {
-    id: 13,
-    logo: "/img/lan/adobeillustrator.jfif",
-  },
-  {
-    id: 14,
-    logo: "/img/lan/aftereffect.jfif",
-  },
-
-  {
-    id: 15,
-    logo: "/img/lan/premier.jfif",
-  },
-  {
-    id: 16,
-    logo: "/img/lan/photoshop.jfif",
-  },
-  {
-    id: 17,
-    logo: "/img/lan/figma.jfif",
-  },
-];
-
 export default function Index() {
   const progressCircle = useRef(null);
   const progressContent = useRef(null);
@@ -135,6 +63,16 @@ export default function Index() {
   const { data: session, status } = useSession();
 
   const settings = useSelector((state) => state.settings.data);
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const res = await fetch("/api/courses");
+      const data = await res.json();
+      setCourses(data);
+    };
+    fetchCourses();
+  }, []);
 
   useEffect(() => {
     dispatch(fetchSettings());
@@ -450,7 +388,10 @@ export default function Index() {
 
                     <div className="flex items-center gap-2 mb-8">
                       <span className="text-3xl font-black">
-                        {product.price.toLocaleString()}
+                        {new Intl.NumberFormat("fa-IR", {
+                          style: "decimal",
+                          maximumFractionDigits: 0,
+                        }).format(product.price)}
                       </span>
                       <span className="text-sm text-white/80">تومان</span>
                     </div>
@@ -516,33 +457,36 @@ export default function Index() {
           </div>
         </div>
         <div className="course-learning">
-          <div className="course-learning-head">
+          <div className="course-learning-head flex justify-between items-center pt-4">
             <h2> {settings?.features?.courses?.title} </h2>
+            <Link className="p-3 rounded-lg bg-gradient-to-r from-yellow-500 to-amber-500" href={'/pages/courses'}>بیشتر</Link>
           </div>
           <div className="course-learning-body">
             <div className="scroll-container">
               <div className="primary-images">
-                {courses.map((item, index) => (
-                  <Image
-                    key={index}
-                    src={item.logo}
-                    width={100}
-                    height={100}
-                    alt=""
-                    className="course-image"
-                  />
+                {courses.map((course, index) => (
+                  <Link href={`/pages/courses/${course._id}`} key={index}>
+                    <Image
+                      src={course.thumbnail}
+                      width={100}
+                      height={100}
+                      alt={course.title}
+                      className="course-image"
+                    />
+                  </Link>
                 ))}
               </div>
               <div className="secondary-images">
-                {courses.map((item, index) => (
-                  <Image
-                    key={index}
-                    src={item.logo}
-                    width={100}
-                    height={100}
-                    alt=""
-                    className="course-image"
-                  />
+                {courses.map((course, index) => (
+                  <Link href={`/pages/courses/${course._id}`} key={index}>
+                    <Image
+                      src={course.thumbnail}
+                      width={100}
+                      height={100}
+                      alt={course.title}
+                      className="course-image"
+                    />
+                  </Link>
                 ))}
               </div>
             </div>
