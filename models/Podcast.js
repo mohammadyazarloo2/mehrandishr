@@ -28,6 +28,24 @@ const podcastSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  keywords: {
+    type: String,
+    validate: {
+      validator: function (value) {
+        const keywords = value.split(",").map((k) => k.trim());
+        return keywords.length <= 10;
+      },
+      message: "حداکثر 10 کلیدواژه با کاما (,) از هم جدا کنید",
+    },
+  },
+  metaTitle: {
+    type: String,
+    maxlength: 60,
+  },
+  metaDescription: {
+    type: String,
+    maxlength: 160,
+  },
   views: {
     type: Number,
     default: 0,

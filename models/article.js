@@ -40,6 +40,25 @@ const articleSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    keywords: {
+      type: String,
+      validate: {
+        validator: function (value) {
+          // حداکثر 10 کلیدواژه با کاما
+          const keywords = value.split(",").map((k) => k.trim());
+          return keywords.length <= 10;
+        },
+        message: "حداکثر 10 کلیدواژه با کاما (,) از هم جدا کنید",
+      },
+    },
+    metaTitle: {
+      type: String,
+      maxlength: 60,
+    },
+    metaDescription: {
+      type: String,
+      maxlength: 160,
+    },
     views: {
       type: Number,
       default: 0,

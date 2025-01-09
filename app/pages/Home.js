@@ -387,13 +387,42 @@ export default function Index() {
                     <p className="text-white/90 mb-5">مدرس: محمد یازرلو</p>
 
                     <div className="flex items-center gap-2 mb-8">
-                      <span className="text-3xl font-black">
-                        {new Intl.NumberFormat("fa-IR", {
-                          style: "decimal",
-                          maximumFractionDigits: 0,
-                        }).format(product.price)}
-                      </span>
-                      <span className="text-sm text-white/80">تومان</span>
+                      {product.discount ? (
+                        <>
+                          <div className="flex flex-col">
+                            <span className="text-3xl font-black">
+                              {new Intl.NumberFormat("fa-IR", {
+                                style: "decimal",
+                                maximumFractionDigits: 0,
+                              }).format(
+                                product.price * (1 - product.discount / 100)
+                              )}
+                            </span>
+                            <span className="text-sm line-through text-white/50">
+                              {new Intl.NumberFormat("fa-IR", {
+                                style: "decimal",
+                                maximumFractionDigits: 0,
+                              }).format(product.price)}
+                            </span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm text-white/80">تومان</span>
+                            <span className="text-sm text-red-500">
+                              {product.discount}% تخفیف
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-3xl font-black">
+                            {new Intl.NumberFormat("fa-IR", {
+                              style: "decimal",
+                              maximumFractionDigits: 0,
+                            }).format(product.price)}
+                          </span>
+                          <span className="text-sm text-white/80">تومان</span>
+                        </>
+                      )}
                     </div>
 
                     <Link
@@ -459,7 +488,12 @@ export default function Index() {
         <div className="course-learning">
           <div className="course-learning-head flex justify-between items-center pt-4">
             <h2> {settings?.features?.courses?.title} </h2>
-            <Link className="p-3 rounded-lg bg-gradient-to-r from-yellow-500 to-amber-500" href={'/pages/courses'}>بیشتر</Link>
+            <Link
+              className="p-3 rounded-lg bg-gradient-to-r from-yellow-500 to-amber-500"
+              href={"/pages/courses"}
+            >
+              بیشتر
+            </Link>
           </div>
           <div className="course-learning-body">
             <div className="scroll-container">
