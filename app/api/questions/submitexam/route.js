@@ -11,10 +11,10 @@ export async function POST(request) {
     if (!session) {
       return NextResponse.json({ error: 'لطفا وارد شوید' }, { status: 401 });
     }
+
     await connectMongoDB();
     const { category, level, answers } = await request.json();
 
-    // Get questions from database
     const questions = await Question.find({
       _id: { $in: Object.keys(answers) }
     });
@@ -22,14 +22,9 @@ export async function POST(request) {
     let correctAnswers = 0;
     const totalQuestions = questions.length;
 
-    // Compare each answer with correct option index
     questions.forEach(question => {
       const userAnswer = answers[question._id];
-      const options = question.options;
-      const correctIndex = question.correct;
-      
-      // Check if user's answer matches the option at correct index
-      if (options[correctIndex] === userAnswer) {
+      if (userAnswer === question.options[question.correct]) {
         correctAnswers++;
       }
     });
@@ -37,24 +32,28 @@ export async function POST(request) {
     const wrongAnswers = totalQuestions - correctAnswers;
     const score = Math.round((correctAnswers / totalQuestions) * 100);
 
-    // Save result
-    await ExamResult.create({
+    const examResult = {
       userId: session.user.id,
-      category: category,
+      category,
       level,
       score,
       totalQuestions,
       correctAnswers,
       wrongAnswers,
-      answers
-    });
+      answers: Object.entries(answers).reduce((acc, [id, answer]) => {
+        acc[id] = answer;
+        return acc;
+      }, {})
+    };
+
+    await ExamResult.create(examResult);
 
     return NextResponse.json({
       score,
       totalQuestions,
       correctAnswers,
       wrongAnswers,
-      category // Return category ID in response
+      category
     });
 
   } catch (error) {
@@ -65,3 +64,4 @@ export async function POST(request) {
     );
   }
 }
+

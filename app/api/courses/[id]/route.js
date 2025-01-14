@@ -6,7 +6,11 @@ export async function GET(req, { params }) {
   try {
     await connectMongoDB();
     
-    const course = await Course.findById(params.id);
+    const course = await Course.findByIdAndUpdate(
+      params.id,
+      { $inc: { views: 1 } },
+      { new: true }
+    );
     
     if (!course) {
       return NextResponse.json(

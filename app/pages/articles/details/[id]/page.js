@@ -9,20 +9,51 @@ export default function Page({ params }) {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [author, setAuthor] = useState(null);
+  const [categoryName, setCategoryName] = useState("");
+
+  const fetchCategoryName = async (categoryId) => {
+    try {
+      const response = await fetch(`/api/articles/findcategory`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _id: categoryId }),
+      });
+      const data = await response.json();
+      setCategoryName(data.message.name);
+    } catch (error) {
+      console.log("Error fetching category:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (article?.category) {
+      fetchCategoryName(article.category);
+    }
+  }, [article]);
 
   useEffect(() => {
     const fetchArticle = async () => {
       try {
         const response = await fetch(`/api/articles/${params.id}`);
         const data = await response.json();
-    
+
         // Get author name from the correct path in article data
         const authorResponse = await fetch(`/api/author/${data.author.name}`);
         const authorData = await authorResponse.json();
-    
+
         setArticle({
           ...data,
-          author: authorData
+          author: authorData,
+        });
+
+        await fetch(`/api/articles/updateViews`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ articleId: params.id }),
         });
       } catch (error) {
         console.error("Error fetching article:", error);
@@ -141,7 +172,7 @@ export default function Page({ params }) {
         />
         <div className="absolute bottom-10 lg:bottom-0 md:bottom-0 right-0 left-0 z-20 p-4 md:p-8 lg:p-12 text-white">
           <div className="container mx-auto">
-            <div className="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+            <div className="flex items-center flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
               {article.tags?.map((tag) => (
                 <Link
                   key={tag}
@@ -151,10 +182,14 @@ export default function Page({ params }) {
                   {tag}
                 </Link>
               ))}
+              <div className="px-3 md:px-4 py-1 md:py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-xs md:text-sm">
+                <p>{article.views?.toLocaleString("fa-IR") || "0"} بازدید</p>
+              </div>
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold mb-4">
               {article.title}
             </h1>
+
             <div className="flex flex-wrap items-center gap-3 md:gap-6 text-gray-200 text-sm md:text-base">
               <div className="flex items-center gap-2">
                 <img
@@ -213,6 +248,7 @@ export default function Page({ params }) {
               </svg>
               <span className="hidden sm:inline">خانه</span>
             </Link>
+
             <span className="text-white/40">
               <svg
                 className="w-3 h-3 md:w-4 md:h-4"
@@ -232,6 +268,27 @@ export default function Page({ params }) {
             >
               مقالات
             </Link>
+
+            <span className="text-white/40">
+              <svg
+                className="w-3 h-3 md:w-4 md:h-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </span>
+            <Link
+              href="/pages/articles"
+              className="text-white/70 hover:text-white transition-colors duration-300 text-xs md:text-sm"
+            >
+              {categoryName}
+            </Link>
+
             <span className="text-white/40">
               <svg
                 className="w-3 h-3 md:w-4 md:h-4"

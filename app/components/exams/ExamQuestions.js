@@ -11,11 +11,15 @@ export default function ExamQuestions({ category, level, onBack }) {
   const [loading, setLoading] = useState(true);
   const [showResult, setShowResult] = useState(false);
   const [examResult, setExamResult] = useState(null);
+  const [showAnswers, setShowAnswers] = useState(false);
+  const [answeredQuestions, setAnsweredQuestions] = useState({});
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await fetch(`/api/questions?category=${category}&level=${level}`);
+        const res = await fetch(
+          `/api/questions?category=${category}&level=${level}`
+        );
         const data = await res.json();
         setQuestions(data);
         setLoading(false);
@@ -27,10 +31,18 @@ export default function ExamQuestions({ category, level, onBack }) {
     fetchQuestions();
   }, [category, level]);
 
-  const handleAnswer = (questionId, selectedOption) => {
+  const handleAnswer = (questionId, selectedOption, optionIndex) => {
+    const currentQuestion = questions.find((q) => q._id === questionId);
+    const isCorrect = currentQuestion.correct === optionIndex;
+
     setAnswers(prev => ({
       ...prev,
       [questionId]: selectedOption
+    }));
+
+    setAnsweredQuestions((prev) => ({
+      ...prev,
+      [questionId]: true,
     }));
   };
 
@@ -57,6 +69,7 @@ export default function ExamQuestions({ category, level, onBack }) {
     }
   };
 
+
   if (loading) {
     return (
       <div className="container mx-auto max-w-4xl p-4">
@@ -78,7 +91,9 @@ export default function ExamQuestions({ category, level, onBack }) {
             </div>
             <div className="mt-8 space-y-2 text-center">
               <h3 className="text-xl font-bold text-blue-700">لطفا صبر کنید</h3>
-              <p className="text-indigo-600 animate-pulse">در حال آماده‌سازی سوالات آزمون...</p>
+              <p className="text-indigo-600 animate-pulse">
+                در حال آماده‌سازی سوالات آزمون...
+              </p>
             </div>
             <div className="mt-4 flex space-x-2">
               <div className="w-3 h-3 rounded-full bg-blue-500 animate-bounce delay-100" />
@@ -137,25 +152,59 @@ export default function ExamQuestions({ category, level, onBack }) {
               <p className="text-lg">{questions[currentQuestion].question}</p>
 
               <div className="space-y-3">
-                {questions[currentQuestion].options.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleAnswer(questions[currentQuestion]._id, option)}
-                    className={`w-full p-4 text-right rounded-lg border ${
-                      answers[questions[currentQuestion]._id] === option
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-blue-300"
-                    }`}
-                  >
-                    {option}
-                  </button>
-                ))}
+                {questions[currentQuestion].options.map((option, index) => {
+                  const questionId = questions[currentQuestion]._id;
+                  const answer = answers[questionId];
+                  const isSelected = answer?.selected === option;
+                  const isCorrect =
+                    questions[currentQuestion].correct === index;
+                  const isAnswered = answeredQuestions[questionId];
+
+                  let buttonClass = `
+    w-full p-4 text-right rounded-lg border transition-colors
+    ${!isAnswered && !isSelected ? "border-gray-200 hover:border-blue-300" : ""}
+    ${!isAnswered && isSelected ? "border-blue-500 bg-blue-50" : ""}
+    ${
+      isAnswered && isCorrect
+        ? "border-green-500 bg-green-100 text-green-800"
+        : ""
+    }
+    ${
+      isAnswered && isSelected && !isCorrect
+        ? "border-red-500 bg-red-100 text-red-800"
+        : ""
+    }
+  `;
+
+                  return (
+                    <button
+                      key={index}
+                      onClick={() =>
+                        !isAnswered && handleAnswer(questionId, option, index)
+                      }
+                      disabled={isAnswered}
+                      className={buttonClass}
+                    >
+                      <div className="flex justify-between items-center">
+                        <span>{option}</span>
+                        {isAnswered && (
+                          <span className="ml-2 font-bold">
+                            {isCorrect && "✓"}
+                            {isSelected && !isCorrect && "✗"}
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </motion.div>
 
             <div className="flex justify-between mt-8">
               <button
-                onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))}
+                onClick={() =>
+                  setCurrentQuestion((prev) => Math.max(0, prev - 1))
+                }
                 disabled={currentQuestion === 0}
                 className="px-6 py-2 rounded-lg bg-gray-100 text-gray-700 disabled:opacity-50"
               >
@@ -171,7 +220,11 @@ export default function ExamQuestions({ category, level, onBack }) {
                 </button>
               ) : (
                 <button
-                  onClick={() => setCurrentQuestion(prev => Math.min(questions.length - 1, prev + 1))}
+                  onClick={() =>
+                    setCurrentQuestion((prev) =>
+                      Math.min(questions.length - 1, prev + 1)
+                    )
+                  }
                   className="px-6 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
                 >
                   سوال بعدی

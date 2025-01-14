@@ -14,6 +14,7 @@ import {
   setCurrentPodcast,
   setVolume,
   toggleMute,
+  incrementListens,
 } from "../redux/audioSlice";
 import { podcasts } from "../data/podcasts";
 import { AudioController } from "../utils/AudioController";
@@ -45,6 +46,7 @@ export default function HomeAudioPlayer() {
   const [showModal, setShowModal] = useState(false);
   const [podcasts, setPodcasts] = useState(null);
   const settings = useSelector((state) => state.settings.data);
+  const [playedPodcasts, setPlayedPodcasts] = useState(new Set());
 
   useEffect(() => {
     dispatch(fetchSettings());
@@ -106,19 +108,26 @@ export default function HomeAudioPlayer() {
       AudioController.stop(dispatch);
     }
   };
+
   const handlePlayPause = async () => {
     if (loading || !currentPodcast?.audioUrl) return;
+
     if (isPlaying) {
       AudioController.pause(dispatch);
     } else {
       await AudioController.play(dispatch);
-      // افزایش تعداد پخش
-      dispatch(incrementListens());
 
-      // ارسال به سرور
-      fetch(`/api/podcasts/${currentPodcast._id}/listen`, {
-        method: "POST",
-      });
+      // چک میکنیم این پادکست قبلاً پخش شده یا نه
+      if (!playedPodcasts.has(currentPodcast._id)) {
+        dispatch(incrementListens());
+
+        fetch(`/api/podcasts/${currentPodcast._id}/listen`, {
+          method: "POST",
+        });
+
+        // اضافه کردن به لیست پخش شده‌ها
+        setPlayedPodcasts((prev) => new Set(prev).add(currentPodcast._id));
+      }
     }
   };
   // const handlePlayPause = async () => {
@@ -327,11 +336,23 @@ export default function HomeAudioPlayer() {
                     <IoPlaySkipBackCircle className="w-6 h-6 md:w-8 md:h-8" />
                   </button>
                   <button
-                    onClick={() =>
-                      isPlaying
-                        ? AudioController.pause(dispatch)
-                        : AudioController.play(dispatch)
-                    }
+                    onClick={() => {
+                      if (isPlaying) {
+                        AudioController.pause(dispatch);
+                      } else {
+                        AudioController.play(dispatch);
+                        // فقط اگر قبلاً پخش نشده باشه
+                        if (!playedPodcasts.has(currentPodcast._id)) {
+                          dispatch(incrementListens());
+                          fetch(`/api/podcasts/${currentPodcast._id}/listen`, {
+                            method: "POST",
+                          });
+                          setPlayedPodcasts((prev) =>
+                            new Set(prev).add(currentPodcast._id)
+                          );
+                        }
+                      }
+                    }}
                     className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 md:p-4 rounded-full transform hover:scale-110 transition-all"
                   >
                     {isPlaying ? (
@@ -416,7 +437,7 @@ export default function HomeAudioPlayer() {
                       {podcast.description}
                     </p>
                     <span className="text-xs text-purple-600">
-                      {podcast.duration}
+                      {podcast.listens}
                     </span>
                   </div>
                 </div>

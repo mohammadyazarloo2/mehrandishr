@@ -49,6 +49,15 @@ export default function Page({ params }) {
         });
         const data = await response.json();
         setProduct(data.message);
+
+        // Update view count
+        await fetch(`/api/products/updateViews`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ productId: params.id }),
+        });
       } catch (error) {
         console.error("Error fetching product:", error);
       } finally {
@@ -249,6 +258,17 @@ export default function Page({ params }) {
             </Link>
           </li>
           <FaChevronLeft color="#fff" />
+          {categoryName && (
+            <>
+              <li class="breadcrumb-item">
+                <Link class="text-white hover:text-primary" href="#">
+                  {categoryName}
+                </Link>
+              </li>
+              <FaChevronLeft color="#fff" />
+            </>
+          )}
+
           <li class="breadcrumb-item">
             <Link class=" text-primary" href="#">
               {product.title}
@@ -261,8 +281,12 @@ export default function Page({ params }) {
           <img src={product?.images} alt="" width={100} height={100} />
         </div>
         <div className="products-info">
-          <div className="products-info-title">
+          <div className="products-info-title flex justify-between items-center">
             <h1> {product.title} </h1>
+            <div className="products-info-price">
+              <span>تعداد بازدید:</span>
+              <span>{product.views || 0}</span>
+            </div>
           </div>
           <div className="products-info-price">
             <span>دسته‌بندی :</span>

@@ -16,6 +16,7 @@ import {
   setCurrentPodcast,
   setVolume,
   toggleMute,
+  incrementListens,
 } from "../redux/audioSlice";
 import { AudioController } from "../utils/AudioController";
 import { FaVolumeMute, FaVolumeUp, FaList } from "react-icons/fa";
@@ -37,6 +38,7 @@ export default function AudioPlayer() {
   const audioRef = useRef(null);
   const [showPlaylist, setShowPlaylist] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [playedPodcasts, setPlayedPodcasts] = useState(new Set());
 
   useEffect(() => {
     const fetchPodcasts = async () => {
@@ -228,11 +230,23 @@ export default function AudioPlayer() {
             <IoPlaySkipBackCircle className="w-5 h-5 md:w-6 md:h-6" />
           </button>
           <button
-            onClick={() =>
-              isPlaying
-                ? AudioController.pause(dispatch)
-                : AudioController.play(dispatch)
-            }
+            onClick={() => {
+              if (isPlaying) {
+                AudioController.pause(dispatch);
+              } else {
+                AudioController.play(dispatch);
+                // چک کردن و افزایش تعداد پخش
+                if (!playedPodcasts.has(currentPodcast._id)) {
+                  dispatch(incrementListens());
+                  fetch(`/api/podcasts/${currentPodcast._id}/listen`, {
+                    method: "POST",
+                  });
+                  setPlayedPodcasts((prev) =>
+                    new Set(prev).add(currentPodcast._id)
+                  );
+                }
+              }
+            }}
             className="bg-purple-600 p-2 md:p-3 rounded-full"
           >
             {isPlaying ? (

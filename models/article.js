@@ -28,7 +28,11 @@ const articleSchema = new mongoose.Schema(
     relatedArticles: [Number],
     excerpt: String,
     image: String,
-    category: String,
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "BlogCategory",
+      required: true,
+    },
     readTime: String,
     views: {
       type: Number,
